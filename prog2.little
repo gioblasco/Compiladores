@@ -1,0 +1,18 @@
+-- Isso é um comentário
+
+PROGRAM programa2 BEGIN
+
+
+
+  FUNCTION VOID Add( FLOAT num1,  FLOAT num2)
+  BEGIN
+    FLOAT num3;
+    READ(num1);
+    READ(num2);
+
+    num3 = num1 + num2;
+    WRITE(num3);
+
+  END
+
+END
