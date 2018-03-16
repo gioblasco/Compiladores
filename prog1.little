@@ -9,7 +9,7 @@ PROGRAM programa1 BEGIN
 
     READ(num1);
     READ(num2);
-
+    -- Ta errado essa linha de baixo:
     WRITE(num1 + num2);
 
   END
