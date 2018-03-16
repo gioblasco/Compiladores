@@ -2,16 +2,29 @@
 
 PROGRAM programa2 BEGIN
 
+  FLOAT x, y, retorno;
 
+  -- À confirmar:   
+       READ(x);
+       READ(y);
+       -- Averiguar a linha abaixo, se precisa de atribuição para chamar uma função
+       -- E se precisa verificar erros do tipo atribuir void a uma variavel.
+      retorno := AbsSub(x,y);
+  -- Fim do à confirmar
 
-  FUNCTION VOID Add( FLOAT num1,  FLOAT num2)
+  -- Retorna o módulo da subtração entre dois números. ( | A - B | )
+  FUNCTION VOID AbsSub( FLOAT num1,  FLOAT num2)
   BEGIN
     FLOAT num3;
-    READ(num1);
-    READ(num2);
-
-    num3 = num1 + num2;
-    WRITE(num3);
+    
+    num3 := num1 - num2;
+    
+    IF (num3 < 0) THEN
+      num3 := num3 * (0 - 1); 
+    ENDIF
+    
+    
+    RETURN num3;
 
   END
 
