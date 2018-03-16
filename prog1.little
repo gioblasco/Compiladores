@@ -1,16 +1,18 @@
 PROGRAM programa1 BEGIN
 
 
-
   FUNCTION VOID readAndAdd()
   BEGIN
     FLOAT num1;
     FLOAT num2;
-
+    FLOAT num3;
+    
     READ(num1);
     READ(num2);
-    -- Ta errado essa linha de baixo:
-    WRITE(num1 + num2);
+    
+    num3 := num1 + num2;
+    
+    WRITE(num3);
 
   END
 
