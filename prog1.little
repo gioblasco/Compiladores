@@ -1,17 +1,17 @@
-PROGRAM programa1
+PROGRAM programa1 BEGIN
 
-BEGIN
 
-FUNCTION VOID soma()
 
-FLOAT num1;
-FLOAT num2;
+  FUNCTION VOID readAndAdd()
+  BEGIN
+    FLOAT num1;
+    FLOAT num2;
 
-READ(num1);
-READ(num2);
+    READ(num1);
+    READ(num2);
 
-WRITE(num1 + num2);
+    WRITE(num1 + num2);
 
-END
+  END
 
 END
