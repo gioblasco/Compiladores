@@ -2,7 +2,7 @@ PROGRAM programa1
 
 BEGIN
 
-FUNCTION soma
+FUNCTION VOID soma()
 
 FLOAT num1;
 FLOAT num2;
