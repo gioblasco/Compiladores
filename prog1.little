@@ -1,6 +1,8 @@
-PROGRAM soma
+PROGRAM programa1
 
 BEGIN
+
+FUNCTION soma
 
 FLOAT num1;
 FLOAT num2;
@@ -10,5 +12,6 @@ READ(num2);
 
 WRITE(num1 + num2);
 
+END
 
 END
