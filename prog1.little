@@ -1,17 +1,22 @@
-PROGRAM programa1 BEGIN
+PROGRAM programa1
 
+BEGIN
 
-  FUNCTION VOID readAndAdd()
+  FUNCTION VOID MAIN()
   BEGIN
-    FLOAT num1;
-    FLOAT num2;
-    FLOAT num3;
-    
+    ReadAndAdd();
+  END
+
+  -- Escreve a soma entre dois números
+  FUNCTION VOID ReadAndAdd()
+  BEGIN
+    FLOAT num1, num2, num3;
+
     READ(num1);
     READ(num2);
-    
+
     num3 := num1 + num2;
-    
+
     WRITE(num3);
 
   END
