@@ -37,6 +37,7 @@ END
 
 -- Calcula X mod Y
 FUNCTION INT Mod(INT x, INT y)
+BEGIN
 
   INT resto;
   resto :=  x - (y * (x/y));
