@@ -2,49 +2,51 @@ PROGRAM programa4
 
 BEGIN
 
-FUNCTION VOID MAIN()
-BEGIN
-  PrimeNumbers();
-END
+	FLOAT retorno;
 
--- Imprime números primos de 1 a 100
-FUNCTION VOID PrimeNumbers()
-BEGIN
+	FUNCTION VOID MAIN()
+	BEGIN
+	  retorno := PrimeNumbers();
+	END
 
-  INT i, j, primo, auxi, auxj, mod;
-  STRING espaço = " ";
-  FOR(i:=1; i<100; i:=i+1)
-    primo := 0;
-    auxi := i + 1;
-    FOR(j:=0; j<auxi; j:=j+1)
-      auxj := j + 1;
-      mod := Mod(auxi, auxj);
-      IF(mod = 0) THEN
-        primo := primo + 1;
-      ENDIF
-    END FOR
-    IF(primo < 2) THEN
-      WRITE(i);
-      WRITE(espaço);
-    ENDIF
-    IF(primo = 2) THEN
-      WRITE(i);
-      WRITE(espaço);
-    ENDIF
-  END FOR
+	-- Imprime números primos de 1 a 100
+	FUNCTION VOID PrimeNumbers()
+	BEGIN
 
-END
+	  INT i, j, primo, auxi, auxj, mod;
+	  STRING espaço = " ";
+	  FOR(i:=1; i<100; i:=i+1)
+	    primo := 0;
+	    auxi := i + 1;
+	    FOR(j:=0; j<auxi; j:=j+1)
+	      auxj := j + 1;
+	      mod := Mod(auxi, auxj);
+	      IF(mod = 0) THEN
+		primo := primo + 1;
+	      ENDIF
+	    END FOR
+	    IF(primo < 2) THEN
+	      WRITE(i);
+	      WRITE(espaço);
+	    ENDIF
+	    IF(primo = 2) THEN
+	      WRITE(i);
+	      WRITE(espaço);
+	    ENDIF
+	  END FOR
 
--- Calcula X mod Y
-FUNCTION INT Mod(INT x, INT y)
-BEGIN
+	END
 
-  INT resto;
-  resto :=  x - (y * (x/y));
+	-- Calcula X mod Y
+	FUNCTION INT Mod(INT x, INT y)
+	BEGIN
 
-  RETURN resto;
+	  INT resto;
+	  resto :=  x - (y * (x/y));
 
-END
+	  RETURN resto;
+
+	END
 
 
 END
