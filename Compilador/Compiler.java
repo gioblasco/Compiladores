@@ -48,218 +48,218 @@ public class Compiler {
 	}
 
 	/* Global String Declaration */
-	//string_decl {string_decl_tail}
+	// string_decl_list -> string_decl {string_decl_tail}
 	public void string_decl_list(){
 
 	}
 
-	//STRING id := str ; | empty
+	// string_decl -> STRING id := str ; | empty
 	public void string_decl(){
 
 	}
 
-	//string_decl {string_decl_tail}
+	// string_decl_tail -> string_decl {string_decl_tail}
 	public void string_decl_tail(){
 
 	}
 
 	/* Variable Declaration */
-	//var_decl {var_decl_tail}
+	// var_decl_list -> var_decl {var_decl_tail}
 	public void var_decl_list(){
 
 	}
 
-	//var_type id_list ; | empty
+	// var_decl -> var_type id_list ; | empty
 	public void var_decl(){
 
 	}
 
-	//FLOAT | INT
+	// var_type -> FLOAT | INT
 	public void var_type(){
 
 	}
 
-	//var_type | VOID
+	// any_type -> var_type | VOID
 	public void any_type(){
 
 	}
 
-	//id id_tail
+	// id_list -> id id_tail
 	public void id_list(){
 
 	}
 
-	//, id id_tail | empty
+	// id_tail -> , id id_tail | empty
 	public void id_tail(){
 
 	}
 
-	//var_decl {var_decl_tail}
+	// var_decl_tail -> var_decl {var_decl_tail}
 	public void var_decl_tail(){
 
 	}
 
 	/* Function Paramater List */
-	//param_decl param_decl_tail
+	// param_decl_list -> param_decl param_decl_tail
 	public void param_decl_list(){
 
 	}
 
-	//var_type id
+	// param_decl -> var_type id
 	public void param_decl(){
 
 	}
 
-	//, param_decl param_decl_tail | empty
+	// param_decl_tail -> , param_decl param_decl_tail | empty
 	public void param_decl_tail(){
 
 	}
 
 	/* Function Declarations */
-	//func_decl {func_decl_tail}
+	// func_declarations -> func_decl {func_decl_tail}
 	public void func_declarations(){
 
 	}
 
-	//FUNCTION any_type id ({param_decl_list}) BEGIN func_body END | empty
+	// func_decl -> FUNCTION any_type id ({param_decl_list}) BEGIN func_body END | empty
 	public void func_decl(){
 
 	}
 
-	//func_decl {func_decl_tail}
+	// func_decl_tail -> func_decl {func_decl_tail}
 	public void func_decl_tail(){
 
 	}
 
-	//decl stmt_list
+	// func_body -> decl stmt_list
 	public void func_body(){
 
 	}
 
 	/* Statement List */
-	//stmt stmt_tail | empty
+	// stmt_list -> stmt stmt_tail | empty
 	public void stmt_list(){
 
 	}
 
-	//stmt stmt_tail | empty
+	// stmt_tail -> stmt stmt_tail | empty
 	public void stmt_tail(){
 
 	}
 
-	//assign_stmt | read_stmt | write_stmt | return_stmt | if_stmt | for_stmt
+	// stmt -> assign_stmt | read_stmt | write_stmt | return_stmt | if_stmt | for_stmt
 	public void stmt(){
 
 	}
 
 	/* Basic Statements */
-	//assign_expr ;
+	// assign_stmt -> assign_expr ;
 	public void assign_stmt(){
 
 	}
 
-	//id := expr
+	// assign_expr -> id := expr
 	public void assign_expr(){
 
 	}
 
-	//READ ( id_list );
+	// read_stmt -> READ ( id_list );
 	public void read_stmt(){
 
 	}
 
-	//WRITE ( id_list );
+	// write_stmt -> WRITE ( id_list );
  	public void write_stmt(){
 
  	}
 
-	//RETURN expr ;
+	// return_stmt -> RETURN expr ;
 	public void return_stmt(){
 
 	}
 
 	/* Expressions */
-	//factor expr_tail
+	// expr -> factor expr_tail
 	public void expr(){
 
 	}
 
-	//addop factor expr_tail | empty
+	// expr_tail -> addop factor expr_tail | empty
 	public void expr_tail(){
 
 	}
 
-	//postfix_expr factor_tail
+	// factor -> postfix_expr factor_tail
 	public void factor(){
 
 	}
 
-	//mulop postfix_expr factor_tail | empty
+	// factor_tail -> mulop postfix_expr factor_tail | empty
 	public void factor_tail(){
 
 	}
 
-	//primary | call_expr
+	// postfix_expr -> primary | call_expr
 	public void postfix_expr(){
 
 	}
 
 
-	//id ( {expr_list} )
+	// call_expr -> id ( {expr_list} )
 	public void call_expr(){
 
 	}
 
 
-	//expr expr_list_tail
+	// expr_list -> expr expr_list_tail
 	public void expr_list(){
 
 	}
 
 
-	//, expr expr_list_tail | empty
+	// expr_list_tail -> , expr expr_list_tail | empty
 	public void expr_list_tail(){
 
 	}
 
-	//(expr) | id | INTLITERAL | FLOATLITERAL
+	// primary -> (expr) | id | INTLITERAL | FLOATLITERAL
 	public void primary(){
 
 	}
 
 
- 	//+ | -
+ 	// addop -> + | -
 	public void addop(){
 
 	}
 
-	// * | /
+	// mulop -> * | /
 	public void mulop(){
 
 	}
 
 	/* Complex Statements and Condition */
-	//IF ( cond ) THEN stmt_list else_part ENDIF
+	// if_stmt -> IF ( cond ) THEN stmt_list else_part ENDIF
 	public void if_stmt(){
 
 	}
 
-	//ELSE stmt_list | empty
+	// else_part -> ELSE stmt_list | empty
 	public void else_part(){
 
 	}
 
-	//expr compop expr
+	// cond -> expr compop expr
 	public void cond(){
 
 	}
 
-	//< | > | =
+	// compop -> < | > | =
 	public void compop(){
 
 	}
 
-	//FOR ({assign_expr}; {cond}; {assign_expr}) stmt_list ENDFOR
+	// for_stmt -> FOR ({assign_expr}; {cond}; {assign_expr}) stmt_list ENDFOR
 	public void for_stmt(){
 
 	}
