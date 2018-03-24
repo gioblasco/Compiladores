@@ -42,7 +42,7 @@ public class Compiler {
         varDecList();  
 
         if(lexer.token!= Symbol.END)
-            error.signal("Missing BEGIN keyword");
+            error.signal("Missing END keyword");
         lexer.nextToken();
     }
        
