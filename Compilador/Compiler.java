@@ -33,16 +33,27 @@ public class Compiler {
             error.signal("Not expected ''" + lexer.token + "' after END keyword.'" );
     }
     
-    //   Program ::= 'begin' VarDecList ';' AssignStatement 'end'
+    //   program ::= PROGRAM id BEGIN pgm_body END
     public void program(){
-        if(lexer.token != Symbol.BEGIN)
-            error.signal("Missing BEGIN keyword");
+        if(lexer.token != Symbol.PROGRAM)
+            error.signal("Error! Missing PROGRAM keyword on the line: " + lexer.getLineNumber());
+
         lexer.nextToken();
-        
-        varDecList();  
+
+        if(lexer.token!= Symbol.IDENT)
+			error.signal("Error! Missing PROGRAM Identifier on the line: " + lexer.getLineNumber());
+		
+		lexer.nextToken();
+		
+		if(lexer.token != Symbol.BEGIN)
+            error.signal("Error! Missing BEGIN keyword on the line: " + lexer.getLineNumber());
+		
+		lexer.nextToken();
+		
+		pgm_body();
 
         if(lexer.token!= Symbol.END)
-            error.signal("Missing END keyword");
+            error.signal("Missing BEGIN keyword");
         lexer.nextToken();
     }
        
