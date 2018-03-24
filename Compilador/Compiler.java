@@ -56,7 +56,16 @@ public class Compiler {
             error.signal("Missing BEGIN keyword");
         lexer.nextToken();
     }
-       
+
+	// pgm_body -> decl func_declarations
+	public void pgm_body(){
+		
+	}
+	// decl -> string_decl_list {decl} | var_decl_list {decl} | empty
+	public void decl(){
+		
+	}
+	
 	// VarDecList ::= Variable | Variable ',' VarDecList
 	public void varDecList(){
         if(lexer.token != Symbol.IDENT)
