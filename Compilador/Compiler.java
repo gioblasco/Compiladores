@@ -1,4 +1,4 @@
-import Lexer.*;
+	import Lexer.*;
 import Error.*;
 
 public class Compiler {
@@ -14,6 +14,10 @@ public class Compiler {
             error.signal("Not expected ''" + lexer.token + "' after END keyword.'" );
     }
 
+	/***************************************/
+	/************** Program ****************/
+	/***************************************/
+	
     //   program ::= PROGRAM id BEGIN pgm_body END
     public void program(){
         if(lexer.token != Symbol.PROGRAM)
@@ -22,16 +26,16 @@ public class Compiler {
         lexer.nextToken();
 
         if(lexer.token!= Symbol.IDENT)
-					error.signal("Error: Missing PROGRAM Identifier at line: " + lexer.getLineNumber());
+			error.signal("Error: Missing PROGRAM Identifier at line: " + lexer.getLineNumber());
 
-				lexer.nextToken();
+		lexer.nextToken();
 
-				if(lexer.token != Symbol.BEGIN)
+		if(lexer.token != Symbol.BEGIN)
             error.signal("Error: Missing BEGIN keyword at line: " + lexer.getLineNumber());
 
-				lexer.nextToken();
+		lexer.nextToken();
 
-				pgm_body();
+		pgm_body();
 
         if(lexer.token!= Symbol.END)
             error.signal("Error: Missing END keyword at line:" + lexer.getLineNumber());
@@ -41,12 +45,14 @@ public class Compiler {
 
 	// pgm_body -> decl func_declarations
 	public void pgm_body(){
+		
 		decl();
-
 		func_declarations();
 
-		lexer.nextToken();
 	}
+	
+	
+	
 	// decl -> string_decl_list {decl} | var_decl_list {decl} | empty
 	public void decl(){
 		if(lexer.token == Symbol.STRING){
@@ -60,13 +66,16 @@ public class Compiler {
 			decl();
 		}
 	}
-
+	
+	/*****************************/
 	/* Global String Declaration */
+	/*****************************/
+	
 	// string_decl_list -> string_decl {string_decl_tail}
 	public void string_decl_list(){
 		string_decl();
-
-		string_decl_tail();
+		if(lexer.token == Symbol.STRING)
+			string_decl_tail();
 	}
 
 	// string_decl -> STRING id := str ; | empty
@@ -96,41 +105,46 @@ public class Compiler {
 	// string_decl_tail -> string_decl {string_decl_tail}
 	public void string_decl_tail(){
 		string_decl();
-
-		string_decl_tail();
+		if(lexer.token == Symbol.STRING)
+			string_decl_tail();
 	}
-
+	
+	/************************/
 	/* Variable Declaration */
+	/************************/
+	
 	// var_decl_list -> var_decl {var_decl_tail}
 	public void var_decl_list(){
 		var_decl();
-
-		var_decl_tail();
+		if(lexer.token != Symbol.FLOAT && lexer.token == Symbol.INT)
+			var_decl_tail();
 	}
 
 	// var_decl -> var_type id_list ; | empty
 	public void var_decl(){
-		if(lexer.token == Symbol.FLOAT || lexer.token == Symbol.INT){
-			var_type();
+		if(var_type()){
 			id_list();
-			if(lexer.token == Symbol.SEMICOLON)
+			if(lexer.token != Symbol.SEMICOLON)
 				error.signal("Error: Missing end of declaration at line: " + lexer.getLineNumber());
 			lexer.nextToken();
 		}
 	}
+	
+
 
 	// var_type -> FLOAT | INT
-	public void var_type(){
+	public boolean var_type(){
 		if(lexer.token != Symbol.FLOAT && lexer.token == Symbol.INT)
-			error.signal("Error: Wrong variable type at line: " + lexer.getLineNumber());
+			return false;
 		lexer.nextToken();
+		return true;
 	}
 
 	// any_type -> var_type | VOID
 	public void any_type(){
-		if(lexer.token == Symbol.FLOAT || lexer.token == Symbol.INT)
-			var_type();
-		else if(lexer.token != Symbol.VOID)
+		if(var_type())
+			return;
+		if(lexer.token != Symbol.VOID)
 			error.signal("Error: Wrong type at line: " + lexer.getLineNumber());
 		lexer.nextToken();
 	}
@@ -161,46 +175,50 @@ public class Compiler {
 	// var_decl_tail -> var_decl {var_decl_tail}
 	public void var_decl_tail(){
 		var_decl();
-
-		var_decl_tail();
+		if(lexer.token != Symbol.FLOAT && lexer.token == Symbol.INT)
+			var_decl_tail();
 	}
-
-	/* Function Paramater List */
+	
+	/*********************************/
+	/**** Function Paramater List ****/
+	/*********************************/
+	
 	// param_decl_list -> param_decl param_decl_tail
 	public void param_decl_list(){
 		param_decl();
-
 		param_decl_tail();
 	}
 
 	// param_decl -> var_type id
 	public void param_decl(){
-		if(lexer.token == Symbol.FLOAT || lexer.token == Symbol.INT){
-			var_type();
+		if(!var_type())
+			error.signal("Error: Missing Correct Variable Type at line: " + lexer.getLineNumber());
 
-			if(lexer.token != Symbol.IDENT)
-				error.signal("Error: Missing identifier at line: " + lexer.getLineNumber());
-			lexer.nextToken();
-		}
+		if(lexer.token != Symbol.IDENT)
+			error.signal("Error: Missing identifier at line: " + lexer.getLineNumber());
+		lexer.nextToken();
 	}
+	
 
 	// param_decl_tail -> , param_decl param_decl_tail | empty
 	public void param_decl_tail(){
 		if(lexer.token == Symbol.COMMA){
-				lexer.nextToken();
-
-				param_decl();
-
-				param_decl_tail();
+			lexer.nextToken();
+			
+			param_decl();
+			param_decl_tail();
 		}
 	}
-
-	/* Function Declarations */
+	
+	/***************************************/
+	/******** Function Declarations ********/
+	/***************************************/
+	
 	// func_declarations -> func_decl {func_decl_tail}
 	public void func_declarations(){
 		func_decl();
-
-		func_decl_tail();
+		if(lexer.token == Symbol.FUNCTION)
+			func_decl_tail();
 	}
 
 	// func_decl -> FUNCTION any_type id ({param_decl_list}) BEGIN func_body END | empty
@@ -240,8 +258,8 @@ public class Compiler {
 	// func_decl_tail -> func_decl {func_decl_tail}
 	public void func_decl_tail(){
 		func_decl();
-
-		func_decl_tail();
+		if(lexer.token == Symbol.FUNCTION)
+			func_decl_tail();
 	}
 
 	// func_body -> decl stmt_list
@@ -250,8 +268,11 @@ public class Compiler {
 
 		stmt_list();
 	}
-
+	
+	/******************/
 	/* Statement List */
+	/******************/
+	
 	// stmt_list -> stmt stmt_tail | empty
 	public void stmt_list(){
 
@@ -266,8 +287,11 @@ public class Compiler {
 	public void stmt(){
 
 	}
-
+	
+	/********************/
 	/* Basic Statements */
+	/********************/
+	
 	// assign_stmt -> assign_expr ;
 	public void assign_stmt(){
 
@@ -293,7 +317,10 @@ public class Compiler {
 
 	}
 
+	/***************/
 	/* Expressions */
+	/***************/
+	
 	// expr -> factor expr_tail
 	public void expr(){
 
@@ -356,8 +383,11 @@ public class Compiler {
 			error.signal("Error: Wrong operator at line: " + lexer.getLineNumber());
 		lexer.nextToken();
 	}
-
+	
+	/************************************/
 	/* Complex Statements and Condition */
+	/************************************/
+	
 	// if_stmt -> IF ( cond ) THEN stmt_list else_part ENDIF
 	public void if_stmt(){
 		if(lexer.token == Symbol.IF){
