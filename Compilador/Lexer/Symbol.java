@@ -29,7 +29,7 @@ public enum Symbol {
 	EQUAL("="),
 	LT("<"),
 	GT(">"),
-	LPAR("(")
+	LPAR("("),
 	RPAR(")"),
 	ASSIGN(":="),
 	COMMA(","),
