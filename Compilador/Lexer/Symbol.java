@@ -4,7 +4,6 @@ public enum Symbol {
 
 	EOF("eof"),
 	IDENT("Ident"),
-	NUMBER("Number"),
 	PROGRAM("program"),
 	BEGIN("begin"),
 	END("end"),
