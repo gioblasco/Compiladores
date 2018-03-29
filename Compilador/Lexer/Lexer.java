@@ -115,7 +115,7 @@ public class Lexer {
                 token = Symbol.FLOATLITERAL;
             }
         } else {
-            boolean apostrofe = false;
+           // boolean apostrofe = false;
 
             while (Character.isLetter(input[tokenPos]) || Character.isDigit(input[tokenPos])){
                 aux = aux.concat(Character.toString(input[tokenPos])); 
@@ -180,10 +180,14 @@ public class Lexer {
         }
 
 
-		if (DEBUGLEXER)
-			System.out.println(token.toString());
+		/*if (DEBUGLEXER)
+			System.out.println(token.toString());*/
         lastTokenPos = tokenPos - 1;
         return token;
+    }
+
+    public void printToken(){
+        System.out.println(token.toString());
     }
 
     // return the line number of the last token got with getToken()

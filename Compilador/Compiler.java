@@ -88,7 +88,7 @@ public class Compiler {
 				lexer.nextToken();
 
 				if(lexer.token != Symbol.IDENT)
-					error.signal("Missing identifier");
+					error.signal("Missing identifier in string declaration");
 				lexer.nextToken();
 
 				if(lexer.token != Symbol.ASSIGN)
@@ -129,7 +129,7 @@ public class Compiler {
 		if(var_type()){
 			id_list();
 			if(lexer.token != Symbol.SEMICOLON)
-				error.signal("Missing end of declaration");
+				error.signal("Missing end of declarationMissing end of declaration");
 			lexer.nextToken();
 		}
 	}
@@ -158,7 +158,6 @@ public class Compiler {
 			id_tail();
 		} else
 				error.signal("Wrong id_list declaration");
-		lexer.nextToken();
 	}
 
 	// id_tail -> , id id_tail | empty
@@ -167,7 +166,7 @@ public class Compiler {
 			lexer.nextToken();
 
 			if(lexer.token != Symbol.IDENT)
-				error.signal("Missing identifier");
+				error.signal("Missing identifier!");
 			lexer.nextToken();
 
 			id_tail();
@@ -193,11 +192,13 @@ public class Compiler {
 
 	// param_decl -> var_type id
 	public void param_decl(){
+		System.out.println("@@@" + lexer.token);
+
 		if(!var_type())
 			error.signal("Missing Correct Variable Type");
-
+		System.out.println("@@@" +lexer.token);
 		if(lexer.token != Symbol.IDENT)
-			error.signal("Missing identifier");
+			error.signal("Missing identifier!!");
 		lexer.nextToken();
 	}
 
@@ -231,7 +232,7 @@ public class Compiler {
 			any_type();
 
 			if(lexer.token != Symbol.IDENT)
-				error.signal("Missing identifier");
+				error.signal("Missing identifier in function declaration");
 			lexer.nextToken();
 
 			if(lexer.token != Symbol.LPAR)
@@ -248,7 +249,7 @@ public class Compiler {
 			if(lexer.token != Symbol.BEGIN)
 				error.signal("Missing BEGIN keyword");
 			lexer.nextToken();
-
+			lexer.printToken();
 			func_body();
 
 			if(lexer.token != Symbol.END)
@@ -342,6 +343,7 @@ public class Compiler {
 			error.signal("Missing READ keyword");
 		if(lexer.nextToken() != Symbol.LPAR)
 			error.signal("Missing open Parentheses");
+
 		id_list();
 		if(lexer.nextToken() != Symbol.RPAR)
 			error.signal("Missing close Parentheses");
