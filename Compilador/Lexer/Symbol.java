@@ -4,7 +4,6 @@ public enum Symbol {
 
 	EOF("eof"),
 	IDENT("Ident"),
-	NUMBER("Number"),
 	PROGRAM("program"),
 	BEGIN("begin"),
 	END("end"),
@@ -29,7 +28,7 @@ public enum Symbol {
 	EQUAL("="),
 	LT("<"),
 	GT(">"),
-	LPAR("(")
+	LPAR("("),
 	RPAR(")"),
 	ASSIGN(":="),
 	COMMA(","),

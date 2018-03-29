@@ -43,8 +43,27 @@ public class Lexer {
 				keywordsTable.put( "string", Symbol.STRING );
     }
 
+    public Symbol checkNextToken(){
+        int backupTokenPos = tokenPos;
+        int backupLineNumber = lineNumber;
+        Symbol backupToken = token;
+        int backupIntValue = intValue;
+        float backupFloatValue = floatValue;
+        String backupStringValue = stringValue;
 
-    public void nextToken() {
+        Symbol retorno = nextToken();
+
+        tokenPos = backupTokenPos;
+        lineNumber = backupLineNumber;
+        token = backupToken;
+        intValue = backupIntValue;
+        floatValue = backupFloatValue;
+        stringValue = backupStringValue;
+
+        return retorno;
+    }
+
+    public Symbol nextToken() {
         while(input[tokenPos] == ' ' || input[tokenPos] == '\n' || input[tokenPos] == '\t' ){
                 if (input[tokenPos] == '\n'){
                     lineNumber++;
@@ -55,7 +74,7 @@ public class Lexer {
 				//chegou no final do arquivo
         if (input[tokenPos] == '\0'){
             token = Symbol.EOF;
-            return;
+            return token;
         }
 
         //verificar se é comentario
@@ -63,30 +82,29 @@ public class Lexer {
             while(input[tokenPos] != '\n' && input[tokenPos] != '\0'){
                 tokenPos++;
             }
-            nextToken();
-            return;
+            return nextToken();
         }
 
         //quero reconhecer o token
         //o token sera um dos Symbol
-        StringBuffer aux = new StringBuffer();
+        String aux = "";
         while(Character.isDigit(input[tokenPos])){
             //concatenar esses digitos e concatenar eles
-            aux = aux.append(input[tokenPos]);
+            aux = aux.concat(Character.toString(input[tokenPos]));
             tokenPos++;
         }
 
 
         if (aux.length() > 0){
             //converte string para inteiro
-            numberValue = Integer.parseInt(aux.toString());
-            if (numberValue > MaxValueInteger){
-                error.signal("Error: Not valid integer at line: " + lineNumber.toString());
+            intValue = Integer.parseInt(aux);
+            if (intValue > MaxValueInteger){
+                error.signal("Error: Not valid integer at line: " + lineNumber);
             }
-            token = Symbol.NUMBER;
+            token = Symbol.INT;
         } else {
             while (Character.isLetter(input[tokenPos])){
-                aux = aux.append(input[tokenPos]); //vai concatenando todas as letras, ainda eh string
+                aux = aux.concat(Character.toString(input[tokenPos])); //vai concatenando todas as letras, ainda eh string
                 tokenPos++;
             }
             if (aux.length() > 0){
@@ -139,7 +157,7 @@ public class Lexer {
 												token = Symbol.RPAR;
 												break;
                     default:
-                        error.signal("Lexical error at line: " + lineNumber.toString());
+                        error.signal("Lexical error at line: " + Integer.toString(lineNumber));
                 }
                 tokenPos++;
             }
@@ -149,6 +167,7 @@ public class Lexer {
 		if (DEBUGLEXER)
 			System.out.println(token.toString());
         lastTokenPos = tokenPos - 1;
+        return token;
     }
 
     // return the line number of the last token got with getToken()
@@ -182,8 +201,12 @@ public class Lexer {
         return stringValue;
     }
 
-    public int getNumberValue() {
-        return numberValue;
+    public int getIntValue() {
+        return intValue;
+    }
+
+    public float getFloatValue() {
+        return floatValue;
     }
 
     public char getCharValue() {
@@ -192,7 +215,8 @@ public class Lexer {
     // current token
     public Symbol token;
     private String stringValue;
-    private int numberValue;
+    private int intValue;
+    private float floatValue;
     private char charValue;
 
     private int  tokenPos;
