@@ -88,19 +88,19 @@ public class Compiler {
 				lexer.nextToken();
 
 				if(lexer.token != Symbol.IDENT)
-					error.signal("Missing identifier at string_decl()");
+					error.signal("Missing identifier in string declaration");
 				lexer.nextToken();
 
 				if(lexer.token != Symbol.ASSIGN)
-					error.signal("Missing assignment symbol at string_decl()");
+					error.signal("Missing assignment symbol");
 				lexer.nextToken();
 
 				if(lexer.token != Symbol.STRING)
-					error.signal("Missing STRINGLITERAL type at string_decl()");
+					error.signal("Missing STRINGLITERAL type");
 				lexer.nextToken();
 
 				if(lexer.token != Symbol.SEMICOLON)
-					error.signal("Missing end of declaration at string_decl()");
+					error.signal("Error: Missing end of declaration");
 				lexer.nextToken();
 
 			}
@@ -147,7 +147,7 @@ public class Compiler {
 		if(var_type())
 			return;
 		if(lexer.token != Symbol.VOID)
-			error.signal("Wrong type at any_type()");
+			error.signal("Wrong type");
 		lexer.nextToken();
 	}
 
@@ -157,8 +157,7 @@ public class Compiler {
 			lexer.nextToken();
 			id_tail();
 		} else
-				error.signal("Wrong id_list declaration at id_list()");
-		lexer.nextToken();
+				error.signal("Wrong id_list declaration");
 	}
 
 	// id_tail -> , id id_tail | empty
@@ -194,7 +193,7 @@ public class Compiler {
 	// param_decl -> var_type id
 	public void param_decl(){
 		if(!var_type())
-			error.signal("Missing correct variable type at param_decl()");
+			error.signal("Missing Correct Variable Type");
 
 		if(lexer.token != Symbol.IDENT)
 			error.signal("Missing identifier at param_decl()");
