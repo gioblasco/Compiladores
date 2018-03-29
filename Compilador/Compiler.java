@@ -345,6 +345,9 @@ public class Compiler {
 			error.signal("Missing READ keyword at read_stmt()");
 		if(lexer.nextToken() != Symbol.LPAR)
 			error.signal("Missing open parentheses at read_stmt()");
+		lexer.nextToken();
+		lexer.nextToken();
+		lexer.nextToken();lexer.nextToken();lexer.nextToken();lexer.nextToken();lexer.nextToken();lexer.nextToken();
 		id_list();
 		if(lexer.nextToken() != Symbol.RPAR)
 			error.signal("Missing close parentheses at read_stmt()");
