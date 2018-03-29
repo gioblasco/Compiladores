@@ -291,7 +291,7 @@ public class Compiler {
 		}
 	}
 
-	// stmt -> assign_stmt | read_stmt | write_stmt | return_stmt | if_stmt | for_stmt | call_expr
+	// stmt -> assign_stmt | read_stmt | write_stmt | return_stmt | if_stmt | for_stmt | call_expr ;
 	public void stmt(){
 			if(lexer.token == Symbol.READ)
 				read_stmt();
@@ -308,8 +308,11 @@ public class Compiler {
 				Symbol temp = lexer.checkNextToken();
 				if(temp == Symbol.ASSIGN)
 					assign_stmt();
-				else if(temp == Symbol.LPAR)
+				else if(temp == Symbol.LPAR){
 					call_expr();
+					if(lexer.token != Symbol.SEMICOLON)
+						error.signal("Missing semicolon after call_expr() at stmt()");
+					lexer.nextToken();
 				else
 					error.signal("Wrong use of element after identifier at stmt()");
 			} else
