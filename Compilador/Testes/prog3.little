@@ -37,7 +37,7 @@ BEGIN
 
     IF ( n = 1) THEN
       RETURN 1;
-    ENDIF;
+    ENDIF
 
     RETURN n * (Factorial(n-1));
   END

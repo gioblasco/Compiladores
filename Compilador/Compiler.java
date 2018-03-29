@@ -136,7 +136,7 @@ public class Compiler {
 
 	// var_type -> FLOAT | INT
 	public boolean var_type(){
-		if(lexer.token != Symbol.FLOAT && lexer.token == Symbol.INT)
+		if(lexer.token != Symbol.FLOAT && lexer.token != Symbol.INT)
 			return false;
 		lexer.nextToken();
 		return true;
@@ -327,7 +327,7 @@ public class Compiler {
 	public void assign_stmt(){
 		assign_expr();
 		if(lexer.token != Symbol.SEMICOLON)
-			error.signal("Semicolon expected at assign_stmt()");
+			error.signal("Semicolon expected at assign_stmt()" + lexer.getStringValue());
 		lexer.nextToken();
 	}
 
@@ -377,6 +377,9 @@ public class Compiler {
 			error.signal("Missing RETURN keyword at return_stmt()");
 		lexer.nextToken();
 		expr();
+		if(lexer.token != Symbol.SEMICOLON)
+			error.signal("Semicolon expected at return_stmt()");
+		lexer.nextToken();
 	}
 
 	/***************/
@@ -423,13 +426,11 @@ public class Compiler {
 
 	// postfix_expr -> primary | call_expr
 	public boolean postfix_expr(){
-		// ????????????????????????????????????????????????????????????????????????????????????????????????????
-		// Verificar se não há ambiguidade do tipo ID (   onde o '('  não é do call_expr mas sim de outra coisa
 		if(lexer.token == Symbol.IDENT){
 			Symbol temp = lexer.checkNextToken();
-			if(temp == Symbol.LPAR)
+			if(temp == Symbol.LPAR){
 				return call_expr();
-			else
+			} else
 				return primary();
 		}
 		else
@@ -443,6 +444,12 @@ public class Compiler {
 			error.signal("Missing identifier at call_expr()");
 		if(lexer.nextToken() != Symbol.LPAR)
 			error.signal("Expecting begin parentheses at call_expr()");
+		lexer.nextToken();
+		if(lexer.token != Symbol.RPAR)
+			expr_list();
+		if(lexer.token != Symbol.RPAR)
+			error.signal("Expecting close parentheses at call_expr()");
+		lexer.nextToken();
 		return true;
 	}
 
@@ -457,6 +464,7 @@ public class Compiler {
 	// expr_list_tail -> , expr expr_list_tail | empty
 	public void expr_list_tail(){
 		if(lexer.token == Symbol.COMMA){
+			lexer.nextToken();
 			expr();
 			expr_list_tail();
 		}
