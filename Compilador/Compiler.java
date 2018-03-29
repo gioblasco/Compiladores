@@ -411,7 +411,8 @@ public class Compiler {
 
 	// factor_tail -> mulop postfix_expr factor_tail | empty
 	public boolean factor_tail(){
-		if(lexer.token == Symbol.MULT){
+		if(lexer.token == Symbol.MULT || lexer.token == Symbol.DIV){
+			lexer.nextToken();
 			if(postfix_expr())
 				return factor_tail();
 			else
