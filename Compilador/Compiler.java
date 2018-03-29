@@ -23,7 +23,7 @@ public class Compiler {
 
     //   program ::= PROGRAM id BEGIN pgm_body END
     public void program(){
-				
+
         if(lexer.token != Symbol.PROGRAM)
             error.signal("Error: Missing PROGRAM keyword at line: " + lexer.getLineNumber());
 
@@ -88,19 +88,19 @@ public class Compiler {
 				lexer.nextToken();
 
 				if(lexer.token != Symbol.IDENT)
-					error.signal("Error: Missing identifier at line: " + lexer.getLineNumber());
+					error.signal("Missing identifier");
 				lexer.nextToken();
 
 				if(lexer.token != Symbol.ASSIGN)
-					error.signal("Error: Missing assignment symbol at line: " + lexer.getLineNumber());
+					error.signal("Missing assignment symbol");
 				lexer.nextToken();
 
 				if(lexer.token != Symbol.STRING)
-					error.signal("Error: Missing STRINGLITERAL type at line: " + lexer.getLineNumber());
+					error.signal("Missing STRINGLITERAL type");
 				lexer.nextToken();
 
 				if(lexer.token != Symbol.SEMICOLON)
-					error.signal("Error: Missing end of declaration at line: " + lexer.getLineNumber());
+					error.signal("Error: Missing end of declaration");
 				lexer.nextToken();
 
 			}
@@ -129,7 +129,7 @@ public class Compiler {
 		if(var_type()){
 			id_list();
 			if(lexer.token != Symbol.SEMICOLON)
-				error.signal("Error: Missing end of declaration at line: " + lexer.getLineNumber());
+				error.signal("Missing end of declaration");
 			lexer.nextToken();
 		}
 	}
@@ -147,7 +147,7 @@ public class Compiler {
 		if(var_type())
 			return;
 		if(lexer.token != Symbol.VOID)
-			error.signal("Error: Wrong type at line: " + lexer.getLineNumber());
+			error.signal("Wrong type");
 		lexer.nextToken();
 	}
 
@@ -157,7 +157,7 @@ public class Compiler {
 			lexer.nextToken();
 			id_tail();
 		} else
-				error.signal("Error: Wrong id_list declaration at line: " + lexer.getLineNumber());
+				error.signal("Wrong id_list declaration");
 		lexer.nextToken();
 	}
 
@@ -167,7 +167,7 @@ public class Compiler {
 			lexer.nextToken();
 
 			if(lexer.token != Symbol.IDENT)
-				error.signal("Error: Missing identifier at line: " + lexer.getLineNumber());
+				error.signal("Missing identifier");
 			lexer.nextToken();
 
 			id_tail();
@@ -194,10 +194,10 @@ public class Compiler {
 	// param_decl -> var_type id
 	public void param_decl(){
 		if(!var_type())
-			error.signal("Error: Missing Correct Variable Type at line: " + lexer.getLineNumber());
+			error.signal("Missing Correct Variable Type");
 
 		if(lexer.token != Symbol.IDENT)
-			error.signal("Error: Missing identifier at line: " + lexer.getLineNumber());
+			error.signal("Missing identifier");
 		lexer.nextToken();
 	}
 
@@ -231,28 +231,28 @@ public class Compiler {
 			any_type();
 
 			if(lexer.token != Symbol.IDENT)
-				error.signal("Error: Missing identifier at line: " + lexer.getLineNumber());
+				error.signal("Missing identifier");
 			lexer.nextToken();
 
 			if(lexer.token != Symbol.LPAR)
-				error.signal("Error: Missing parantheses at line: " + lexer.getLineNumber());
+				error.signal("Missing parantheses");
 			lexer.nextToken();
 
 			if(var_type())
 				param_decl_list();
 
 			if(lexer.token != Symbol.RPAR)
-				error.signal("Error: Missing parantheses at line: " + lexer.getLineNumber());
+				error.signal("Missing parantheses");
 			lexer.nextToken();
 
 			if(lexer.token != Symbol.BEGIN)
-				error.signal("Error: Missing BEGIN keyword at line: " + lexer.getLineNumber());
+				error.signal("Missing BEGIN keyword");
 			lexer.nextToken();
 
 			func_body();
 
 			if(lexer.token != Symbol.END)
-				error.signal("Error: Missing END keyword at line: " + lexer.getLineNumber());
+				error.signal("Missing END keyword");
 			lexer.nextToken();
 		}
 	}
@@ -311,9 +311,9 @@ public class Compiler {
 				else if(temp == Symbol.LPAR)
 					call_expr();
 				else
-					error.signal("Error: Wrong use of element after identifier at line: " + lexer.getLineNumber());
+					error.signal("Wrong use of element after identifier");
 			} else
-					error.signal("Error: Wrong statement declaration at line: " + lexer.getLineNumber());
+					error.signal("Wrong statement declaration");
 	}
 
 	/********************/
@@ -324,15 +324,15 @@ public class Compiler {
 	public void assign_stmt(){
 		assign_expr();
 		if(lexer.token != Symbol.SEMICOLON)
-			error.signal("Error! ';' expected");
+			error.signal("Semicolon expected");
 	}
 
 	// assign_expr -> id := expr
 	public void assign_expr(){
 		if(lexer.token != Symbol.IDENT)
-			error.signal("Error: Expecting Identifier on line: " + lexer.getLineNumber());
+			error.signal("Expecting Identifier");
 		if(lexer.nextToken() != Symbol.ASSIGN)
-			error.signal("Error: Expecting Assign signal on line: " + lexer.getLineNumber());
+			error.signal("Expecting Assign signal");
 		expr();
 	}
 
@@ -341,12 +341,12 @@ public class Compiler {
 		if(lexer.token != Symbol.READ)
 			error.signal("Missing READ keyword");
 		if(lexer.nextToken() != Symbol.LPAR)
-			error.signal("Missing open Parenthesis");
+			error.signal("Missing open Parentheses");
 		id_list();
 		if(lexer.nextToken() != Symbol.RPAR)
-			error.signal("Missing close Parenthesis");
+			error.signal("Missing close Parentheses");
 		if(lexer.nextToken() != Symbol.SEMICOLON)
-			error.signal("Error! ';' expected");
+			error.signal("Semicolon expected");
 	}
 
 	// write_stmt -> WRITE ( id_list );
@@ -354,12 +354,12 @@ public class Compiler {
 		if(lexer.token != Symbol.WRITE)
 			error.signal("Missing READ keyword");
 		if(lexer.nextToken() != Symbol.LPAR)
-			error.signal("Missing open Parenthesis");
+			error.signal("Missing open Parentheses");
 		id_list();
 		if(lexer.nextToken() != Symbol.RPAR)
-			error.signal("Missing close Parenthesis");
+			error.signal("Missing close Parentheses");
 		if(lexer.nextToken() != Symbol.SEMICOLON)
-			error.signal("Error! ';' expected");
+			error.signal("Semicolon expected");
  	}
 
 	// return_stmt -> RETURN expr ;
@@ -456,7 +456,7 @@ public class Compiler {
 	public boolean primary(){
 		// ????????????????????????????????????????????????????????????????????????????????????????????????????????
 		if(!expr() && lexer.token != Symbol.IDENT && lexer.token != Symbol.INT && lexer.token != Symbol.FLOAT)
-			error.signal("Error: Not a primary element at line: " + lexer.getLineNumber());
+			error.signal("Not a primary element");
 		lexer.nextToken();
 		return true;
 	}
@@ -465,14 +465,14 @@ public class Compiler {
  	// addop -> + | -
 	public void addop(){
 		if(lexer.token != Symbol.PLUS && lexer.token != Symbol.MINUS)
-			error.signal("Error: Wrong operator at line: " + lexer.getLineNumber());
+			error.signal("Wrong operator");
 		lexer.nextToken();
 	}
 
 	// mulop -> * | /
 	public void mulop(){
 		if(lexer.token != Symbol.MULT && lexer.token != Symbol.DIV)
-			error.signal("Error: Wrong operator at line: " + lexer.getLineNumber());
+			error.signal("Wrong operator");
 		lexer.nextToken();
 	}
 
@@ -485,16 +485,16 @@ public class Compiler {
 		if(lexer.token == Symbol.IF){
 
 			if(lexer.nextToken() != Symbol.LPAR)
-				error.signal("Error: Missing parantheses at line: " + lexer.getLineNumber());
+				error.signal("Missing parantheses");
 			lexer.nextToken();
 
 			cond();
 
 			if(lexer.token != Symbol.RPAR)
-				error.signal("Error: Missing parantheses at line: " + lexer.getLineNumber());
+				error.signal("Missing parantheses");
 
 			if(lexer.nextToken() != Symbol.THEN)
-				error.signal("Error: Missing THEN keyword at line: " + lexer.getLineNumber());
+				error.signal("Missing THEN keyword");
 
 			lexer.nextToken();
 
@@ -503,12 +503,12 @@ public class Compiler {
 			else_part();
 
 			if(lexer.token != Symbol.ENDIF)
-				error.signal("Error: Missing ENDIF keyword at line: " + lexer.getLineNumber());
+				error.signal("Missing ENDIF keyword");
 
 			lexer.nextToken();
 
 		} else
-				error.signal("Error: Missing IF keyword at line: " + lexer.getLineNumber());
+				error.signal("Missing IF keyword");
 	}
 
 	// else_part -> ELSE stmt_list | empty
@@ -531,7 +531,7 @@ public class Compiler {
 	// compop -> < | > | =
 	public void compop(){
 		if(lexer.token != Symbol.LT && lexer.token != Symbol.GT && lexer.token != Symbol.EQUAL)
-			error.signal("Error: Missing comparison operator at line: " + lexer.getLineNumber());
+			error.signal("Missing comparison operator");
 		lexer.nextToken();
 	}
 
@@ -540,40 +540,40 @@ public class Compiler {
 		if(lexer.token == Symbol.FOR){
 
 			if(lexer.nextToken() != Symbol.LPAR)
-				error.signal("Error: Missing parantheses at line: " + lexer.getLineNumber());
+				error.signal("Missing parantheses");
 
 			lexer.nextToken();
 
 			assign_expr();
 
 			if(lexer.token != Symbol.SEMICOLON)
-				error.signal("Error: Missing end of declaration at line: " + lexer.getLineNumber());
+				error.signal("Missing end of declaration");
 			lexer.nextToken();
 
 			cond();
 
 			if(lexer.token != Symbol.SEMICOLON)
-				error.signal("Error: Missing end of declaration at line: " + lexer.getLineNumber());
+				error.signal("Missing end of declaration");
 			lexer.nextToken();
 
 			assign_expr();
 
 			if(lexer.token != Symbol.SEMICOLON)
-				error.signal("Error: Missing end of declaration at line: " + lexer.getLineNumber());
+				error.signal("Missing end of declaration");
 
 
 			if(lexer.nextToken() != Symbol.RPAR)
-				error.signal("Error: Missing parantheses at line: " + lexer.getLineNumber());
+				error.signal("Missing parantheses");
 			lexer.nextToken();
 
 			stmt_list();
 
 			if(lexer.token != Symbol.ENDFOR)
-				error.signal("Error: Missing ENDFOR keyword at line: " + lexer.getLineNumber());
+				error.signal("Missing ENDFOR keyword");
 			lexer.nextToken();
 
 		} else
-				error.signal("Error: Missing FOR keyword at line: " + lexer.getLineNumber());
+				error.signal("Missing FOR keyword");
 	}
 
 
