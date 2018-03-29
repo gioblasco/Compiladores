@@ -85,32 +85,48 @@ public class Lexer {
             return nextToken();
         }
 
-        //quero reconhecer o token
-        //o token sera um dos Symbol
+        // Checking if the token is a program
         String aux = "";
-        while(Character.isDigit(input[tokenPos])){
+        boolean float_number = false;
+        while(Character.isDigit(input[tokenPos]) || input[tokenPos] == '.'){
+            if(input[tokenPos] == '.'){
+                if(float_number == false)
+                    float_number = true;
+                else
+                    error.signal("Error, number with invalid notation! Got two dots instead one.");
+            }
             //concatenar esses digitos e concatenar eles
             aux = aux.concat(Character.toString(input[tokenPos]));
             tokenPos++;
         }
 
-
         if (aux.length() > 0){
-            //converte string para inteiro
-            intValue = Integer.parseInt(aux);
-            if (intValue > MaxValueInteger){
-                error.signal("Error: Not valid integer at line: " + lineNumber);
+            if(float_number == false){
+                //converte string para inteiro
+                intValue = Integer.parseInt(aux);
+                if (intValue > MaxValueInteger){
+                    error.signal("Error: Not valid integer at line: " + lineNumber);
+                }
+                token = Symbol.INTLITERAL;
             }
-            token = Symbol.INT;
+            else{
+                // Converte String para ponto flutuante.
+                floatValue = Float.parseFloat(aux);
+                token = Symbol.FLOATLITERAL;
+            }
         } else {
-            while (Character.isLetter(input[tokenPos])){
-                aux = aux.concat(Character.toString(input[tokenPos])); //vai concatenando todas as letras, ainda eh string
+            boolean apostrofe = false;
+
+            while (Character.isLetter(input[tokenPos]) || Character.isDigit(input[tokenPos])){
+                aux = aux.concat(Character.toString(input[tokenPos])); 
                 tokenPos++;
             }
             if (aux.length() > 0){
                 Symbol temp;
-                temp = keywordsTable.get(aux.toString()); //verifica na key word hash
-                if (temp == null){ //nao eh palavra
+                temp = keywordsTable.get(aux.toString()); 
+                if (temp == null){
+                    if(aux.length() > 30)
+                        error.signal("Error, identifier size limit reached");
                     token = Symbol.IDENT;
                     stringValue = aux.toString();
                 }
