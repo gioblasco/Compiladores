@@ -193,7 +193,7 @@ public class Compiler {
 	// param_decl -> var_type id
 	public void param_decl(){
 		if(!var_type())
-			error.signal("Missing Correct Variable Type");
+			error.signal("Missing correct variable type at param_decl()");
 
 		if(lexer.token != Symbol.IDENT)
 			error.signal("Missing identifier at param_decl()");
@@ -237,7 +237,7 @@ public class Compiler {
 				error.signal("Missing parantheses at func_decl()");
 			lexer.nextToken();
 
-			if(var_type())
+			if(lexer.token == Symbol.FLOAT || lexer.token == Symbol.INT || lexer.token == Symbol.STRING)
 				param_decl_list();
 
 			if(lexer.token != Symbol.RPAR)
@@ -345,11 +345,13 @@ public class Compiler {
 			error.signal("Missing READ keyword at read_stmt()");
 		if(lexer.nextToken() != Symbol.LPAR)
 			error.signal("Missing open parentheses at read_stmt()");
+		lexer.nextToken();
 		id_list();
-		if(lexer.nextToken() != Symbol.RPAR)
+		if(lexer.token != Symbol.RPAR)
 			error.signal("Missing close parentheses at read_stmt()");
 		if(lexer.nextToken() != Symbol.SEMICOLON)
 			error.signal("Semicolon expected at read_stmt()");
+		lexer.nextToken();
 	}
 
 	// write_stmt -> WRITE ( id_list );
@@ -358,11 +360,13 @@ public class Compiler {
 			error.signal("Missing READ keyword at write_stmt()");
 		if(lexer.nextToken() != Symbol.LPAR)
 			error.signal("Missing open parentheses at write_stmt()");
+		lexer.nextToken();
 		id_list();
-		if(lexer.nextToken() != Symbol.RPAR)
+		if(lexer.token != Symbol.RPAR)
 			error.signal("Missing close parentheses write_stmt()");
 		if(lexer.nextToken() != Symbol.SEMICOLON)
 			error.signal("Semicolon expected at write_stmt()");
+		lexer.nextToken();
  	}
 
 	// return_stmt -> RETURN expr ;
@@ -457,8 +461,12 @@ public class Compiler {
 
 	// primary -> (expr) | id | INTLITERAL | FLOATLITERAL
 	public boolean primary(){
-		// ????????????????????????????????????????????????????????????????????????????????????????????????????????
-		if(!expr() && lexer.token != Symbol.IDENT && lexer.token != Symbol.INT && lexer.token != Symbol.FLOAT)
+		if(lexer.token == Symbol.LPAR){
+			lexer.nextToken();
+			expr();
+			if(lexer.token != Symbol.RPAR)
+				error.signal("Missing close parentheses at primary()");
+		} else if(lexer.token != Symbol.IDENT && lexer.token != Symbol.INT && lexer.token != Symbol.FLOAT)
 			error.signal("Not a primary element at primary()");
 		lexer.nextToken();
 		return true;
