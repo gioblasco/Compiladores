@@ -148,8 +148,12 @@ public class Lexer {
                         token = Symbol.MULT;
                         break;
                     case ':':
-												if(input[tokenPos+1] == '=')
-                        	token = Symbol.ASSIGN;
+                        if(input[tokenPos+1] == '='){
+                            tokenPos++;
+                            token = Symbol.ASSIGN;
+                        }
+                        else
+                            error.signal("Not expect : ");
                         break;
 										case '=':
 												token = Symbol.EQUAL;
