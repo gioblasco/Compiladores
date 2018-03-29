@@ -27,10 +27,10 @@ public class CompilerError {
         // is goPreviousToken is true, the error is signalled at the line of the
         // previous token, not the last one.
         if ( goPreviousToken ) {
-          System.out.println("Error not expected (" + lexer.token.toString() + ") at line " + lexer.getCurrentLine() + ": ");
+          System.out.println("Error! not expected (" + lexer.token.toString() + ") at line " + lexer.getCurrentLine() + ": ");
         }
         else {
-          System.out.println("Error not expected (" + lexer.token.toString() + ") at line " + lexer.getLineNumber() +": ");
+          System.out.println("Error! not expected (" + lexer.token.toString() + ") at line " + lexer.getLineNumber() +": ");
           System.out.println(lexer.getCurrentLine());
         }
 
@@ -42,7 +42,7 @@ public class CompilerError {
     public void signal( String strMessage ) {
         show( strMessage );
         thereWasAnError = true;
-        throw new RuntimeException();
+        throw new RuntimeException(strMessage);
     }
 
     private Lexer lexer;
