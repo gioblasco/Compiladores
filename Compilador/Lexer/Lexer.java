@@ -151,6 +151,7 @@ public class Lexer {
                         if(input[tokenPos+1] == '='){
                             tokenPos++;
                             token = Symbol.ASSIGN;
+                            
                         }
                         else
                             error.signal("Not expect : ");

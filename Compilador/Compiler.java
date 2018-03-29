@@ -328,6 +328,7 @@ public class Compiler {
 		assign_expr();
 		if(lexer.token != Symbol.SEMICOLON)
 			error.signal("Semicolon expected at assign_stmt()");
+		lexer.nextToken();
 	}
 
 	// assign_expr -> id := expr
@@ -336,6 +337,7 @@ public class Compiler {
 			error.signal("Expecting identifier at assign_expr()");
 		if(lexer.nextToken() != Symbol.ASSIGN)
 			error.signal("Expecting assign signal assign_expr()");
+		lexer.nextToken();
 		expr();
 	}
 
@@ -390,7 +392,7 @@ public class Compiler {
 
 	// expr_tail -> addop factor expr_tail | empty
 	public boolean expr_tail(){
-		if(lexer.token == Symbol.PLUS){
+		if(lexer.token == Symbol.PLUS || lexer.token == Symbol.MINUS){
 			lexer.nextToken();
 			if(factor())
 				return expr_tail();
@@ -466,7 +468,7 @@ public class Compiler {
 			expr();
 			if(lexer.token != Symbol.RPAR)
 				error.signal("Missing close parentheses at primary()");
-		} else if(lexer.token != Symbol.IDENT && lexer.token != Symbol.INT && lexer.token != Symbol.FLOAT)
+		} else if(lexer.token != Symbol.IDENT && lexer.token != Symbol.INTLITERAL && lexer.token != Symbol.FLOATLITERAL)
 			error.signal("Not a primary element at primary()");
 		lexer.nextToken();
 		return true;
