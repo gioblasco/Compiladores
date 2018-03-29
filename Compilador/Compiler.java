@@ -7,9 +7,10 @@ public class Compiler {
 	public static final boolean GC = false;
 
     public void compile( char []p_input ) {
-        
-        CompilerError error = new CompilerError(null);
-        Lexer lexer = new Lexer(p_input, error);
+
+        error = new CompilerError(null);
+        lexer = new Lexer(p_input, error);
+				error.setLexer(lexer);
         lexer.nextToken();
         program();
         if(lexer.token!= Symbol.EOF)
@@ -22,6 +23,7 @@ public class Compiler {
 
     //   program ::= PROGRAM id BEGIN pgm_body END
     public void program(){
+				
         if(lexer.token != Symbol.PROGRAM)
             error.signal("Error: Missing PROGRAM keyword at line: " + lexer.getLineNumber());
 
@@ -301,7 +303,7 @@ public class Compiler {
 				if_stmt();
 			else if(lexer.token == Symbol.FOR)
 				for_stmt();
-			
+
 			else if(lexer.token == Symbol.IDENT){
 				Symbol temp = lexer.checkNextToken();
 				if(temp == Symbol.ASSIGN)
@@ -481,7 +483,7 @@ public class Compiler {
 	// if_stmt -> IF ( cond ) THEN stmt_list else_part ENDIF
 	public void if_stmt(){
 		if(lexer.token == Symbol.IF){
-			
+
 			if(lexer.nextToken() != Symbol.LPAR)
 				error.signal("Error: Missing parantheses at line: " + lexer.getLineNumber());
 			lexer.nextToken();
@@ -490,10 +492,10 @@ public class Compiler {
 
 			if(lexer.token != Symbol.RPAR)
 				error.signal("Error: Missing parantheses at line: " + lexer.getLineNumber());
-			
+
 			if(lexer.nextToken() != Symbol.THEN)
 				error.signal("Error: Missing THEN keyword at line: " + lexer.getLineNumber());
-			
+
 			lexer.nextToken();
 
 			stmt_list();
@@ -502,7 +504,7 @@ public class Compiler {
 
 			if(lexer.token != Symbol.ENDIF)
 				error.signal("Error: Missing ENDIF keyword at line: " + lexer.getLineNumber());
-			
+
 			lexer.nextToken();
 
 		} else
@@ -536,10 +538,10 @@ public class Compiler {
 	// for_stmt -> FOR ({assign_expr}; {cond}; {assign_expr}) stmt_list ENDFOR
 	public void for_stmt(){
 		if(lexer.token == Symbol.FOR){
-			
+
 			if(lexer.nextToken() != Symbol.LPAR)
 				error.signal("Error: Missing parantheses at line: " + lexer.getLineNumber());
-			
+
 			lexer.nextToken();
 
 			assign_expr();
@@ -558,7 +560,7 @@ public class Compiler {
 
 			if(lexer.token != Symbol.SEMICOLON)
 				error.signal("Error: Missing end of declaration at line: " + lexer.getLineNumber());
-			
+
 
 			if(lexer.nextToken() != Symbol.RPAR)
 				error.signal("Error: Missing parantheses at line: " + lexer.getLineNumber());

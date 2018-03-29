@@ -24,23 +24,23 @@ public class Lexer {
     // this code will be executed only once for each program execution
     static {
         keywordsTable = new Hashtable<String, Symbol>();
-				keywordsTable.put( "program", Symbol.PROGRAM );
-        keywordsTable.put( "begin", Symbol.BEGIN );
-        keywordsTable.put( "end", Symbol.END );
-				keywordsTable.put( "function", Symbol.FUNCTION );
-				keywordsTable.put( "return", Symbol.RETURN );
-				keywordsTable.put( "read", Symbol.READ );
-				keywordsTable.put( "write", Symbol.WRITE );
-				keywordsTable.put( "if", Symbol.IF );
-				keywordsTable.put( "else", Symbol.ELSE );
-				keywordsTable.put( "endif", Symbol.ENDIF );
-				keywordsTable.put( "then", Symbol.THEN );
-				keywordsTable.put( "for", Symbol.FOR );
-				keywordsTable.put( "endfor", Symbol.ENDFOR );
-				keywordsTable.put( "int", Symbol.INT );
-				keywordsTable.put( "float", Symbol.FLOAT );
-				keywordsTable.put( "void", Symbol.VOID );
-				keywordsTable.put( "string", Symbol.STRING );
+				keywordsTable.put( "PROGRAM", Symbol.PROGRAM );
+        keywordsTable.put( "BEGIN", Symbol.BEGIN );
+        keywordsTable.put( "END", Symbol.END );
+				keywordsTable.put( "FUNCTION", Symbol.FUNCTION );
+				keywordsTable.put( "RETURN", Symbol.RETURN );
+				keywordsTable.put( "READ", Symbol.READ );
+				keywordsTable.put( "WRITE", Symbol.WRITE );
+				keywordsTable.put( "IF", Symbol.IF );
+				keywordsTable.put( "ELSE", Symbol.ELSE );
+				keywordsTable.put( "ENDIF", Symbol.ENDIF );
+				keywordsTable.put( "THEN", Symbol.THEN );
+				keywordsTable.put( "FOR", Symbol.FOR );
+				keywordsTable.put( "ENDFOR", Symbol.ENDFOR );
+				keywordsTable.put( "INT", Symbol.INT );
+				keywordsTable.put( "FLOAT", Symbol.FLOAT );
+				keywordsTable.put( "VOID", Symbol.VOID );
+				keywordsTable.put( "STRING", Symbol.STRING );
     }
 
     public Symbol checkNextToken(){
