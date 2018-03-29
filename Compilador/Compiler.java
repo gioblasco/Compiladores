@@ -312,6 +312,7 @@ public class Compiler {
 					if(lexer.token != Symbol.SEMICOLON)
 						error.signal("Missing semicolon after call_expr() at stmt()");
 					lexer.nextToken();
+				}
 				else
 					error.signal("Wrong use of element after identifier at stmt()");
 			} else
