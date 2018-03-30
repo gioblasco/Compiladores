@@ -85,24 +85,25 @@ public class Compiler {
 	// string_decl -> STRING id := str ; | empty
 	public void string_decl(){
 			if(lexer.token == Symbol.STRING){
-				lexer.nextToken();
-
-				if(lexer.token != Symbol.IDENT)
+				
+				if(lexer.nextToken() != Symbol.IDENT)
 					error.signal("Missing identifier in string declaration");
-				lexer.nextToken();
-
-				if(lexer.token != Symbol.ASSIGN)
+				
+				if(lexer.nextToken() != Symbol.ASSIGN)
 					error.signal("Missing assignment symbol");
-				lexer.nextToken();
 
-				if(lexer.token != Symbol.STRING)
-					error.signal("Missing STRINGLITERAL type");
 				lexer.nextToken();
+				
+				if(lexer.token != Symbol.STRINGLITERAL)
+					error.signal("Missing STRINGLITERAL type");
+					
+				lexer.nextToken();
+				
 
 				if(lexer.token != Symbol.SEMICOLON)
 					error.signal("Error: Missing end of declaration");
+				
 				lexer.nextToken();
-
 			}
 	}
 
@@ -560,34 +561,37 @@ public class Compiler {
 	// for_stmt -> FOR ({assign_expr}; {cond}; {assign_expr}) stmt_list ENDFOR
 	public void for_stmt(){
 		if(lexer.token == Symbol.FOR){
+			lexer.printToken(564);
 
 			if(lexer.nextToken() != Symbol.LPAR)
 				error.signal("Missing parantheses at for_stmt()");
-
+			lexer.printToken(568);
+			
 			lexer.nextToken();
-
-			assign_expr();
+			lexer.printToken(571);
+			if(lexer.token != Symbol.SEMICOLON)
+				assign_expr();
+			lexer.printToken(573);
 
 			if(lexer.token != Symbol.SEMICOLON)
 				error.signal("Missing end of declaration at for_stmt()");
-			lexer.nextToken();
-
-			cond();
-
-			if(lexer.token != Symbol.SEMICOLON)
-				error.signal("Missing end of declaration at for_stmt()");
-			lexer.nextToken();
-
-			assign_expr();
+			lexer.printToken(577);
+			
+			if(lexer.nextToken() != Symbol.SEMICOLON)
+				cond();
+			lexer.printToken(581);
 
 			if(lexer.token != Symbol.SEMICOLON)
 				error.signal("Missing end of declaration at for_stmt()");
-
-
+			lexer.printToken(585);
 			if(lexer.nextToken() != Symbol.RPAR)
+				assign_expr();
+			lexer.printToken(588);
+
+			if(lexer.token != Symbol.RPAR)
 				error.signal("Missing parantheses at for_stmt()");
 			lexer.nextToken();
-
+			lexer.printToken(593);
 			stmt_list();
 
 			if(lexer.token != Symbol.ENDFOR)
