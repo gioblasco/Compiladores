@@ -14,7 +14,7 @@ BEGIN
 	BEGIN
 
 	  INT i, j, primo, auxi, auxj, mod;
-	  STRING espaço := " ";
+	  STRING espaco := " ";
 	  FOR(i:=1; i<100; i:=i+1)
 	    primo := 0;
 	    auxi := i + 1;
@@ -27,11 +27,11 @@ BEGIN
 	    END FOR
 	    IF(primo < 2) THEN
 	      WRITE(i);
-	      WRITE(espaço);
+	      WRITE(espaco);
 	    ENDIF
 	    IF(primo = 2) THEN
 	      WRITE(i);
-	      WRITE(espaço);
+	      WRITE(espaco);
 	    ENDIF
 	  END FOR
 
@@ -47,6 +47,4 @@ BEGIN
 	  RETURN resto;
 
 	END
-
-
 END
