@@ -6,15 +6,18 @@ public class Compiler {
 	// para geracao de codigo
 	public static final boolean GC = false;
 
-    public void compile( char []p_input ) {
+    public Program compile( char []p_input ) {
 
         error = new CompilerError(null);
         lexer = new Lexer(p_input, error);
 				error.setLexer(lexer);
         lexer.nextToken();
-        program();
+        Program p = program();
         if(lexer.token!= Symbol.EOF)
             error.signal("Not expected ''" + lexer.token + "' after END keyword (end of file).'" );
+        if (error.wasAnErrorSignalled())
+            return null;
+        return p;
     }
 
 	/***************************************/
@@ -22,7 +25,7 @@ public class Compiler {
 	/***************************************/
 
     //   program ::= PROGRAM id BEGIN pgm_body END
-    public void program(){
+    public Program program(){
 
         if(lexer.token != Symbol.PROGRAM)
             error.signal("Missing PROGRAM keyword at program()");
@@ -30,32 +33,35 @@ public class Compiler {
         lexer.nextToken();
 
         if(lexer.token!= Symbol.IDENT)
-			error.signal("Missing PROGRAM Identifier at program()");
+					error.signal("Missing PROGRAM Identifier at program()");
 
-		lexer.nextToken();
+				Ident id = new Ident(lexer.getStringValue());
 
-		if(lexer.token != Symbol.BEGIN)
+				lexer.nextToken();
+
+				if(lexer.token != Symbol.BEGIN)
             error.signal("Missing BEGIN keyword at program()");
 
-		lexer.nextToken();
+				lexer.nextToken();
 
-		pgm_body();
+				PgmBody pgm = pgm_body();
 
         if(lexer.token!= Symbol.END)
             error.signal("Missing END keyword at program()");
 
         lexer.nextToken();
+
+				return new Program(id, pgm);
     }
 
 	// pgm_body -> decl func_declarations
-	public void pgm_body(){
+	public PgmBody pgm_body(){
 
 		decl();
 		func_declarations();
 
+		return new PgmBody(decl, func_declarations);
 	}
-
-
 
 	// decl -> string_decl_list {decl} | var_decl_list {decl} | empty
 	public void decl(){
