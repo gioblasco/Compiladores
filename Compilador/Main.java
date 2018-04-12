@@ -1,4 +1,5 @@
 import java.io.*;
+import AST.Program;
 
 public class Main {
     public static void main( String []args ) {
@@ -45,8 +46,7 @@ public class Main {
 
 
             Compiler compiler = new Compiler();
-
-            compiler.compile(input);
+            Program p = compiler.compile(input);
             }
     }
 }

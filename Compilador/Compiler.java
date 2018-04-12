@@ -7,7 +7,6 @@ public class Compiler {
 	public static final boolean GC = false;
 
     public Program compile( char []p_input ) {
-
         error = new CompilerError(null);
         lexer = new Lexer(p_input, error);
 				error.setLexer(lexer);
@@ -57,24 +56,26 @@ public class Compiler {
 	// pgm_body -> decl func_declarations
 	public ProgramBody pgm_body(){
 
-		Declaration dec = decl();
-		FuncionDeclaration func = func_declarations();
+		Declaration dec = decl(null);
+		FunctionDeclaration func = func_declarations();
 
 		return new ProgramBody(decl, func_declarations);
 	}
 
 	// decl -> string_decl_list {decl} | var_decl_list {decl} | empty
-	public void decl( Declaration d = null ){
+	public Declaration decl(Declaration d){
 		if(d == null)
-		d = new Declaration();
+			d = new Declaration();
 
 		if(lexer.token == Symbol.STRING){
-			d.addString(string_decl_list());
-			
+			// devemos concatenar as strings
+			d.setStringDeclList(string_decl_list(d.sd));
+
 			decl(d);
 		}
 		else if(lexer.token == Symbol.FLOAT || lexer.token == Symbol.INT){
-			d.addVardecllist(var_decl_list());
+			// devemos concatenar as variáveis
+			d.setVarDeclList(var_decl_list(d.vd));
 
 			decl(d);
 		}
@@ -86,42 +87,49 @@ public class Compiler {
 	/*****************************/
 
 	// string_decl_list -> string_decl {string_decl_tail}
-	public void string_decl_list(){
-		string_decl();
+	public void string_decl_list(StringDeclList sd){
+		if(sd == null)
+			sd = new StringDeclList();
+		string_decl(sd);
 		if(lexer.token == Symbol.STRING)
-			string_decl_tail();
+			string_decl_tail(sd);
 	}
 
 	// string_decl -> STRING id := str ; | empty
-	public void string_decl(){
+	public void string_decl(StringDeclList sd){
 			if(lexer.token == Symbol.STRING){
-				
+
 				if(lexer.nextToken() != Symbol.IDENT)
 					error.signal("Missing identifier in string declaration");
-				
+
+				Ident id = new Ident(lexer.getStringValue());
+
 				if(lexer.nextToken() != Symbol.ASSIGN)
 					error.signal("Missing assignment symbol");
 
 				lexer.nextToken();
-				
+
 				if(lexer.token != Symbol.STRINGLITERAL)
 					error.signal("Missing STRINGLITERAL type");
-					
+
+				Variable str = new VariableString(lexer.getStringValue());
+
+				sd.addDecl(new StringDecl(id, str));
+
 				lexer.nextToken();
-				
 
 				if(lexer.token != Symbol.SEMICOLON)
 					error.signal("Error: Missing end of declaration");
-				
+
 				lexer.nextToken();
 			}
 	}
 
 	// string_decl_tail -> string_decl {string_decl_tail}
-	public void string_decl_tail(){
-		string_decl();
+	public void string_decl_tail(StringDeclList sd){
+		string_decl(sd);
 		if(lexer.token == Symbol.STRING)
-			string_decl_tail();
+			string_decl_tail(sd);
 	}
 
 	/************************/
@@ -129,16 +137,20 @@ public class Compiler {
 	/************************/
 
 	// var_decl_list -> var_decl {var_decl_tail}
-	public void var_decl_list(){
-		var_decl();
+	public void var_decl_list(VarDeclList vd){
+		if(vd == null)
+			vd = new VarDeclList();
+		var_decl(vd);
 		if(lexer.token != Symbol.FLOAT && lexer.token == Symbol.INT)
-			var_decl_tail();
+			var_decl_tail(vd);
 	}
 
 	// var_decl -> var_type id_list ; | empty
-	public void var_decl(){
-		if(var_type()){
-			id_list();
+	public void var_decl(VarDeclList vd){
+		if(lexer.token == Symbol.FLOAT || lexer.token == Symbol.INT){
+			String temp = lexer.getStringValue();
+			lexer.nextToken();
+			vd.addDecl(new VarDecl(temp, id_list()));
 			if(lexer.token != Symbol.SEMICOLON)
 				error.signal("Missing end of declaration at var_decl()");
 			lexer.nextToken();
@@ -163,35 +175,36 @@ public class Compiler {
 	}
 
 	// id_list -> id id_tail
-	public IdList id_list(){
-		IdList idlist = new IdList();
+	public ArrayList<Ident> id_list(){
+		ArrayList<Ident> al = new ArrayList<Ident>();
 		if(lexer.token == Symbol.IDENT){
+			al.add(lexer.getStringValue());
 			lexer.nextToken();
-			id_tail(idlist);
+			id_tail(al);
 		} else
 				error.signal("Wrong id_list declaration");
-		return idlist;
+		return al;
 	}
 
 	// id_tail -> , id id_tail | empty
-	public void id_tail(IdList idlist){
+	public void id_tail(ArrayList<Ident> al){
 		if(lexer.token == Symbol.COMMA){
 			lexer.nextToken();
 
 			if(lexer.token != Symbol.IDENT)
 				error.signal("Missing identifier at id_tail()");
-			idlist.add(lexer.getStringValue());
+			al.add(lexer.getStringValue());
 			lexer.nextToken();
 
-			id_tail(idlist);
+			id_tail(al);
 		}
 	}
 
 	// var_decl_tail -> var_decl {var_decl_tail}
-	public void var_decl_tail(){
-		var_decl();
+	public void var_decl_tail(VarDeclList vd){
+		var_decl(vd);
 		if(lexer.token != Symbol.FLOAT && lexer.token == Symbol.INT)
-		var_decl_tail();
+		var_decl_tail(vd);
 	}
 
 	/*********************************/
@@ -230,7 +243,7 @@ public class Compiler {
 	/***************************************/
 
 	// func_declarations -> func_decl {func_decl_tail}
-	public void func_declarations(){
+	public FunctionDeclaration func_declarations(){
 		func_decl();
 		if(lexer.token == Symbol.FUNCTION)
 			func_decl_tail();
@@ -579,7 +592,7 @@ public class Compiler {
 			if(lexer.nextToken() != Symbol.LPAR)
 				error.signal("Missing parantheses at for_stmt()");
 			lexer.printToken(568);
-			
+
 			lexer.nextToken();
 			lexer.printToken(571);
 			if(lexer.token != Symbol.SEMICOLON)
@@ -589,7 +602,7 @@ public class Compiler {
 			if(lexer.token != Symbol.SEMICOLON)
 				error.signal("Missing end of declaration at for_stmt()");
 			lexer.printToken(577);
-			
+
 			if(lexer.nextToken() != Symbol.SEMICOLON)
 				cond();
 			lexer.printToken(581);
