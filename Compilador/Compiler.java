@@ -44,7 +44,7 @@ public class Compiler {
 
 				lexer.nextToken();
 
-				PgmBody pgm = pgm_body();
+				ProgramBody pgm = pgm_body();
 
         if(lexer.token!= Symbol.END)
             error.signal("Missing END keyword at program()");
@@ -55,26 +55,30 @@ public class Compiler {
     }
 
 	// pgm_body -> decl func_declarations
-	public PgmBody pgm_body(){
+	public ProgramBody pgm_body(){
 
-		decl();
-		func_declarations();
+		Declaration dec = decl();
+		FuncionDeclaration func = func_declarations();
 
-		return new PgmBody(decl, func_declarations);
+		return new ProgramBody(decl, func_declarations);
 	}
 
 	// decl -> string_decl_list {decl} | var_decl_list {decl} | empty
-	public void decl(){
-		if(lexer.token == Symbol.STRING){
-			string_decl_list();
+	public void decl( Declaration d = null ){
+		if(d == null)
+		d = new Declaration();
 
-			decl();
+		if(lexer.token == Symbol.STRING){
+			d.addString(string_decl_list());
+			
+			decl(d);
 		}
 		else if(lexer.token == Symbol.FLOAT || lexer.token == Symbol.INT){
-			var_decl_list();
+			d.addVardecllist(var_decl_list());
 
-			decl();
+			decl(d);
 		}
+		return d;
 	}
 
 	/*****************************/
@@ -159,24 +163,27 @@ public class Compiler {
 	}
 
 	// id_list -> id id_tail
-	public void id_list(){
+	public IdList id_list(){
+		IdList idlist = new IdList();
 		if(lexer.token == Symbol.IDENT){
 			lexer.nextToken();
-			id_tail();
+			id_tail(idlist);
 		} else
 				error.signal("Wrong id_list declaration");
+		return idlist;
 	}
 
 	// id_tail -> , id id_tail | empty
-	public void id_tail(){
+	public void id_tail(IdList idlist){
 		if(lexer.token == Symbol.COMMA){
 			lexer.nextToken();
 
 			if(lexer.token != Symbol.IDENT)
 				error.signal("Missing identifier at id_tail()");
+			idlist.add(lexer.getStringValue());
 			lexer.nextToken();
 
-			id_tail();
+			id_tail(idlist);
 		}
 	}
 
@@ -184,7 +191,7 @@ public class Compiler {
 	public void var_decl_tail(){
 		var_decl();
 		if(lexer.token != Symbol.FLOAT && lexer.token == Symbol.INT)
-			var_decl_tail();
+		var_decl_tail();
 	}
 
 	/*********************************/

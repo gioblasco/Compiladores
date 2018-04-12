@@ -1,0 +1,29 @@
+PROGRAM p02
+BEGIN
+  FUNCTION VOID main ( ) BEGIN
+    STRING comeco := "Insira seu peso e altura: ";
+    STRING imcalto := ": Seu IMC esta acima do ideal";
+    STRING imcbaixo := ": Seu IMC esta abaixo do ideal";
+    STRING imcideal := ": Seu IMC esta no padroes normais";
+    INT flag;
+    FLOAT peso, altura, alturaquad, imc;
+
+    flag := 0;
+
+    WRITE ( comeco );
+    READ ( peso, altura );
+
+    alturaquad := altura * altura;
+    imc := peso / alturaquad;
+
+    IF ( imc > 25) THEN
+      WRITE ( imcalto );
+    ELSE
+      IF ( imc < 18) THEN
+        WRITE ( imcbaixo );
+      ELSE
+        WRITE ( imcideal );
+      ENDIF
+    ENDIF
+  END
+END
