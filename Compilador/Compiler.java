@@ -438,6 +438,8 @@ public class Compiler {
 		return new ReturnStmt(e);
 	}
 
+  //////// PAREI AQUI /////////
+
 	/***************/
 	/* Expressions */
 	/***************/
