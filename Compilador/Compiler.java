@@ -297,6 +297,8 @@ public class Compiler {
 			if(lexer.token != Symbol.END)
 				error.signal("Missing END keyword at func_decl()");
 			lexer.nextToken();
+
+			al.add(new FuncDecl(type, id, pdl, fd));
 		}
 	}
 
