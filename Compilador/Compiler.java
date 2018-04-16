@@ -175,7 +175,7 @@ public class Compiler {
 	}
 
 	// id_list -> id id_tail
-	public ArrayList<Ident> id_list(){
+	public IdList id_list(){
 		ArrayList<Ident> al = new ArrayList<Ident>();
 		if(lexer.token == Symbol.IDENT){
 			al.add(lexer.getStringValue());
@@ -183,7 +183,7 @@ public class Compiler {
 			id_tail(al);
 		} else
 				error.signal("Wrong id_list declaration");
-		return al;
+		return new IdList(al);
 	}
 
 	// id_tail -> , id id_tail | empty
@@ -212,12 +212,12 @@ public class Compiler {
 	/*********************************/
 
 	// param_decl_list -> param_decl param_decl_tail
-	public ParamDeclList param_decl_list(){
-		ArrayList<ParamDecl> pd;
+	public void param_decl_list(){
+		ArrayList<ParamDecl> pd = new ArrayList<ParamDecl>();
 		param_decl(pd);
 		param_decl_tail(pd);
 
-		return pd;
+		return new ParamDeclList(pd);
 	}
 
 	// param_decl -> var_type id
@@ -253,7 +253,7 @@ public class Compiler {
 
 	// func_declarations -> func_decl {func_decl_tail}
 	public FunctionDeclarations func_declarations(){
-		ArrayList<FuncDecl> fd;
+		ArrayList<FuncDecl> fd = new ArrayList<FuncDecl>();
 		func_decl(fd);
 		if(lexer.token == Symbol.FUNCTION)
 			func_decl_tail(fd);
@@ -282,7 +282,7 @@ public class Compiler {
 			lexer.nextToken();
 
 			if(lexer.token == Symbol.FLOAT || lexer.token == Symbol.INT)
-				ParamDeclList pdl = new ParamDeclList(param_decl_list());
+				ParamDeclList pdl = param_decl_list();
 
 			if(lexer.token != Symbol.RPAR)
 				error.signal("Missing parantheses at func_decl()");
@@ -292,13 +292,13 @@ public class Compiler {
 				error.signal("Missing BEGIN keyword at func_decl()");
 			lexer.nextToken();
 
-			FuncBody fd = func_body();
+			FuncBody fb = func_body();
 
 			if(lexer.token != Symbol.END)
 				error.signal("Missing END keyword at func_decl()");
 			lexer.nextToken();
 
-			al.add(new FuncDecl(type, id, pdl, fd));
+			al.add(new FuncDecl(type, id, pdl, fb));
 		}
 	}
 
@@ -312,7 +312,7 @@ public class Compiler {
 	// func_body -> decl stmt_list
 	public FuncBody func_body(){
 		Declaration dec = decl(null);
-		ArrayList<Stmt> alstmt;
+		ArrayList<Stmt> alstmt = new ArrayList<Stmt>();
 		stmt_list(alstmt);
 		Stmt stmt = new Stmt(alstmt);
 
@@ -342,22 +342,22 @@ public class Compiler {
 	// stmt -> assign_stmt | read_stmt | write_stmt | return_stmt | if_stmt | for_stmt | call_expr ;
 	public void stmt(ArrayList<Stmt> alstmt){
 			if(lexer.token == Symbol.READ)
-				read_stmt(alstmt);
+				alstmt.add(read_stmt());
 			else if(lexer.token == Symbol.WRITE)
-				write_stmt(alstmt);
+				alstmt.add(write_stmt());
 			else if(lexer.token == Symbol.RETURN)
-				return_stmt(alstmt);
+				alstmt.add(return_stmt());
 			else if(lexer.token == Symbol.IF)
-				if_stmt(alstmt);
+				alstmt.add(if_stmt());
 			else if(lexer.token == Symbol.FOR)
-				for_stmt(alstmt);
+				alstmt.add(for_stmt());
 
 			else if(lexer.token == Symbol.IDENT){
 				Symbol temp = lexer.checkNextToken();
 				if(temp == Symbol.ASSIGN)
-					assign_stmt(alstmt);
+					alstmt.add(assign_stmt());
 				else if(temp == Symbol.LPAR){
-					call_expr(alstmt);
+					alstmt.add(call_expr());
 					if(lexer.token != Symbol.SEMICOLON)
 						error.signal("Missing semicolon after call_expr() at stmt()");
 					lexer.nextToken();
@@ -373,62 +373,69 @@ public class Compiler {
 	/********************/
 
 	// assign_stmt -> assign_expr ;
-	public void assign_stmt(){
-		assign_expr();
+	public AssignStmt assign_stmt(){
+		ArrayList<AssignExpr> alae = new ArrayList<AssignExpr>();
+		assign_expr(alae);
 		if(lexer.token != Symbol.SEMICOLON)
 			error.signal("Semicolon expected at assign_stmt()" + lexer.getStringValue());
 		lexer.nextToken();
+
+		return new AssignStmt(alae);
 	}
 
 	// assign_expr -> id := expr
-	public void assign_expr(){
+	public void assign_expr(ArrayList<AssignExpr> alae){
 		if(lexer.token != Symbol.IDENT)
 			error.signal("Expecting identifier at assign_expr()");
+		Ident id = new Ident(lexer.getStringValue());
 		if(lexer.nextToken() != Symbol.ASSIGN)
 			error.signal("Expecting assign signal assign_expr()");
 		lexer.nextToken();
-		expr();
+		alae.add(new AssignExpr(id, expr(alae)));
 	}
 
 	// read_stmt -> READ ( id_list );
-	public void read_stmt(){
+	public ReadStmt read_stmt(){
 		if(lexer.token != Symbol.READ)
 			error.signal("Missing READ keyword at read_stmt()");
 		if(lexer.nextToken() != Symbol.LPAR)
 			error.signal("Missing open parentheses at read_stmt()");
 		lexer.nextToken();
-		id_list();
+		IdList il = id_list();
 		if(lexer.token != Symbol.RPAR)
 			error.signal("Missing close parentheses at read_stmt()");
 		if(lexer.nextToken() != Symbol.SEMICOLON)
 			error.signal("Semicolon expected at read_stmt()");
 		lexer.nextToken();
+		return new ReadStmt(il);
 	}
 
 	// write_stmt -> WRITE ( id_list );
- 	public void write_stmt(){
+ 	public WriteStmt write_stmt(){
 		if(lexer.token != Symbol.WRITE)
 			error.signal("Missing READ keyword at write_stmt()");
 		if(lexer.nextToken() != Symbol.LPAR)
 			error.signal("Missing open parentheses at write_stmt()");
 		lexer.nextToken();
-		id_list();
+		IdList il = id_list();
 		if(lexer.token != Symbol.RPAR)
 			error.signal("Missing close parentheses write_stmt()");
 		if(lexer.nextToken() != Symbol.SEMICOLON)
 			error.signal("Semicolon expected at write_stmt()");
 		lexer.nextToken();
+		return new WriteStmt(il);
  	}
 
 	// return_stmt -> RETURN expr ;
-	public void return_stmt(){
+	public ReturnExpr return_stmt(){
 		if(lexer.token != Symbol.RETURN)
 			error.signal("Missing RETURN keyword at return_stmt()");
 		lexer.nextToken();
-		expr();
+		Expr e = expr();
 		if(lexer.token != Symbol.SEMICOLON)
 			error.signal("Semicolon expected at return_stmt()");
 		lexer.nextToken();
+		return new ReturnStmt(e);
 	}
 
 	/***************/
