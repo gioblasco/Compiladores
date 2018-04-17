@@ -1,3 +1,2 @@
-/Compilador/nbproject/private/
-/Compilador/dist/
-/Compilador/build/
+*.class
+*.orig
