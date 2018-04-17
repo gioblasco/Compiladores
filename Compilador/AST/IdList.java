@@ -13,4 +13,11 @@ public class IdList{
       pw.print(this.ali[i+1].getId());
     }
   }
+
+  public boolean exits(Ident x){
+    if(this.indexOf(x) != -1)
+      return true;
+    return false;
+  }
+
 }

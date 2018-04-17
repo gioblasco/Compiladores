@@ -11,6 +11,14 @@ public class VarDecl{
   public void genC(PW pw){
     pw.print(this.type.toLower()+" ");
     this.il.genC();
-    pw.println(";")
+    pw.println(";");
+  }
+
+  public boolean exists(Ident x){
+    return il.exits(x);
+  }
+
+  public String getType(){
+    return this.type;
   }
 }

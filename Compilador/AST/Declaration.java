@@ -15,6 +15,10 @@ public class Declaration{
     this.vd = vd;
   }
 
+  public boolean exists(Ident arg){
+    return this.sd.exists(arg) || this.vd.exists(arg);
+  }
+
   public void genC(PW pw){
     sd.genC();
     vd.genC();

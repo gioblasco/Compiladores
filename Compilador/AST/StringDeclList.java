@@ -1,5 +1,5 @@
-public class StringDeclList {
-  private ArrayList<StringDecl> sd;
+public class StringDeclList /*extends DeclList*/{
+  private ArrayList<StringDecl> dl;
 
   public void addDecl(StringDecl strdecl){
     sd.add(strdecl);
@@ -10,4 +10,12 @@ public class StringDeclList {
       x.genC();
     }
   }
+
+  public boolean exists(Ident arg){
+    for(StringDecl x: thid.sd)
+      if(x.exists(arg))
+        return true;
+    return false;
+  }
+
 }
