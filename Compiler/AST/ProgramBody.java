@@ -1,3 +1,5 @@
+package Compiler.AST;
+
 public class ProgramBody {
 	private Declaration dec;
 	private FunctionDeclarations funcdec;

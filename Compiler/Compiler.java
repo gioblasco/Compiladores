@@ -1,4 +1,5 @@
-package Compiler.AST;
+package Compiler;
+
 import Lexer.*;
 import Error.*;
 import AST.*;

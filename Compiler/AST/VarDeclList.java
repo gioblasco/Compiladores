@@ -1,3 +1,5 @@
+package Compiler.AST;
+
 public class VarDeclList/* extends DeclList*/{
   private ArrayList<VarDecl> dl;
 

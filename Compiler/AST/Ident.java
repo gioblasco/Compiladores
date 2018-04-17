@@ -1,3 +1,5 @@
+package Compiler.AST;
+
 public class Ident{
 	private String id;
 

@@ -1,3 +1,5 @@
+package Compiler.AST;
+
 public class IdList{
   private ArrayList<Ident> ali;
 

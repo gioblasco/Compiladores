@@ -1,3 +1,5 @@
+package Compiler.AST;
+
 public class FunctionDeclarations{
   private ArrayList<FuncDecl> alfd;
 

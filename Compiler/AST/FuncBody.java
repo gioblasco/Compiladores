@@ -1,3 +1,5 @@
+package Compiler.AST;
+
 public class FuncBody{
   private Decl decl;
   private StmtList sl;

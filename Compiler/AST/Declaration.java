@@ -1,3 +1,5 @@
+package Compiler.AST;
+
 public class Declaration{
   private StringDeclList sd;
   private VarDeclList vd;

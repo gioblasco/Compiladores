@@ -1,4 +1,4 @@
-package Lexer;
+package Compiler.Lexer;
 
 public enum Symbol {
 

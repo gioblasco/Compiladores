@@ -1,3 +1,5 @@
+package Compiler.AST;
+
 public class ParamDecl{
   private String type;
   private Ident id;

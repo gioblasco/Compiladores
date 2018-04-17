@@ -1,3 +1,5 @@
+package Compiler.AST;
+
 public class ParamDeclList{
   private ArrayList<ParamDecl> alpd;
 

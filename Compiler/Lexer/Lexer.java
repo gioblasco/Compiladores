@@ -1,4 +1,4 @@
-package Lexer;
+package Compiler.Lexer;
 
 import java.util. * ;
 import Error. * ;

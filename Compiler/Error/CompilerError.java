@@ -1,4 +1,4 @@
-package Error;
+package Compiler.Error;
 
 import Lexer.*;
 import java.io.*;

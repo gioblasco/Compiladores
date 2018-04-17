@@ -1,3 +1,5 @@
+package Compiler.AST;
+
 public class FuncDecl{
   private String type;
   private Ident id;

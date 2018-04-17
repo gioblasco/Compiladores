@@ -1,3 +1,5 @@
+package Compiler.AST;
+
 public class AssignStmt extends Stmt{
   private ArrayList<AssignExpr> alae;
 

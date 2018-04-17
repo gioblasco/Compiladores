@@ -1,3 +1,5 @@
+package Compiler.AST;
+
 public class StringDeclList /*extends DeclList*/{
   private ArrayList<StringDecl> dl;
 

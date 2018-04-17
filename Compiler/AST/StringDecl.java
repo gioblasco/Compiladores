@@ -1,3 +1,5 @@
+package Compiler.AST;
+
 public class StringDecl{
 
   private Ident id;
