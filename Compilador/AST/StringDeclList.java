@@ -1,11 +1,11 @@
 public class StringDeclList {
   private ArrayList<StringDecl> sd;
 
-  public addDecl(StringDecl strdecl){
+  public void addDecl(StringDecl strdecl){
     sd.add(strdecl);
   }
 
-  public genC(){
+  public void genC(PW pw){
     for(StringDecl x: thid.sd){
       x.genC();
     }

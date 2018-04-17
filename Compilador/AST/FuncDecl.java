@@ -11,7 +11,7 @@ public class FuncDecl{
     this.fd = f;
   }
 
-  public genC(){
+  public void genC(PW pw){
     pw.print(this.type.toLower()+" "+this.id.getId()+"(");
     this.p.genC();
     pw.println("){");

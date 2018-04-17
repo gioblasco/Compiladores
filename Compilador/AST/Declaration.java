@@ -1,21 +1,21 @@
-public class Decl{
+public class Declaration{
   private StringDeclList sd;
   private VarDeclList vd;
 
-  public Decl(){
+  public Declaration(){
     this.sd = null;
     this.vd = null;
   }
 
-  public setStringDeclList(StringDeclList sd){
+  public void setStringDeclList(StringDeclList sd){
     this.sd = sd;
   }
 
-  public setVarDeclList(VarDeclList vd){
+  public void setVarDeclList(VarDeclList vd){
     this.vd = vd;
   }
 
-  public genC(){
+  public void genC(PW pw){
     sd.genC();
     vd.genC();
   }

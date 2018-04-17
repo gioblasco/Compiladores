@@ -8,7 +8,7 @@ public class VarDecl{
     this.il = il;
   }
 
-  public genC(){
+  public void genC(PW pw){
     pw.print(this.type.toLower()+" ");
     this.il.genC();
     pw.println(";")

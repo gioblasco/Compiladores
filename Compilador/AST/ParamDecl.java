@@ -6,7 +6,7 @@ public class ParamDecl{
     this.type = t;
     this.id = i;
   }
-  public genC(){
+  public void genC(PW pw){
     pw.print(this.type+" "+this.id.getId());
   }
 }

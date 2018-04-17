@@ -65,7 +65,7 @@ public class Compiler {
 	// decl -> string_decl_list {decl} | var_decl_list {decl} | empty
 	public Declaration decl(Declaration d){
 		if(d == null)
-			d = new Declaration();
+			Declaration d = new Declaration();
 
 		if(lexer.token == Symbol.STRING){
 			// devemos concatenar as strings
@@ -89,7 +89,7 @@ public class Compiler {
 	// string_decl_list -> string_decl {string_decl_tail}
 	public void string_decl_list(StringDeclList sd){
 		if(sd == null)
-			sd = new StringDeclList();
+			StringDecList sd = new StringDeclList();
 		string_decl(sd);
 		if(lexer.token == Symbol.STRING)
 			string_decl_tail(sd);
@@ -139,7 +139,7 @@ public class Compiler {
 	// var_decl_list -> var_decl {var_decl_tail}
 	public void var_decl_list(VarDeclList vd){
 		if(vd == null)
-			vd = new VarDeclList();
+			VarDecList vd = new VarDeclList();
 		var_decl(vd);
 		if(lexer.token != Symbol.FLOAT && lexer.token == Symbol.INT)
 			var_decl_tail(vd);
@@ -314,9 +314,8 @@ public class Compiler {
 		Declaration dec = decl(null);
 		ArrayList<Stmt> alstmt = new ArrayList<Stmt>();
 		stmt_list(alstmt);
-		Stmt stmt = new Stmt(alstmt);
 
-		return new FuncBody(dec, stmt);
+		return new FuncBody(dec, new StmtList(alstmt));
 	}
 
 	/******************/
@@ -391,7 +390,7 @@ public class Compiler {
 		if(lexer.nextToken() != Symbol.ASSIGN)
 			error.signal("Expecting assign signal assign_expr()");
 		lexer.nextToken();
-		alae.add(new AssignExpr(id, expr(alae)));
+		alae.add(new AssignExpr(id, expr()));
 	}
 
 	// read_stmt -> READ ( id_list );

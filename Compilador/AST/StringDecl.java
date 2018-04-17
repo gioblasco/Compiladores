@@ -8,7 +8,7 @@ public class StringDecl{
     this.string = string;
   }
 
-  public genC(){
+  public void genC(PW pw){
     pw.println("char "+this.id.getId()+"[] = \""+this.string.getVariableString()+"\";");
   }
 }

@@ -5,7 +5,7 @@ public class FunctionDeclarations{
     this.alfd = al;
   }
 
-  public genC(){
+  public void genC(PW pw){
     for(FuncDecl x: this.alfd){
       x.genC();
     }

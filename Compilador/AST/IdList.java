@@ -5,7 +5,7 @@ public class IdList{
     this.ali = al;
   }
 
-  public genC(){
+  public void genC(PW pw){
     if(this.ali.size()>0){
       for(int i = 0; i < (this.ali.size() - 1); i++){
         pw.print(this.ali[i].getId()+", ")
