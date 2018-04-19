@@ -1,0 +1,50 @@
+PROGRAM programa4
+
+BEGIN
+
+	FLOAT retorno;
+
+	FUNCTION VOID MAIN()
+	BEGIN
+	  retorno := PrimeNumbers();
+	END
+
+	-- Imprime números primos de 1 a 100
+	FUNCTION VOID PrimeNumbers()
+	BEGIN
+
+	  INT i, j, primo, auxi, auxj, mod;
+	  STRING espaco := " ";
+	  FOR(i:=1; i<100; i:=i+1)
+	    primo := 0;
+	    auxi := i + 1;
+	    FOR(j:=0; j<auxi; j:=j+1)
+	      auxj := j + 1;
+	      mod := Mod(auxi, auxj);
+	      IF(mod = 0) THEN
+		primo := primo + 1;
+	      ENDIF
+	    END FOR
+	    IF(primo < 2) THEN
+	      WRITE(i);
+	      WRITE(espaco);
+	    ENDIF
+	    IF(primo = 2) THEN
+	      WRITE(i);
+	      WRITE(espaco);
+	    ENDIF
+	  END FOR
+
+	END
+
+	-- Calcula X mod Y
+	FUNCTION INT Mod(INT x, INT y)
+	BEGIN
+
+	  INT resto;
+	  resto :=  x - (y * (x/y));
+
+	  RETURN resto;
+
+	END
+END

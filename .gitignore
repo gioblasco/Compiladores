@@ -1,2 +1,4 @@
 *.class
 *.orig
+/Compiler/JavaApplication2/nbproject/private/
+/Compilador/nbproject/private/

@@ -1,0 +1,23 @@
+PROGRAM programa2
+
+BEGIN
+
+  FLOAT x, y, z;
+
+  -- Imprime o módulo da subtração entre dois números. ( | A - B | )
+  FUNCTION VOID MAIN()
+  BEGIN
+    READ(x);
+    READ(y);
+
+    z := x - y;
+
+    IF (z < 0) THEN
+      z := z * (0 - 1);
+    ENDIF
+
+    WRITE(z);
+
+  END
+
+END

@@ -1,0 +1,45 @@
+PROGRAM programa3
+
+BEGIN
+
+  FLOAT x, y, retorno;
+
+  -- Rotina Principal
+  FUNCTION VOID MAIN()
+  BEGIN
+    READ(x);
+    READ(y);
+    retorno = AbsSub(x,y);
+    WRITE(retorno);
+    retorno = Factorial (retorno);
+    WRITE(retorno);
+  END
+
+
+  -- Retorna o módulo da subtração entre dois números. ( | A - B | )
+  FUNCTION FLOAT AbsSub(FLOAT num1,  FLOAT num2)
+  BEGIN
+    FLOAT num3;
+
+    num3 := num1 - num2;
+
+    IF (num3 < 0) THEN
+      num3 := num3 * (0 - 1);
+    ENDIF
+
+    RETURN num3;
+
+  END
+
+  -- Função recursiva que retorna n!
+  FUNCTION INT Factorial (INT n)
+  BEGIN
+
+    IF ( n = 1) THEN
+      RETURN 1;
+    ENDIF
+
+    RETURN n * (Factorial(n-1));
+  END
+
+END
