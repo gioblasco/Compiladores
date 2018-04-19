@@ -9,12 +9,13 @@ public class Program {
 		this.id = id;
 		this.pgm = pgm;
 	}
-	public void genC(PW pw){
+	public void genC(){
+            PW pw = PW.getPW();
 		pw.setFileName(id);
 		pw.println("#include <stdio.h>;");
 		pw.println("\nint main (){");
 		pw.add();
-		this.pgm.genC(pw);
+		this.pgm.genC();
 		pw.println("return 0;");
 		pw.sub();
 		pw.println("}");

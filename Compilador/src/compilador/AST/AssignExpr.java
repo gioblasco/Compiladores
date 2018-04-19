@@ -1,6 +1,6 @@
 package compilador.AST;
 
-public class AssignExpr{
+public class AssignExpr extends Expr{
   private Ident id;
   private Expr expr;
 
@@ -9,8 +9,9 @@ public class AssignExpr{
     this.expr = e;
   }
 
-  public void genC(PW pw){
+  public void genC(){
+    PW pw = PW.getPW();
     pw.print(this.id.getId()+" = ");
-    this.expr.genC(pw);
+    this.expr.genC();
   }
 }

@@ -16,7 +16,7 @@ public class WriteStmt extends Stmt{
         this.il = il;
     }
     
-    public void genC(PW pw){
+    public void genC(){
         
     }
 }

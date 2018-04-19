@@ -10,7 +10,8 @@ public class StringDecl{
     this.string = string;
   }
 
-  public void genC(PW pw){
+  public void genC(){
+    PW pw = PW.getPW();
     pw.println("char "+this.id.getId()+"[] = \""+this.string+"\";");
   }
 

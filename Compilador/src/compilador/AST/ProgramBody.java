@@ -9,8 +9,8 @@ public class ProgramBody {
 		this.funcdec = f;
 	}
 
-	public void genC(PW pw){
-		this.dec.genC(pw);
-		this.funcdec.genC(pw);
+	public void genC(){
+		this.dec.genC();
+		this.funcdec.genC();
 	}
 }

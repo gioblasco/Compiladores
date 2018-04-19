@@ -15,7 +15,9 @@ public class ReturnStmt extends Stmt{
      this.ex = e;   
     }
     
-    public void genC(PW pw){
-        
+    public void genC(){
+        PW pw = PW.getPW();
+        pw.print("return ");
+        this.ex.genC();
     }
 }

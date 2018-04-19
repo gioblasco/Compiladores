@@ -21,9 +21,9 @@ public class Declaration{
     return this.sd.exists(arg) || this.vd.exists(arg);
   }
 
-  public void genC(PW pw){
-    sd.genC(pw);
-    vd.genC(pw);
+  public void genC(){
+    sd.genC();
+    vd.genC();
   }
   
   public StringDeclList getSd(){

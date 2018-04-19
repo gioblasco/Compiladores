@@ -419,7 +419,7 @@ public class Compiler {
             if (temp == Symbol.ASSIGN) {
                 alstmt.add(assign_stmt());
             } else if (temp == Symbol.LPAR) {
-                alstmt.add(call_expr());
+                alstmt.add(call_stmt());
                 if (lexer.token != Symbol.SEMICOLON) {
                     error.signal("Missing semicolon after call_expr() at stmt()");
                 }
@@ -537,6 +537,7 @@ public class Compiler {
 
     // expr_tail -> addop factor expr_tail | empty
     public boolean expr_tail(Expr e) {
+        ExprTail et = null;
         if (lexer.token == Symbol.PLUS || lexer.token == Symbol.MINUS) {
             lexer.nextToken();
             if (factor(e)) {
@@ -550,18 +551,32 @@ public class Compiler {
 
     // factor -> postfix_expr factor_tail
     public boolean factor(Expr e) {
-        if (postfix_expr(e)) {
-            return factor_tail(e);
+        e.setFactor(new Factor());
+        PostfixExpr pe = new PostfixExpr();
+        e.getFactor().setFactorTail(new FactorTail());
+        if (postfix_expr(pe)) {
+            e.getFactor().setPostfixExpr(pe);
+            return factor_tail(e.getFactor().getFactorTail());
         }
+        
         return false;
     }
 
     // factor_tail -> mulop postfix_expr factor_tail | empty
-    public boolean factor_tail(Expr e) {
+    public boolean factor_tail(FactorTail ft) {
         if (lexer.token == Symbol.MULT || lexer.token == Symbol.DIV) {
+            
+            // ******************** Talvez esteja errado **************************************
+            ft.setMulop(lexer.getStringValue().toCharArray()[0]);//*
+            // ********************************************************************************
+            
             lexer.nextToken();
-            if (postfix_expr(e)) {
-                return factor_tail(e);
+            
+            ft.setPostfixExpr(new PostfixExpr());
+            
+            if (postfix_expr(ft.getPostfixExpr())) {
+                ft.setFactorTail(new FactorTail());
+                return factor_tail(ft.getFactorTail());
             } else {
                 return false;
             }
@@ -570,21 +585,23 @@ public class Compiler {
     }
 
     // postfix_expr -> primary | call_expr
-    public boolean postfix_expr(Expr e) {
+    public boolean postfix_expr(PostfixExpr pe) {
+    
         if (lexer.token == Symbol.IDENT) {
             Symbol temp = lexer.checkNextToken();
             if (temp == Symbol.LPAR) {
-                return call_expr(e);
+                return call_expr(pe);
             } else {
-                return primary(e);
+                return primary(pe);
             }
         } else {
-            return primary(e);
+            return primary(pe);
         }
     }
 
     // call_expr -> id ( {expr_list} )
-    public boolean call_expr(Expr e) {
+    public boolean call_expr(PostfixExpr pe) {
+        
         ExprList el = new ExprList();
         if (lexer.token != Symbol.IDENT) {
             error.signal("Missing identifier at call_expr()");
@@ -601,7 +618,34 @@ public class Compiler {
             error.signal("Expecting close parentheses at call_expr()");
         }
         lexer.nextToken();
+        
+        CallExpr c = new CallExpr(id, el);
+        pe.setCallExpr(c);
+        
         return true;
+    }
+    
+        // call_stmt -> call_expr
+    public CallStmt call_stmt() {
+        
+        ExprList el = new ExprList();
+        if (lexer.token != Symbol.IDENT) {
+            error.signal("Missing identifier at call_expr()");
+        }
+        Ident id = new Ident(lexer.getStringValue());
+        if (lexer.nextToken() != Symbol.LPAR) {
+            error.signal("Expecting begin parentheses at call_expr()");
+        }
+        lexer.nextToken();
+        if (lexer.token != Symbol.RPAR) {
+            el = expr_list();
+        }
+        if (lexer.token != Symbol.RPAR) {
+            error.signal("Expecting close parentheses at call_expr()");
+        }
+        lexer.nextToken();
+       
+        return new CallStmt(new CallExpr(id, el));
     }
 
     // expr_list -> expr expr_list_tail
@@ -622,16 +666,27 @@ public class Compiler {
     }
 
     // primary -> (expr) | id | INTLITERAL | FLOATLITERAL
-    public boolean primary(Expr e) {
+    public boolean primary(PostfixExpr pe) {
+        Ident id = null;
+        String literal = null;
+        Primary p = null;
         if (lexer.token == Symbol.LPAR) {
             lexer.nextToken();
-            expr();
+            p = new Primary(expr());
             if (lexer.token != Symbol.RPAR) {
                 error.signal("Missing close parentheses at primary()");
             }
         } else if (lexer.token != Symbol.IDENT && lexer.token != Symbol.INTLITERAL && lexer.token != Symbol.FLOATLITERAL) {
             error.signal("Not a primary element at primary()");
         }
+        if(lexer.token == Symbol.IDENT){
+            id = new Ident(lexer.getStringValue());
+            p = new Primary(id);
+        } else {
+            literal = lexer.getStringValue();
+            p = new Primary(literal);
+        }
+        pe.setPrimary(p);
         lexer.nextToken();
         return true;
     }
@@ -744,7 +799,7 @@ public class Compiler {
             }
 
             if (lexer.token != Symbol.SEMICOLON) {
-                error.signal("Missing end of declaration at for_stmt()");
+                error.signal("Missing end of declaration at for_stmtf()");
             }
 
             if (lexer.nextToken() != Symbol.SEMICOLON) {

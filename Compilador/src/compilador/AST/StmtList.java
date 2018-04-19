@@ -9,9 +9,9 @@ public class StmtList{
     this.als = a;
   }
 
-  public void genC(PW pw){
+  public void genC(){
     for(Stmt x: this.als){
-      x.genC(pw);
+      x.genC();
     }
   }
 }

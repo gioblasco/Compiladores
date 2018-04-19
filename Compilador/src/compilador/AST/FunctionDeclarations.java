@@ -9,9 +9,9 @@ public class FunctionDeclarations{
     this.alfd = al;
   }
 
-  public void genC(PW pw){
+  public void genC(){
     for(FuncDecl x: this.alfd){
-      x.genC(pw);
+      x.genC();
     }
   }
 }

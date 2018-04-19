@@ -12,7 +12,10 @@ public class ExprList {
         this.ale = new ArrayList<Expr>();
     }
     public void genC(){
-        System.out.println("sonoooo");
+
     }
     
+    public void add(Expr e){
+        this.ale.add(e);
+    }
 }

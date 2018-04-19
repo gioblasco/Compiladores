@@ -10,14 +10,15 @@ public class VarDecl{
     this.il = il;
   }
 
-  public void genC(PW pw){
+  public void genC(){
+    PW pw = PW.getPW();
     pw.print(this.type.toLowerCase()+" ");
-    this.il.genC(pw);
+    this.il.genC();
     pw.println(";");
   }
 
   public boolean exists(Ident x){
-    return il.exits(x);
+    return il.exists(x);
   }
 
   public String getType(){

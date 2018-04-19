@@ -10,7 +10,8 @@ public class IdList{
     this.ali = al;
   }
 
-  public void genC(PW pw){
+  public void genC(){
+    PW pw = PW.getPW();
     if(this.ali.size()>0){
       for(i = 0; i < (this.ali.size() - 1); i++){
         pw.print(this.ali.get(i).getId()+", ");
@@ -19,7 +20,7 @@ public class IdList{
     }
   }
 
-  public boolean exits(Ident x){
+  public boolean exists(Ident x){
     if(this.ali.indexOf(x) != -1)
       return true;
     return false;

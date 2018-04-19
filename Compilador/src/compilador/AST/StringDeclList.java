@@ -9,9 +9,9 @@ public class StringDeclList /*extends DeclList*/{
     dl.add(strdecl);
   }
 
-  public void genC(PW pw){
+  public void genC(){
     for(StringDecl x: this.dl){
-      x.genC(pw);
+      x.genC();
     }
   }
 

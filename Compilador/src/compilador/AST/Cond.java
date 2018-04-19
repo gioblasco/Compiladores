@@ -26,6 +26,9 @@ public class Cond {
         this.op = op;
     }
   
+    public void genC(){
+        
+    }
     
 
 }

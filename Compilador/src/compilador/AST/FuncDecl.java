@@ -15,12 +15,13 @@ public class FuncDecl{
     this.fd = f;
   }
 
-  public void genC(PW pw){
+  public void genC(){
+    PW pw = PW.getPW();
     pw.print(this.type.toLowerCase()+" "+this.id.getId()+"(");
-    this.pdl.genC(pw);
+    this.pdl.genC();
     pw.println("){");
     pw.add();
-    this.fd.genC(pw);
+    this.fd.genC();
     pw.sub();
     pw.println("}");
   }

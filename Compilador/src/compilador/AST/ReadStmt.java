@@ -8,7 +8,9 @@ public class ReadStmt extends Stmt{
   }
 
   //não sei como saber os tipos de variaveis do id_list pra colocar no scanf
-  public void genC(PW pw){
+  public void genC(){
+     PW pw = PW.getPW();
     pw.print("scanf(");
+    
   }
 }

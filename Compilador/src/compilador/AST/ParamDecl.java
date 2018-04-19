@@ -8,7 +8,8 @@ public class ParamDecl{
     this.type = t;
     this.id = i;
   }
-  public void genC(PW pw){
+  public void genC(){
+    PW pw = PW.getPW();
     pw.print(this.type+" "+this.id.getId());
   }
 }

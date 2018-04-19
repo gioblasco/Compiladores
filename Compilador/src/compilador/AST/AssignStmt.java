@@ -7,8 +7,9 @@ public class AssignStmt extends Stmt{
     this.alae = a;
   }
 
-  public void genC(PW pw){
-      this.alae.genC(pw);
+  public void genC(){
+      PW pw = PW.getPW();
+      this.alae.genC();
       pw.println(";");
   }
 }

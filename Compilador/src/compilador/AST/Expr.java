@@ -10,13 +10,32 @@ package compilador.AST;
  * @author giova
  */
 public class Expr {
+    private Factor factor;
+    private ExprTail et;
+    
+    
+    public void setFactor(Factor factor) {
+        this.factor = factor;
+    }
+
+    public void setExprTail(ExprTail et) {
+        this.et = et;
+    }
+
+    public Factor getFactor() {
+        return factor;
+    }
+    
+    
     
     public Expr(){
         
     }
 
-    public void genC(PW pw) {
+    public void genC() {
         
     }
+
+  
     
 }

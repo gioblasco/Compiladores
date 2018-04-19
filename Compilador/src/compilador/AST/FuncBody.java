@@ -9,8 +9,9 @@ public class FuncBody{
     this.sl = s;
   }
 
-  public void genC(PW pw){
-    this.decl.genC(pw);
-    this.sl.genC(pw);
+  public void genC(){
+    PW pw = PW.getPW();
+    this.decl.genC();
+    this.sl.genC();
   }
 }

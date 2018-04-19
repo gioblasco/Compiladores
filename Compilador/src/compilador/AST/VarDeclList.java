@@ -10,9 +10,9 @@ public class VarDeclList/* extends DeclList*/{
       this.dl.add(vd);
   }
 
-  public void genC(PW pw){
+  public void genC(){
     for(VarDecl x: this.dl){
-      x.genC(pw);
+      x.genC();
     }
   }
 
