@@ -1,6 +1,6 @@
 package compilador.AST;
 
-import com.sun.xml.internal.ws.util.StringUtils;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -16,14 +16,12 @@ public class PW {
 
     public void add() {
         currentIndent++;
-        System.out.println(currentIndent);
     }
 
     public void sub() {
         if (currentIndent > 0) {
             currentIndent--;
         }
-        System.out.println(currentIndent);
     }
 
     private PW() {
@@ -72,7 +70,7 @@ public class PW {
         this.fileName = id;
 
         try {
-            this.out = new PrintWriter("C:\\Users\\giova\\Desktop\\" + this.fileName + ".c");
+            this.out = new PrintWriter( this.fileName + ".c");
         } catch (FileNotFoundException ex) {
             Logger.getLogger(PW.class.getName()).log(Level.SEVERE, null, ex);
         }

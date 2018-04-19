@@ -13,24 +13,32 @@ public class IfStmt extends Stmt{
     @Override
     public void genC() {
         PW pw = PW.getPW();
+        
+        // if part...
         pw.print("if(");
         this.c.genC();
-        pw.println(")");
-        pw.println("{");
+        pw.rawPrint(")\n");
+        if(this.ifpart!= null && this.ifpart.size() > 1 || this.ifpart == null)
+            pw.println("{");
         pw.add();
         if(this.ifpart != null){
             this.ifpart.genC();
         }
         pw.sub();
+        if(this.ifpart!= null && this.ifpart.size() > 1 || this.ifpart == null)
+            pw.println("}");
+        
+        // Else part...
         if(this.elsepart != null){
-           pw.println("}");
            pw.println("else");
-           pw.println("{");
+           if(this.elsepart.size()>1)
+            pw.println("{");
            pw.add();
            this.elsepart.genC();
            pw.sub();
-           pw.println("}");
+           if(this.elsepart.size()>1)
+            pw.println("}");
         }
-        pw.println("}");
+        
     }
 }

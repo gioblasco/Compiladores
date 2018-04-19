@@ -14,7 +14,7 @@ public class VarDecl{
     PW pw = PW.getPW();
     pw.print(this.type.toLowerCase()+" ");
     this.il.genC();
-    pw.println(";");
+    pw.rawPrint( ";\n");
   }
 
   public boolean exists(Ident x){

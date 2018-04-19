@@ -10,6 +10,6 @@ public class AssignStmt extends Stmt{
   public void genC(){
       PW pw = PW.getPW();
       this.alae.genC();
-      pw.println(";");
+      pw.rawPrint(";\n");
   }
 }
