@@ -22,8 +22,10 @@ public class Declaration{
   }
 
   public void genC(){
-    sd.genC();
-    vd.genC();
+    if(this.sd != null)
+        this.sd.genC();
+    if(this.vd != null)
+        this.vd.genC();
   }
   
   public StringDeclList getSd(){

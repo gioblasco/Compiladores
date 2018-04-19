@@ -1,13 +1,13 @@
 package compilador.AST;
     // factor_tail -> mulop postfix_expr factor_tail | empty
-public class FactorTail {
+public class FactorTail extends Factor {
     
     private Character mulop;
     private PostfixExpr p;
     private FactorTail f;
     
     // factor_tail -> mulop postfix_expr factor_tail | empty
-    public FactorTail(Character mulop, PostfixExpr p, FactorTail f) {
+    public FactorTail(Character mulop, PostfixExpr p, FactorTail f)  {
         this.mulop = mulop;
         this.p = p;
         this.f = f;
@@ -43,7 +43,7 @@ public class FactorTail {
     public void genC(){
         PW pw = PW.getPW();
         if(this.mulop != null){
-            pw.print(this.mulop.toString());
+            pw.rawPrint(" "+this.mulop.toString()+" ");
             this.p.genC();
             this.f.genC();
         }        

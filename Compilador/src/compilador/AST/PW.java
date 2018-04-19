@@ -1,69 +1,94 @@
 package compilador.AST;
 
+import com.sun.xml.internal.ws.util.StringUtils;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.lang.String;
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class PW {
-   
-   public void add() {
-      currentIndent += step;
-   }
-   public void sub() {
-      currentIndent -= step;
-   }
 
-   private PW(){
+    private String fileName;
 
-   }
+    public void add() {
+        currentIndent++;
+        System.out.println(currentIndent);
+    }
 
-    public static PW getPW(){
-       if(pw == null){
-           pw = new PW();
-       }
+    public void sub() {
+        if (currentIndent > 0) {
+            currentIndent--;
+        }
+        System.out.println(currentIndent);
+    }
+
+    private PW() {
+
+    }
+
+    public static PW getPW() {
+        if (pw == null) {
+            pw = new PW();
+            pw.out = new PrintWriter(System.out);
+        }
         return pw;
     }
 
-   
-   public void set( PrintWriter out ) {
-      this.out = out;
-      currentIndent = 0;
-   }
-   
-   public void set( int indent ) {
-      currentIndent = indent;
-   }
-   
-   public void print( String s ) {
-      out.print( space.substring(0, currentIndent) );
-      out.print(s);
-   }
-   
-   public void println( String s ) {
-      out.print( space.substring(0, currentIndent) );
-      out.println(s);
-   }
-   
-    public void setFileName(Ident id) {
-        pw.setFileName(id);
+    public void set(PrintWriter out) {
+        this.out = out;
+        currentIndent = 0;
     }
-   
-   int currentIndent = 0;
-   /* there is a Java and a Green mode. 
+
+    public void set(int indent) {
+        currentIndent = indent;
+    }
+
+    public void print(String s) {
+        for (int c = 0; c < currentIndent; c++) {
+            out.print("\t");
+        }
+        out.flush();
+        out.print(s);
+
+    }
+
+    public void rawPrint(String s) {
+        out.print(s);
+    }
+
+    public void println(String s) {
+        pw.print(s + "\n");
+    }
+
+    public void close() {
+        out.close();
+    }
+
+    public void setFileName(String id) {
+        this.fileName = id;
+
+        try {
+            this.out = new PrintWriter("C:\\Users\\giova\\Desktop\\" + this.fileName + ".c");
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(PW.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    static int currentIndent = 0;
+    /* there is a Java and a Green mode. 
       indent in Java mode:
       3 6 9 12 15 ...
       indent in Green mode:
       3 6 9 12 15 ...
-   */
-   static public final int green = 0, java = 1;
-   int mode = green; 
-   public int step = 3;
-   public PrintWriter out;
-   // Uma única referência para a classe toda.
-   private static PW pw = null;
-         
-   
-   static final private String space = "                                                                                                        ";
+     */
+    static public final int green = 0, java = 1;
+    int mode = green;
+    public static PrintWriter out;
+    // Uma única referência para a classe toda.
+    private static PW pw = null;
 
 }
-      
-       

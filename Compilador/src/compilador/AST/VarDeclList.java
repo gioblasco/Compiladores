@@ -31,4 +31,10 @@ public class VarDeclList/* extends DeclList*/{
     return "";
   }
 
+    public VarDeclList() {
+        this.dl = new ArrayList<VarDecl>();
+    }
+  
+  
+
 }

@@ -67,7 +67,7 @@ public class Lexer {
 	}
 
 	public Symbol nextToken() {
-		while (input[tokenPos] == ' ' || input[tokenPos] == '\n' || input[tokenPos] == '\t') {
+		while (input[tokenPos] == ' ' || input[tokenPos] == '\n' || input[tokenPos] == '\t' || input[tokenPos] == '\r') {
 			if (input[tokenPos] == '\n') {
 				lineNumber++;
 			}
@@ -105,6 +105,7 @@ public class Lexer {
 			if (float_number == false) {
 				//converte string para inteiro
 				intValue = Integer.parseInt(aux);
+                                stringValue = String.valueOf(intValue);
 				if (intValue > MaxValueInteger) {
 					error.signal("Error: Not valid integer at line: " + lineNumber);
 				}
@@ -113,6 +114,7 @@ public class Lexer {
 			else {
 				// Converte String para ponto flutuante.
 				floatValue = Float.parseFloat(aux);
+                                stringValue = String.valueOf(floatValue);
 				token = Symbol.FLOATLITERAL;
 			}
 		} else {
@@ -123,15 +125,17 @@ public class Lexer {
 			if (aux.length() > 0) {
 				Symbol temp;
 				temp = keywordsTable.get(aux.toString());
+                                stringValue = aux.toString();
 				if (temp == null) {
 					if (aux.length() > 30) error.signal("Error, identifier size limit reached");
 					token = Symbol.IDENT;
-					stringValue = aux.toString();
+					
 				}
 				else {
 					token = temp;
 				}
 			} else {
+                                stringValue = String.valueOf(input[tokenPos]);
 				switch (input[tokenPos]) {
 				case '+':
 					token = Symbol.PLUS;
@@ -189,10 +193,7 @@ public class Lexer {
 					if(input[tokenPos]!= '"')
 						error.signal("String size above limit of 80 chars");
 					token = Symbol.STRINGLITERAL;
-					System.out.println(input[tokenPos]);
-					//tokenPos++;
-					System.out.println(input[tokenPos]);
-					System.out.println("O valor da String eh: ("+ stringValue+")");
+				
 					break;
 
 				default:
@@ -202,8 +203,7 @@ public class Lexer {
 			}
 		}
 
-		/*if (DEBUGLEXER)
-			System.out.println(token.toString());*/
+	
 		lastTokenPos = tokenPos - 1;
 		return token;
 	}

@@ -10,8 +10,10 @@ public class StmtList{
   }
 
   public void genC(){
-    for(Stmt x: this.als){
-      x.genC();
+    if(this.als != null){
+        for(Stmt x: this.als){
+          x.genC();
+        }
     }
   }
 }

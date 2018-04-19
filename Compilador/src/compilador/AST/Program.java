@@ -11,13 +11,9 @@ public class Program {
 	}
 	public void genC(){
             PW pw = PW.getPW();
-		pw.setFileName(id);
-		pw.println("#include <stdio.h>;");
-		pw.println("\nint main (){");
-		pw.add();
-		this.pgm.genC();
-		pw.println("return 0;");
-		pw.sub();
-		pw.println("}");
+            pw.setFileName(this.id.getId());
+            pw.println("#include <stdio.h>;\n\n");
+            this.pgm.genC();
+            pw.close();
 	}
 }

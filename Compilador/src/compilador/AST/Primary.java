@@ -21,15 +21,15 @@ public class Primary {
     
     public void genC() {
         PW pw = PW.getPW();
-        if(e != null){
-            pw.print("(");
+        if(this.e != null){
+            pw.rawPrint("(");
             this.e.genC();
-            pw.print(")");
+            pw.rawPrint(")");
         
         } else if(i!=null){
-            pw.print(this.i.getId());
+            pw.rawPrint(this.i.getId());
         } else{
-            pw.print(this.literal);
+            pw.rawPrint(this.literal);
         }
     }
     

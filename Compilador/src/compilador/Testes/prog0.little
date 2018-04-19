@@ -5,7 +5,10 @@ BEGIN
 -- Escreve a soma entre dois números
   FUNCTION VOID MAIN()
   BEGIN
-
+INT A;
+	IF(2>1) THEN
+	A := 0;
+	ENDIF
   END
 
 END

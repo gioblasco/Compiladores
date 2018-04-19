@@ -31,7 +31,8 @@ public class Factor {
     
     public void genC(){
         p.genC();
-        ft.genC();    
+        if(ft != null)
+            ft.genC();    
     }
     
     

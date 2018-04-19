@@ -18,9 +18,12 @@ public class FuncDecl{
   public void genC(){
     PW pw = PW.getPW();
     pw.print(this.type.toLowerCase()+" "+this.id.getId()+"(");
-    this.pdl.genC();
-    pw.println("){");
+    if(this.pdl != null)
+        this.pdl.genC();
+    pw.rawPrint(")\n");
+    pw.println("{");
     pw.add();
+    
     this.fd.genC();
     pw.sub();
     pw.println("}");

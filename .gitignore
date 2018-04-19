@@ -2,3 +2,7 @@
 *.orig
 /Compiler/JavaApplication2/nbproject/private/
 /Compilador/nbproject/private/
+/Compilador/build/
+/Compilador/dist/
+/teste/nbproject/private/
+/teste/build/

@@ -10,7 +10,9 @@ public class ProgramBody {
 	}
 
 	public void genC(){
-		this.dec.genC();
-		this.funcdec.genC();
+                if(this.dec != null)
+                    this.dec.genC();
+                if(this.funcdec != null)
+                    this.funcdec.genC();
 	}
 }

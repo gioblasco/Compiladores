@@ -1,14 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package compilador.AST;
 
-/**
- *
- * @author giova
- */
 public class Cond {
 
     private Expr exp1, exp2;
@@ -27,7 +18,10 @@ public class Cond {
     }
   
     public void genC(){
-        
+        PW pw = PW.getPW();
+        this.exp1.genC();
+        pw.rawPrint(" "+this.op.toString()+" ");
+        this.exp2.genC();
     }
     
 

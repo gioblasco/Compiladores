@@ -373,8 +373,8 @@ public class Compiler {
     // func_body -> decl stmt_list
     public FuncBody func_body() {
         Declaration dec = decl(null);
-        ArrayList<Stmt> alstmt = new ArrayList<Stmt>();
-        stmt_list(alstmt);
+        ArrayList<Stmt> alstmt = null;
+        alstmt = stmt_list(alstmt);
 
         return new FuncBody(dec, new StmtList(alstmt));
     }
@@ -387,11 +387,13 @@ public class Compiler {
      * ***************
      */
     // stmt_list -> stmt stmt_tail | empty
-    public void stmt_list(ArrayList<Stmt> alstmt) {
+    public ArrayList<Stmt> stmt_list(ArrayList<Stmt> alstmt) {
         if (lexer.token == Symbol.READ || lexer.token == Symbol.WRITE || lexer.token == Symbol.RETURN || lexer.token == Symbol.IF || lexer.token == Symbol.FOR || lexer.token == Symbol.IDENT) {
+            alstmt = new ArrayList<Stmt>();
             stmt(alstmt);
             stmt_tail(alstmt);
         }
+        return alstmt;
     }
 
     // stmt_tail -> stmt stmt_tail | empty
@@ -402,7 +404,7 @@ public class Compiler {
         }
     }
 
-    // stmt -> assign_stmt | read_stmt | write_stmt | return_stmt | if_stmt | for_stmt | call_expr ;
+    // stmt -> assign_stmt | read_stmt | write_stmt | return_stmt | if_stmt | for_stmt | call_stmt
     public void stmt(ArrayList<Stmt> alstmt) {
         if (lexer.token == Symbol.READ) {
             alstmt.add(read_stmt());
@@ -523,12 +525,13 @@ public class Compiler {
     /* Expressions */
     /**
      * ************
+     * @return 
      */
     // expr -> factor expr_tail
     public Expr expr() {
         Expr e = new Expr();
         if (factor(e)) {
-            expr_tail(e);
+            e.setExprTail(expr_tail());
         } else {
             error.signal("Factor expected at expr()");
         }
@@ -536,47 +539,52 @@ public class Compiler {
     }
 
     // expr_tail -> addop factor expr_tail | empty
-    public boolean expr_tail(Expr e) {
+    public ExprTail expr_tail() {
         ExprTail et = null;
         if (lexer.token == Symbol.PLUS || lexer.token == Symbol.MINUS) {
+            et = new ExprTail();
+            et.setAddop(lexer.getStringValue().toCharArray()[0]);
             lexer.nextToken();
-            if (factor(e)) {
-                return expr_tail(e);
+            if (factor(et)) {
+                et.setExprTail(expr_tail());
             } else {
-                return false;
+                error.signal("Wrong ExprTail");
             }
         }
-        return false;
+        return et;
     }
+    
+     
 
     // factor -> postfix_expr factor_tail
     public boolean factor(Expr e) {
         e.setFactor(new Factor());
         PostfixExpr pe = new PostfixExpr();
-        e.getFactor().setFactorTail(new FactorTail());
         if (postfix_expr(pe)) {
             e.getFactor().setPostfixExpr(pe);
-            return factor_tail(e.getFactor().getFactorTail());
+            return factor_tail(e.getFactor());
         }
         
         return false;
     }
+    
+
 
     // factor_tail -> mulop postfix_expr factor_tail | empty
-    public boolean factor_tail(FactorTail ft) {
+    public boolean factor_tail(Factor f) {
         if (lexer.token == Symbol.MULT || lexer.token == Symbol.DIV) {
-            
-            // ******************** Talvez esteja errado **************************************
-            ft.setMulop(lexer.getStringValue().toCharArray()[0]);//*
-            // ********************************************************************************
+            f.setFactorTail(new FactorTail());
+           
+            f.getFactorTail().setMulop(lexer.getStringValue().toCharArray()[0]);
+           
             
             lexer.nextToken();
             
-            ft.setPostfixExpr(new PostfixExpr());
+            f.getFactorTail().setPostfixExpr(new PostfixExpr());
             
-            if (postfix_expr(ft.getPostfixExpr())) {
-                ft.setFactorTail(new FactorTail());
-                return factor_tail(ft.getFactorTail());
+            if (postfix_expr(f.getFactorTail().getPostfixExpr())) {
+                f.getFactorTail().setFactorTail(new FactorTail());
+                return factor_tail(f.getFactorTail());
             } else {
                 return false;
             }
@@ -676,15 +684,14 @@ public class Compiler {
             if (lexer.token != Symbol.RPAR) {
                 error.signal("Missing close parentheses at primary()");
             }
-        } else if (lexer.token != Symbol.IDENT && lexer.token != Symbol.INTLITERAL && lexer.token != Symbol.FLOATLITERAL) {
-            error.signal("Not a primary element at primary()");
-        }
-        if(lexer.token == Symbol.IDENT){
+        } else if(lexer.token == Symbol.IDENT){
             id = new Ident(lexer.getStringValue());
             p = new Primary(id);
-        } else {
+        } else if(lexer.token == Symbol.INTLITERAL || lexer.token == Symbol.FLOATLITERAL){
             literal = lexer.getStringValue();
             p = new Primary(literal);
+        } else {
+            error.signal("Not a primary element at primary()");
         }
         pe.setPrimary(p);
         lexer.nextToken();
@@ -717,7 +724,7 @@ public class Compiler {
     // if_stmt -> IF ( cond ) THEN stmt_list else_part ENDIF
     public IfStmt if_stmt() {
         Cond c = null;
-        ArrayList<Stmt> ifpart = new ArrayList<Stmt>();
+        ArrayList<Stmt> ifpart = null;
         ArrayList<Stmt> elsepart = null;
         if (lexer.token == Symbol.IF) {
 
@@ -738,9 +745,9 @@ public class Compiler {
 
             lexer.nextToken();
 
-            stmt_list(ifpart);
+            ifpart = stmt_list(ifpart);
 
-            else_part(elsepart);
+            elsepart = else_part(elsepart);
 
             if (lexer.token != Symbol.ENDIF) {
                 error.signal("Missing ENDIF keyword at if_stmt()");
@@ -750,16 +757,16 @@ public class Compiler {
         } else {
             error.signal("Missing IF keyword at if_stmt()");
         }
-        return new IfStmt(c, new StmtList(ifpart), new StmtList(elsepart));
+        return new IfStmt(c, (ifpart != null) ? new StmtList(ifpart) : null, (elsepart != null) ? new StmtList(elsepart) : null);
     }
 
     // else_part -> ELSE stmt_list | empty
-    public void else_part(ArrayList<Stmt> elsepart) {
+    public ArrayList<Stmt> else_part(ArrayList<Stmt> elsepart) {
         if (lexer.token == Symbol.ELSE) {
             lexer.nextToken();
-            elsepart = new ArrayList<Stmt>();
-            stmt_list(elsepart);
+            elsepart = stmt_list(elsepart);
         }
+        return elsepart;
     }
 
     // cond -> expr compop expr

@@ -47,6 +47,7 @@ public class Main {
 
             Compiler compiler = new Compiler();
             Program p = compiler.compile(input);
+            p.genC();
             }
     }
 }
