@@ -5,6 +5,12 @@ BEGIN
 -- Escreve a soma entre dois números
   FUNCTION VOID MAIN()
   BEGIN
+  
+  A := 0;
+  
+  FOR (I := 0; I < 3; I := I + 1)
+	A := A + 1;
+  ENDFOR;
 
   END
 

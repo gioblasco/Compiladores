@@ -17,6 +17,15 @@ public class WriteStmt extends Stmt{
     }
     
     public void genC(){
-        
+        PW pw = PW.getPW();
+        pw.print("//printf(\"");
+        for(int i = 0; i < this.il.size(); i++){
+            if(i != this.il.size()-1)
+                pw.rawPrint("%t ");
+            else
+                pw.rawPrint("%t\", ");
+        }
+        this.il.genC();
+        pw.rawPrint(");\n");
     }
 }

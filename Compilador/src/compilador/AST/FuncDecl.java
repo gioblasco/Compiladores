@@ -23,9 +23,8 @@ public class FuncDecl{
     pw.rawPrint(")\n");
     pw.println("{");
     pw.add();
-    
     this.fd.genC();
     pw.sub();
-    pw.println("}");
+    pw.println("\n}");
   }
 }

@@ -13,13 +13,18 @@ public class IdList{
   public void genC(){
     PW pw = PW.getPW();
     if(this.ali.size()>0){
-      for(i = 0; i < (this.ali.size() - 1); i++){
-        pw.print(this.ali.get(i).getId()+", ");
+      for(i = 0; i < this.ali.size(); i++){
+        pw.rawPrint(this.ali.get(i).getId());
+        if(i != (this.ali.size()-1))
+            pw.rawPrint(", ");
       }
-      pw.print(this.ali.get(i+1).getId());
     }
   }
 
+   public int size(){
+       return this.ali.size();
+   }
+   
   public boolean exists(Ident x){
     if(this.ali.indexOf(x) != -1)
       return true;

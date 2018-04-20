@@ -30,15 +30,18 @@ public class ForStmt extends Stmt {
     @Override
     public void genC() {
         PW pw = PW.getPW();
-        pw.print("for( ");
+        pw.print("for(");
+        pw.set(0);
         init.genC();
-        pw.rawPrint(" ; ");
+        pw.rawPrint("; ");
         cond.genC();
-        pw.rawPrint(" ; ");
+        pw.rawPrint("; ");
+        pw.set(0);
         loop.genC();
-        pw.rawPrint(" )\n");
+        pw.rawPrint(")\n");
         if(this.sl.size() > 1)
             pw.println("{");
+        pw.add();
         pw.add();
         this.sl.genC();
         pw.sub();

@@ -151,7 +151,7 @@ public class Lexer {
 					break;
 				case ':':
 					if (input[tokenPos + 1] == '=') {
-						tokenPos += 2;
+						tokenPos++;
 						token = Symbol.ASSIGN;
 					} else error.signal("Not expect : ");
 					break;

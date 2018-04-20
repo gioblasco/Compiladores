@@ -86,14 +86,14 @@ public class Compiler {
 
         if (lexer.token == Symbol.STRING) {
             // devemos concatenar as strings
-            string_decl_list(d.getSd());
-            d.setStringDeclList(d.getSd());
+            StringDeclList sd = string_decl_list(d.getSd());
+            d.setStringDeclList(sd);
 
             decl(d);
         } else if (lexer.token == Symbol.FLOAT || lexer.token == Symbol.INT) {
             // devemos concatenar as variáveis
-            var_decl_list(d.getVd());
-            d.setVarDeclList(d.getVd());
+            VarDeclList vd = var_decl_list(d.getVd());
+            d.setVarDeclList(vd);
 
             decl(d);
         }
@@ -108,7 +108,7 @@ public class Compiler {
      * **************************
      */
     // string_decl_list -> string_decl {string_decl_tail}
-    public void string_decl_list(StringDeclList sd) {
+    public StringDeclList string_decl_list(StringDeclList sd) {
         if (sd == null) {
             sd = new StringDeclList();
         }
@@ -116,6 +116,7 @@ public class Compiler {
         if (lexer.token == Symbol.STRING) {
             string_decl_tail(sd);
         }
+        return sd;
     }
 
     // string_decl -> STRING id := str ; | empty
@@ -168,7 +169,7 @@ public class Compiler {
      * *********************
      */
     // var_decl_list -> var_decl {var_decl_tail}
-    public void var_decl_list(VarDeclList vd) {
+    public VarDeclList var_decl_list(VarDeclList vd) {
         if (vd == null) {
             vd = new VarDeclList();
         }
@@ -176,6 +177,7 @@ public class Compiler {
         if (lexer.token != Symbol.FLOAT && lexer.token == Symbol.INT) {
             var_decl_tail(vd);
         }
+        return vd;
     }
 
     // var_decl -> var_type id_list ; | empty
@@ -272,6 +274,8 @@ public class Compiler {
         }
 
         String type = lexer.getStringValue();
+        
+        lexer.nextToken();
 
         if (lexer.token != Symbol.IDENT) {
             error.signal("Missing identifier at param_decl()");
@@ -458,11 +462,13 @@ public class Compiler {
             error.signal("Expecting identifier at assign_expr()");
         }
         Ident id = new Ident(lexer.getStringValue());
-        if (lexer.nextToken() != Symbol.ASSIGN) {
+        lexer.nextToken();
+        if (lexer.token != Symbol.ASSIGN) {
             error.signal("Expecting assign signal assign_expr()");
         }
         lexer.nextToken();
-        return new AssignExpr(id, expr());
+        Expr e = expr();
+        return new AssignExpr(id, e);
     }
 
     // read_stmt -> READ ( id_list );
@@ -609,8 +615,7 @@ public class Compiler {
 
     // call_expr -> id ( {expr_list} )
     public boolean call_expr(PostfixExpr pe) {
-        
-        ExprList el = new ExprList();
+        ExprList el = null;
         if (lexer.token != Symbol.IDENT) {
             error.signal("Missing identifier at call_expr()");
         }
@@ -620,7 +625,7 @@ public class Compiler {
         }
         lexer.nextToken();
         if (lexer.token != Symbol.RPAR) {
-            el = expr_list();
+            el = expr_list(el);
         }
         if (lexer.token != Symbol.RPAR) {
             error.signal("Expecting close parentheses at call_expr()");
@@ -636,7 +641,7 @@ public class Compiler {
         // call_stmt -> call_expr
     public CallStmt call_stmt() {
         
-        ExprList el = new ExprList();
+        ExprList el = null;
         if (lexer.token != Symbol.IDENT) {
             error.signal("Missing identifier at call_expr()");
         }
@@ -646,7 +651,7 @@ public class Compiler {
         }
         lexer.nextToken();
         if (lexer.token != Symbol.RPAR) {
-            el = expr_list();
+            el = expr_list(el);
         }
         if (lexer.token != Symbol.RPAR) {
             error.signal("Expecting close parentheses at call_expr()");
@@ -657,8 +662,10 @@ public class Compiler {
     }
 
     // expr_list -> expr expr_list_tail
-    public ExprList expr_list() {
-        ExprList el = new ExprList();
+    public ExprList expr_list(ExprList el) {
+        if (el == null) {
+            el = new ExprList();
+        }
         el.add(expr());
         expr_list_tail(el);
         return el;
@@ -793,6 +800,7 @@ public class Compiler {
     // for_stmt -> FOR ({assign_expr}; {cond}; {assign_expr}) stmt_list ENDFOR
     public ForStmt for_stmt() {
         ForStmt forstmt = new ForStmt();
+        ArrayList<Stmt> array = null;
         if (lexer.token == Symbol.FOR) {
 
             if (lexer.nextToken() != Symbol.LPAR) {
@@ -826,8 +834,7 @@ public class Compiler {
             }
             lexer.nextToken();
 
-            ArrayList<Stmt> array = new ArrayList<Stmt>();
-            stmt_list(array);
+            array = stmt_list(array);
             forstmt.setSl(new StmtList(array));
 
             if (lexer.token != Symbol.ENDFOR) {
