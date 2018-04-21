@@ -565,7 +565,7 @@ public class Compiler {
     // factor -> postfix_expr factor_tail
     public boolean factor(Expr e) {
         e.setFactor(new Factor());
-        PostfixExpr pe = new PostfixExpr();
+        PostfixExpr pe = null;
         if (postfix_expr(pe)) {
             e.getFactor().setPostfixExpr(pe);
             return factor_tail(e.getFactor());
@@ -583,7 +583,6 @@ public class Compiler {
            
             f.getFactorTail().setMulop(lexer.getStringValue().toCharArray()[0]);
            
-            
             lexer.nextToken();
             
             f.getFactorTail().setPostfixExpr(new PostfixExpr());
@@ -600,7 +599,7 @@ public class Compiler {
 
     // postfix_expr -> primary | call_expr
     public boolean postfix_expr(PostfixExpr pe) {
-    
+        pe = new PostfixExpr();
         if (lexer.token == Symbol.IDENT) {
             Symbol temp = lexer.checkNextToken();
             if (temp == Symbol.LPAR) {
@@ -643,18 +642,18 @@ public class Compiler {
         
         ExprList el = null;
         if (lexer.token != Symbol.IDENT) {
-            error.signal("Missing identifier at call_expr()");
+            error.signal("Missing identifier at call_stmt()");
         }
         Ident id = new Ident(lexer.getStringValue());
         if (lexer.nextToken() != Symbol.LPAR) {
-            error.signal("Expecting begin parentheses at call_expr()");
+            error.signal("Expecting begin parentheses at call_stmt()");
         }
         lexer.nextToken();
         if (lexer.token != Symbol.RPAR) {
             el = expr_list(el);
         }
         if (lexer.token != Symbol.RPAR) {
-            error.signal("Expecting close parentheses at call_expr()");
+            error.signal("Expecting close parentheses at call_stmt()");
         }
         lexer.nextToken();
        
