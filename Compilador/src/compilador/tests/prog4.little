@@ -6,7 +6,7 @@ BEGIN
 
 	FUNCTION VOID MAIN()
 	BEGIN
-	  retorno := PrimeNumbers();
+	  PrimeNumbers();
 	END
 
 	-- Imprime números primos de 1 a 100

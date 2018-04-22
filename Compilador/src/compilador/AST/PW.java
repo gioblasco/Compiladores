@@ -45,6 +45,9 @@ public class PW {
         currentIndent = indent;
     }
 
+    public int getIndent(){
+        return currentIndent;
+    }
     public void print(String s) {
         for (int c = 0; c < currentIndent; c++) {
             out.print("\t");

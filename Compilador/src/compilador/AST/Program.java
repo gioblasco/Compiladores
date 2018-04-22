@@ -12,7 +12,7 @@ public class Program {
 	public void genC(){
             PW pw = PW.getPW();
             pw.setFileName(this.id.getId());
-            pw.println("#include <stdio.h>;\n\n");
+            pw.println("#include <stdio.h>\n\n");
             this.pgm.genC();
             pw.close();
 	}

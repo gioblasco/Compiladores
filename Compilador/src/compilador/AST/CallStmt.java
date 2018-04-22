@@ -10,7 +10,7 @@ public class CallStmt extends Stmt{
         PW pw = PW.getPW();
         pw.print("");
         this.ce.genC();
-        pw.print(";\n");
+        pw.rawPrint(";\n");
     }
     
 }

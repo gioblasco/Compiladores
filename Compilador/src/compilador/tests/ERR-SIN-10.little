@@ -12,7 +12,7 @@ BEGIN
 
     z := x - y;
 
-    IF (z < 0) THEN
+    IF (z <= 0) THEN
       z := z * (0 - 1);
     ENDIF
 

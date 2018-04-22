@@ -31,6 +31,7 @@ public class ForStmt extends Stmt {
     public void genC() {
         PW pw = PW.getPW();
         pw.print("for(");
+        int backup = pw.getIndent();
         pw.set(0);
         init.genC();
         pw.rawPrint("; ");
@@ -39,8 +40,9 @@ public class ForStmt extends Stmt {
         pw.set(0);
         loop.genC();
         pw.rawPrint(")\n");
+        pw.set(backup);
+        
         if(this.sl.size() > 1)
-            pw.add();
             pw.println("{");
         pw.add();
         this.sl.genC();

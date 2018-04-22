@@ -11,6 +11,9 @@ public class FuncDecl{
   public FuncDecl(String t, Ident i, ParamDeclList p, FuncBody f){
     this.type = t;
     this.id = i;
+    if(this.id.getId().toLowerCase().equals("main"))
+        this.id = new Ident(this.id.getId().toLowerCase());
+    
     this.pdl = p;
     this.fd = f;
   }

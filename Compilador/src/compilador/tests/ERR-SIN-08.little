@@ -11,7 +11,7 @@ BEGIN
     READ(num1);
     READ(num2);
 
-    num3 := num1 + num2;
+    num3 := - num2;
 
     WRITE(num3);
   END
