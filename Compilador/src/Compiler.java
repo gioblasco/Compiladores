@@ -565,7 +565,7 @@ public class Compiler {
     // factor -> postfix_expr factor_tail
     public boolean factor(Expr e) {
         e.setFactor(new Factor());
-        PostfixExpr pe = null;
+        PostfixExpr pe = new PostfixExpr();
         if (postfix_expr(pe)) {
             e.getFactor().setPostfixExpr(pe);
             return factor_tail(e.getFactor());
@@ -599,7 +599,7 @@ public class Compiler {
 
     // postfix_expr -> primary | call_expr
     public boolean postfix_expr(PostfixExpr pe) {
-        pe = new PostfixExpr();
+       
         if (lexer.token == Symbol.IDENT) {
             Symbol temp = lexer.checkNextToken();
             if (temp == Symbol.LPAR) {

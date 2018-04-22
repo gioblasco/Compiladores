@@ -12,7 +12,12 @@ public class ExprList {
         this.ale = new ArrayList<Expr>();
     }
     public void genC(){
-
+        PW pw = PW.getPW();
+        for(int i = 0; i < this.ale.size(); i++){
+            this.ale.get(i).genC();
+            if(i != this.ale.size()-1)
+                pw.rawPrint(", ");
+        } 
     }
     
     public void add(Expr e){

@@ -24,7 +24,7 @@ BEGIN
 	      IF(mod = 0) THEN
 		primo := primo + 1;
 	      ENDIF
-	    END FOR
+	    ENDFOR
 	    IF(primo < 2) THEN
 	      WRITE(i);
 	      WRITE(espaco);
@@ -33,7 +33,7 @@ BEGIN
 	      WRITE(i);
 	      WRITE(espaco);
 	    ENDIF
-	  END FOR
+	  ENDFOR
 
 	END
 

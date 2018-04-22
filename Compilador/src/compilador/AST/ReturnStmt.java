@@ -19,6 +19,6 @@ public class ReturnStmt extends Stmt{
         PW pw = PW.getPW();
         pw.print("return ");
         this.ex.genC();
-        pw.rawPrint(";");
+        pw.rawPrint(";\n");
     }
 }

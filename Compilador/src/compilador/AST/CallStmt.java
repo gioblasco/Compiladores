@@ -8,8 +8,9 @@ public class CallStmt extends Stmt{
     
     public void genC(){
         PW pw = PW.getPW();
+        pw.print("");
         this.ce.genC();
-        pw.print(";");
+        pw.print(";\n");
     }
     
 }

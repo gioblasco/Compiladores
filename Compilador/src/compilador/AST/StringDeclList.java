@@ -4,9 +4,13 @@ import java.util.*;
 
 public class StringDeclList /*extends DeclList*/{
   private ArrayList<StringDecl> dl;
+  
+  public StringDeclList(){
+      this.dl = new ArrayList<StringDecl>();
+  }
 
   public void addDecl(StringDecl strdecl){
-    dl.add(strdecl);
+    this.dl.add(strdecl);
   }
 
   public void genC(){

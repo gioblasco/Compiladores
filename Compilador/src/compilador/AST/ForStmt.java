@@ -40,8 +40,8 @@ public class ForStmt extends Stmt {
         loop.genC();
         pw.rawPrint(")\n");
         if(this.sl.size() > 1)
+            pw.add();
             pw.println("{");
-        pw.add();
         pw.add();
         this.sl.genC();
         pw.sub();
