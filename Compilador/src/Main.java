@@ -1,5 +1,5 @@
 
-import compilador.AST.Program;
+import AST.Program;
 
 import java.io.File;
 import java.io.FileNotFoundException;
