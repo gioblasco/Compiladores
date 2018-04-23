@@ -17,7 +17,7 @@ public class Main {
         int num = 0;
         if (args.length == 0) {
 
-            File dir = new File("./src/compilador/tests/");
+            File dir = new File("./src/tests/");
             File[] filesList = dir.listFiles();
             for (int c = 0; c < filesList.length; c++) {
                 if (filesList[c].isFile()) {
