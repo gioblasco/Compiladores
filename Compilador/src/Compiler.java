@@ -2,39 +2,7 @@
 import Lexer.Symbol;
 import Lexer.Lexer;
 import Error.CompilerError;
-import AST.StmtList;
-import AST.WriteStmt;
-import AST.ReturnStmt;
-import AST.ParamDeclList;
-import AST.ParamDecl;
-import AST.VarDecl;
-import AST.FactorTail;
-import AST.IdList;
-import AST.FunctionDeclarations;
-import AST.StringDecl;
-import AST.FuncBody;
-import AST.IfStmt;
-import AST.ReadStmt;
-import AST.CallStmt;
-import AST.VarDeclList;
-import AST.Declaration;
-import AST.Stmt;
-import AST.Primary;
-import AST.ExprList;
-import AST.Program;
-import AST.Ident;
-import AST.Factor;
-import AST.Cond;
-import AST.ProgramBody;
-import AST.FuncDecl;
-import AST.PostfixExpr;
-import AST.Expr;
-import AST.AssignStmt;
-import AST.StringDeclList;
-import AST.CallExpr;
-import AST.AssignExpr;
-import AST.ForStmt;
-import AST.ExprTail;
+import AST.*;
 
 import java.util.*;
 import java.io.*;
@@ -880,6 +848,7 @@ public class Compiler {
         return forstmt;
     }
 
+    private Hashtable<String, Declaration> symbolTable;
     private Lexer lexer;
     private CompilerError error;
 
