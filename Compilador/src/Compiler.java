@@ -3,6 +3,7 @@ import Lexer.Symbol;
 import Lexer.Lexer;
 import Error.CompilerError;
 import AST.*;
+import Semantic.*;
 
 import java.util.*;
 import java.io.*;
@@ -16,6 +17,7 @@ public class Compiler {
         error = new CompilerError(null);
         lexer = new Lexer(p_input, error);
         error.setLexer(lexer);
+        symbolTable = new SymbolTable();
         lexer.nextToken();
         Program p = program();
         if (lexer.token != Symbol.EOF) {
@@ -73,30 +75,31 @@ public class Compiler {
     // pgm_body -> decl func_declarations
     public ProgramBody pgm_body() {
 
-        Declaration dec = decl(null);
+        Declaration dec = decl(null, 1);
         FunctionDeclarations func = func_declarations();
 
         return new ProgramBody(dec, func);
     }
 
     // decl -> string_decl_list {decl} | var_decl_list {decl} | empty
-    public Declaration decl(Declaration d) {
+    //lg means local or global -> if 1 ? global : local
+    public Declaration decl(Declaration d, Integer lg) {
         if (d == null) {
             d = new Declaration();
         }
 
         if (lexer.token == Symbol.STRING) {
             // devemos concatenar as strings
-            StringDeclList sd = string_decl_list(d.getSd());
+            StringDeclList sd = string_decl_list(d.getSd(), lg);
             d.setStringDeclList(sd);
 
-            decl(d);
+            decl(d, lg);
         } else if (lexer.token == Symbol.FLOAT || lexer.token == Symbol.INT) {
             // devemos concatenar as variáveis
-            VarDeclList vd = var_decl_list(d.getVd());
+            VarDeclList vd = var_decl_list(d.getVd(), lg);
             d.setVarDeclList(vd);
 
-            decl(d);
+            decl(d, lg);
         }
         return d;
     }
@@ -109,23 +112,38 @@ public class Compiler {
      * **************************
      */
     // string_decl_list -> string_decl {string_decl_tail}
-    public StringDeclList string_decl_list(StringDeclList sd) {
+    public StringDeclList string_decl_list(StringDeclList sd, Integer lg) {
         if (sd == null) {
             sd = new StringDeclList();
         }
-        string_decl(sd);
+        string_decl(sd, lg);
         if (lexer.token == Symbol.STRING) {
-            string_decl_tail(sd);
+            string_decl_tail(sd, lg);
         }
         return sd;
     }
 
     // string_decl -> STRING id := str ; | empty
-    public void string_decl(StringDeclList sd) {
+    public void string_decl(StringDeclList sd, Integer lg) {
         if (lexer.token == Symbol.STRING) {
+            
+            String type = lexer.getStringValue();
 
             if (lexer.nextToken() != Symbol.IDENT) {
                 error.signal("Missing identifier in string declaration");
+            }
+            
+            switch(lg) {
+                case 1:
+                    if ( symbolTable.getInGlobal(lexer.getStringValue()) != null ) 
+                        error.signal("Variable " + lexer.getStringValue() + " has already been declared");
+                    symbolTable.putInGlobal(type, lexer.getStringValue());
+                break;
+                case 2:
+                    if ( symbolTable.getInLocal(lexer.getStringValue()) != null ) 
+                        error.signal("Variable " + lexer.getStringValue() + " has already been declared");
+                    symbolTable.putInLocal(type, lexer.getStringValue());
+                break;
             }
 
             Ident id = new Ident(lexer.getStringValue());
@@ -155,10 +173,10 @@ public class Compiler {
     }
 
     // string_decl_tail -> string_decl {string_decl_tail}
-    public void string_decl_tail(StringDeclList sd) {
-        string_decl(sd);
+    public void string_decl_tail(StringDeclList sd, Integer lg) {
+        string_decl(sd, lg);
         if (lexer.token == Symbol.STRING) {
-            string_decl_tail(sd);
+            string_decl_tail(sd, lg);
         }
     }
 
@@ -170,23 +188,37 @@ public class Compiler {
      * *********************
      */
     // var_decl_list -> var_decl {var_decl_tail}
-    public VarDeclList var_decl_list(VarDeclList vd) {
+    public VarDeclList var_decl_list(VarDeclList vd, Integer lg) {
         if (vd == null) {
             vd = new VarDeclList();
         }
-        var_decl(vd);
+        var_decl(vd, lg);
         if (lexer.token != Symbol.FLOAT && lexer.token == Symbol.INT) {
-            var_decl_tail(vd);
+            var_decl_tail(vd, lg);
         }
         return vd;
     }
 
     // var_decl -> var_type id_list ; | empty
-    public void var_decl(VarDeclList vd) {
+    public void var_decl(VarDeclList vd, Integer lg) {
         if (lexer.token == Symbol.FLOAT || lexer.token == Symbol.INT) {
             String temp = lexer.getStringValue();
             lexer.nextToken();
-            vd.addDecl(new VarDecl(temp, id_list()));
+            IdList list = id_list(lg);
+            ArrayList<Ident> iter = list.getIdList();
+            
+            //entra aqui se nenhuma variavel declarada em id_list já existe
+            for(Ident x: iter){
+                switch(lg) {
+                    case 1:
+                        symbolTable.putInGlobal(temp, x.getId());
+                    break;
+                    case 2:
+                        symbolTable.putInLocal(temp, x.getId());
+                    break;
+                }
+            }
+            vd.addDecl(new VarDecl(temp, list));
             if (lexer.token != Symbol.SEMICOLON) {
                 error.signal("Missing end of declaration at var_decl()");
             }
@@ -215,12 +247,27 @@ public class Compiler {
     }
 
     // id_list -> id id_tail
-    public IdList id_list() {
+    // if lg = 0 então get else if lg = 1 então getGlobal else if lg = 2 então getLocal
+    public IdList id_list(Integer lg) {
         ArrayList<Ident> al = new ArrayList<Ident>();
         if (lexer.token == Symbol.IDENT) {
+            switch(lg) {
+                case 0:
+                    if ( symbolTable.get(lexer.getStringValue()) == null ) 
+                        error.signal("Variable " + lexer.getStringValue() + " hasn't been declared");
+                break;
+                case 1:
+                    if ( symbolTable.getInGlobal(lexer.getStringValue()) != null ) 
+                        error.signal("Variable " + lexer.getStringValue() + " has already been declared");
+                break;
+                case 2:
+                    if ( symbolTable.getInLocal(lexer.getStringValue()) != null ) 
+                        error.signal("Variable " + lexer.getStringValue() + " has already been declared");
+                break;
+            }
             al.add(new Ident(lexer.getStringValue()));
             lexer.nextToken();
-            id_tail(al);
+            id_tail(al, lg);
         } else {
             error.signal("Wrong id_list declaration");
         }
@@ -228,25 +275,39 @@ public class Compiler {
     }
 
     // id_tail -> , id id_tail | empty
-    public void id_tail(ArrayList<Ident> al) {
+    public void id_tail(ArrayList<Ident> al, Integer lg) {
         if (lexer.token == Symbol.COMMA) {
             lexer.nextToken();
 
             if (lexer.token != Symbol.IDENT) {
                 error.signal("Missing identifier at id_tail()");
             }
+            switch(lg) {
+                case 0:
+                    if ( symbolTable.get(lexer.getStringValue()) == null ) 
+                        error.signal("Variable " + lexer.getStringValue() + " hasn't been declared");
+                break;
+                case 1:
+                    if ( symbolTable.getInGlobal(lexer.getStringValue()) != null ) 
+                        error.signal("Variable " + lexer.getStringValue() + " has already been declared");
+                break;
+                case 2:
+                    if ( symbolTable.getInLocal(lexer.getStringValue()) != null ) 
+                        error.signal("Variable " + lexer.getStringValue() + " has already been declared");
+                break;
+            }
             al.add(new Ident(lexer.getStringValue()));
             lexer.nextToken();
 
-            id_tail(al);
+            id_tail(al, lg);
         }
     }
 
     // var_decl_tail -> var_decl {var_decl_tail}
-    public void var_decl_tail(VarDeclList vd) {
-        var_decl(vd);
+    public void var_decl_tail(VarDeclList vd, Integer lg) {
+        var_decl(vd, lg);
         if (lexer.token == Symbol.FLOAT || lexer.token == Symbol.INT) {
-            var_decl_tail(vd);
+            var_decl_tail(vd, lg);
         }
     }
 
@@ -377,7 +438,7 @@ public class Compiler {
 
     // func_body -> decl stmt_list
     public FuncBody func_body() {
-        Declaration dec = decl(null);
+        Declaration dec = decl(null, 2);
         ArrayList<Stmt> alstmt = null;
         alstmt = stmt_list(alstmt);
 
@@ -481,7 +542,7 @@ public class Compiler {
             error.signal("Missing open parentheses at read_stmt()");
         }
         lexer.nextToken();
-        IdList il = id_list();
+        IdList il = id_list(0);
         if (lexer.token != Symbol.RPAR) {
             error.signal("Missing close parentheses at read_stmt()");
         }
@@ -501,7 +562,7 @@ public class Compiler {
             error.signal("Missing open parentheses at write_stmt()");
         }
         lexer.nextToken();
-        IdList il = id_list();
+        IdList il = id_list(0);
         if (lexer.token != Symbol.RPAR) {
             error.signal("Missing close parentheses write_stmt()");
         }
@@ -848,7 +909,7 @@ public class Compiler {
         return forstmt;
     }
 
-    private Hashtable<String, Declaration> symbolTable;
+    private SymbolTable symbolTable;
     private Lexer lexer;
     private CompilerError error;
 

@@ -20,6 +20,10 @@ public class IdList{
       }
     }
   }
+  
+  public ArrayList<Ident> getIdList(){
+      return ali;
+  }
 
    public int size(){
        return this.ali.size();
