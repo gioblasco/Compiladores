@@ -423,8 +423,11 @@ public class Compiler {
                 error.signal("Missing END keyword at func_decl()");
             }
             lexer.nextToken();
-
+            
             al.add(new FuncDecl(type, id, pdl, fb));
+            
+            //acabou esta função, então removemos todas as declarações locais
+            symbolTable.removeLocalIdent();
         }
     }
 
