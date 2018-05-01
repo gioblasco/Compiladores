@@ -98,7 +98,7 @@ public class Compiler {
             // devemos concatenar as variáveis
             VarDeclList vd = var_decl_list(d.getVd(), lg);
             d.setVarDeclList(vd);
-
+            
             decl(d, lg);
         }
         return d;
@@ -211,10 +211,10 @@ public class Compiler {
             for(Ident x: iter){
                 switch(lg) {
                     case 1:
-                        symbolTable.putInGlobal(temp, x.getId());
+                        symbolTable.putInGlobal(x.getId(), temp);
                     break;
                     case 2:
-                        symbolTable.putInLocal(temp, x.getId());
+                        symbolTable.putInLocal(x.getId(),temp );
                     break;
                 }
             }
