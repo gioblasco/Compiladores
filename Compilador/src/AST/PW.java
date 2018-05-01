@@ -72,11 +72,7 @@ public class PW {
     public void setFileName(String id) {
         this.fileName = id;
 
-        try {
-            this.out = new PrintWriter( this.fileName + ".c");
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(PW.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        PW.out = new PrintWriter( System.out);
     }
 
     static int currentIndent = 0;

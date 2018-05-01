@@ -6,29 +6,29 @@ import java.util.*;
 public class SymbolTable {
     
     public SymbolTable() {
-        globalTable = new Hashtable();
-        localTable  = new Hashtable();
+        globalTable = new Hashtable<String,String>();
+        localTable  = new Hashtable<String,String>();
     }
     
-    public Object putInGlobal( String key, Object value ) {
+    public String putInGlobal( String key, String value ) {
        return globalTable.put(key, value);
     }
 
-    public Object putInLocal( String key, Object value ) {
+    public String putInLocal( String key, String value ) {
        return localTable.put(key, value);
     }
     
-    public Object getInLocal( Object key ) {
+    public String getInLocal( String key ) {
        return localTable.get(key);
     }
     
-    public Object getInGlobal( Object key ) {
+    public String getInGlobal( String key ) {
        return globalTable.get(key);
     }
     
-    public Object get( String key ) {
+    public String get( String key ) {
         // returns the object corresponding to the key. 
-        Object result;
+        String result;
         if ( (result = localTable.get(key)) != null ) {
               // found local identifier
             return result;
@@ -45,6 +45,6 @@ public class SymbolTable {
     }
       
         
-    private Hashtable globalTable, localTable;
+    private Hashtable<String,String> globalTable, localTable;
 }
             

@@ -553,7 +553,7 @@ public class Compiler {
             error.signal("Semicolon expected at read_stmt()");
         }
         lexer.nextToken();
-        return new ReadStmt(il);
+        return new ReadStmt(il, symbolTable, this.error );
     }
 
     // write_stmt -> WRITE ( id_list );
@@ -573,7 +573,7 @@ public class Compiler {
             error.signal("Semicolon expected at write_stmt()");
         }
         lexer.nextToken();
-        return new WriteStmt(il);
+        return new WriteStmt(il, this.symbolTable, this.error);
     }
 
     // return_stmt -> RETURN expr ;

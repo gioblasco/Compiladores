@@ -6,7 +6,7 @@ BEGIN
   FUNCTION INT MAIN()
   BEGIN
   
-  INT A;
+  FLOAT A;
   INT B;
 
   A := 0;

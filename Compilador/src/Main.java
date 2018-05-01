@@ -43,7 +43,7 @@ public class Main {
         } else {
             file = new File(args[0]);
             if (!file.exists() || !file.canRead()) {
-                System.out.println("Either the file " + args[0] + " does not exist or it cannot be read");
+                System.err.println("\n\nEither the file " + args[0] + " does not exist or it cannot be read\n\n");
                 throw new RuntimeException();
             }
         }
