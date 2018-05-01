@@ -8,6 +8,10 @@ public class FuncBody{
     this.decl = d;
     this.sl = s;
   }
+  
+  public StmtList getStmtList(){
+      return this.sl;
+  }
 
   public void genC(){
     PW pw = PW.getPW();

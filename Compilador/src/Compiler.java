@@ -387,7 +387,7 @@ public class Compiler {
             if (lexer.token != Symbol.FLOAT && lexer.token != Symbol.INT && lexer.token != Symbol.VOID) {
                 error.signal("Missing function type");
             }
-
+            
             String type = lexer.getStringValue();
             lexer.nextToken();
 
@@ -418,6 +418,20 @@ public class Compiler {
             lexer.nextToken();
 
             FuncBody fb = func_body();
+            
+            // verifica aqui se tem return quando não é void, porém ainda não verifica o tipo da variável de retorno
+            if(type != "VOID"){
+                ArrayList<Stmt> stmts = fb.getStmtList().getArrayList();
+                boolean ret = false;
+                for(Stmt x: stmts){
+                    if(x instanceof ReturnStmt){
+                        ret = true;
+                    }
+                }
+                if(!ret){
+                    error.signal("Not void function without return statement.");
+                }
+            }
 
             if (lexer.token != Symbol.END) {
                 error.signal("Missing END keyword at func_decl()");
