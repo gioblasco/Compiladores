@@ -45,7 +45,7 @@ public class WriteStmt extends Stmt{
             if(i < this.il.size()-1)
                 pw.rawPrint(" ");
         }
-        pw.rawPrint("\", 1");
+        pw.rawPrint("\", ");
         this.il.genC();
         pw.rawPrint(");\n");
     }
