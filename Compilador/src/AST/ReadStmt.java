@@ -41,7 +41,7 @@ public class ReadStmt extends Stmt{
             pw.rawPrint(" ");
         
     }
-    pw.rawPrint("\", ");
+    pw.rawPrint("\", &");
     this.il.genC();
     pw.rawPrint(");\n");
   }

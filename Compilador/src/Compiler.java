@@ -101,6 +101,9 @@ public class Compiler {
             
             decl(d, lg);
         }
+        else{
+            error.signal("Wrong variable declaration type. Must be STRING, INT or FLOAT");
+        }
         return d;
     }
 
@@ -196,7 +199,7 @@ public class Compiler {
             vd = new VarDeclList();
         }
         var_decl(vd, lg);
-        if (lexer.token != Symbol.FLOAT && lexer.token == Symbol.INT) {
+        if (lexer.token == Symbol.FLOAT || lexer.token == Symbol.INT) {
             var_decl_tail(vd, lg);
         }
         return vd;
@@ -405,19 +408,26 @@ public class Compiler {
             }
 
             Ident id = new Ident(lexer.getStringValue());
+            
+            if ( symbolTable.getInGlobal(id.getId()) != null ) 
+                error.signal("Function " + lexer.getStringValue() + " has already been declared");
+            
             lexer.nextToken();
 
             if (lexer.token != Symbol.LPAR) {
-                error.signal("Missing parantheses at func_decl()");
+                error.signal("Missing parantheses for parameters at func_decl()");
             }
             lexer.nextToken();
 
             if (lexer.token == Symbol.FLOAT || lexer.token == Symbol.INT) {
+                if(id.getId().toLowerCase() == "main"){
+                    error.signal("Main function cannot receive parameters");
+                }
                 pdl = param_decl_list();
             }
 
             if (lexer.token != Symbol.RPAR) {
-                error.signal("Missing parantheses at func_decl()");
+                error.signal("Missing parantheses for parameters at func_decl()");
             }
             lexer.nextToken();
 
@@ -427,6 +437,20 @@ public class Compiler {
             lexer.nextToken();
 
             FuncBody fb = func_body();
+            
+            // verifica aqui se tem return quando não é void, porém ainda não verifica o tipo da variável de retorno
+            if(type != "VOID"){
+                ArrayList<Stmt> stmts = fb.getStmtList().getArrayList();
+                boolean ret = false;
+                for(Stmt x: stmts){
+                    if(x instanceof ReturnStmt){
+                        ret = true;
+                    }
+                }
+                if(!ret){
+                    error.signal("Not void function without return statement.");
+                }
+            }
 
             if (lexer.token != Symbol.END) {
                 error.signal("Missing END keyword at func_decl()");
@@ -693,6 +717,11 @@ public class Compiler {
             error.signal("Missing identifier at call_expr()");
         }
         Ident id = new Ident(lexer.getStringValue());
+        
+        if(symbolTable.getInLocal(id.getId()) == null){
+            error.signal("Statement hasn't been declared yet.");
+        }
+         
         if (lexer.nextToken() != Symbol.LPAR) {
             error.signal("Expecting begin parentheses at call_expr()");
         }
@@ -710,15 +739,8 @@ public class Compiler {
         
         return true;
     }
-    /*
-        String -> String
-        nome -> tipo
     
-        String -> 
-        nome -> 
-    
-    */
-        // call_stmt -> call_expr
+        // call_stmt -> call_expr ;
     public CallStmt call_stmt() {
         
         ExprList el = null;
@@ -726,6 +748,11 @@ public class Compiler {
             error.signal("Missing identifier at call_stmt()");
         }
         Ident id = new Ident(lexer.getStringValue());
+        
+        if(symbolTable.getInLocal(id.getId()) == null){
+            error.signal("Statement hasn't been declared yet.");
+        }
+        
         if (lexer.nextToken() != Symbol.LPAR) {
             error.signal("Expecting begin parentheses at call_stmt()");
         }

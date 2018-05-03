@@ -9,6 +9,10 @@ public class StmtList {
     public StmtList(ArrayList<Stmt> a) {
         this.als = a;
     }
+    
+    public ArrayList<Stmt> getArrayList(){
+        return this.als;
+    }
 
     public void genC() {
         if (this.als != null) {
