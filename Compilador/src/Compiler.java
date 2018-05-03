@@ -399,7 +399,7 @@ public class Compiler {
             if (lexer.token != Symbol.FLOAT && lexer.token != Symbol.INT && lexer.token != Symbol.VOID) {
                 error.signal("Missing function type");
             }
-
+           
             String type = lexer.getStringValue();
             lexer.nextToken();
 
@@ -424,6 +424,8 @@ public class Compiler {
                     error.signal("Main function cannot receive parameters");
                 }
                 pdl = param_decl_list();
+                
+                symbolTable.putInGlobal(id.getId(), new Type(type, true, pdl.getParamTypes()));
             }
 
             if (lexer.token != Symbol.RPAR) {
@@ -718,8 +720,8 @@ public class Compiler {
         }
         Ident id = new Ident(lexer.getStringValue());
         
-        if(symbolTable.getInLocal(id.getId()) == null){
-            error.signal("Statement hasn't been declared yet.");
+        if(symbolTable.getFunction(id.getId()) == null){
+            error.signal("Function hasn't been declared.");
         }
          
         if (lexer.nextToken() != Symbol.LPAR) {
@@ -745,23 +747,23 @@ public class Compiler {
         
         ExprList el = null;
         if (lexer.token != Symbol.IDENT) {
-            error.signal("Missing identifier at call_stmt()");
+            error.signal("Missing identifier at call statement");
         }
         Ident id = new Ident(lexer.getStringValue());
         
-        if(symbolTable.getInLocal(id.getId()) == null){
-            error.signal("Statement hasn't been declared yet.");
+        if(symbolTable.getFunction(id.getId()) == null){
+            error.signal("Function hasn't been declared.");
         }
         
         if (lexer.nextToken() != Symbol.LPAR) {
-            error.signal("Expecting begin parentheses at call_stmt()");
+            error.signal("Expecting begin parentheses at call statement");
         }
         lexer.nextToken();
         if (lexer.token != Symbol.RPAR) {
             el = expr_list(el);
         }
         if (lexer.token != Symbol.RPAR) {
-            error.signal("Expecting close parentheses at call_stmt()");
+            error.signal("Expecting close parentheses at call statement");
         }
         lexer.nextToken();
        

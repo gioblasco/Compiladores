@@ -5,6 +5,8 @@
  */
 package AST;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author spectrus
@@ -12,11 +14,18 @@ package AST;
 public class Type {
     private String type;
     private boolean function;
+    private ArrayList<String> signature;
 
     public Type(String type, boolean isFunction) {
         this.type = type;
         this.function = isFunction;
     }
+    
+    public Type(String type, boolean isFunction, ArrayList<String> Signature) {
+        this(type,isFunction);
+        this.signature = Signature;
+    }
+    
     
 
     public String getType() {

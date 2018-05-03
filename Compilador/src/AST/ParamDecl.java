@@ -12,4 +12,17 @@ public class ParamDecl{
     PW pw = PW.getPW();
     pw.print(this.type.toLowerCase()+" "+this.id.getId());
   }
+
+  
+
+    public String getType() {
+        return type;
+    }
+
+    public Ident getId() {
+        return id;
+    }
+  
+  
+  
 }
