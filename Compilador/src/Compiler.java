@@ -134,15 +134,18 @@ public class Compiler {
             }
             
             switch(lg) {
-                case 1:
-                    if ( symbolTable.getInGlobal(lexer.getStringValue()) != null ) 
-                        error.signal("Variable " + lexer.getStringValue() + " has already been declared");
-                    symbolTable.putInGlobal(type, lexer.getStringValue());
+                case 1: // contexto global
+                    Type temp = symbolTable.getInGlobal(lexer.getStringValue());
+                    if ( temp!=null && temp.isFunction() ) 
+                        error.signal("There is already a function with the name " + lexer.getStringValue());
+                    else if(temp != null)
+                        error.signal("There is already a variable with the name " + lexer.getStringValue());
+                    symbolTable.putInGlobal(lexer.getStringValue(), new Type(type, false));
                 break;
-                case 2:
+                case 2: // contexto local
                     if ( symbolTable.getInLocal(lexer.getStringValue()) != null ) 
                         error.signal("Variable " + lexer.getStringValue() + " has already been declared");
-                    symbolTable.putInLocal(type, lexer.getStringValue());
+                    symbolTable.putInLocal(lexer.getStringValue(), type);
                 break;
             }
 
@@ -211,10 +214,10 @@ public class Compiler {
             for(Ident x: iter){
                 switch(lg) {
                     case 1:
-                        symbolTable.putInGlobal(x.getId(), temp);
+                        symbolTable.putInGlobal(x.getId(), new Type(temp, false));
                     break;
                     case 2:
-                        symbolTable.putInLocal(x.getId(),temp );
+                        symbolTable.putInLocal(x.getId(), temp);
                     break;
                 }
             }
@@ -253,12 +256,15 @@ public class Compiler {
         if (lexer.token == Symbol.IDENT) {
             switch(lg) {
                 case 0:
-                    if ( symbolTable.get(lexer.getStringValue()) == null ) 
+                    if ( symbolTable.getVariable(lexer.getStringValue()) == null ) 
                         error.signal("Variable " + lexer.getStringValue() + " hasn't been declared");
                 break;
                 case 1:
-                    if ( symbolTable.getInGlobal(lexer.getStringValue()) != null ) 
-                        error.signal("Variable " + lexer.getStringValue() + " has already been declared");
+                    Type temp = symbolTable.getInGlobal(lexer.getStringValue());
+                    if ( temp!=null && temp.isFunction() ) 
+                        error.signal("There is already a function with the name " + lexer.getStringValue());
+                    else if(temp != null)
+                        error.signal("There is already a variable with the name " + lexer.getStringValue());
                 break;
                 case 2:
                     if ( symbolTable.getInLocal(lexer.getStringValue()) != null ) 
@@ -284,12 +290,15 @@ public class Compiler {
             }
             switch(lg) {
                 case 0:
-                    if ( symbolTable.get(lexer.getStringValue()) == null ) 
+                    if ( symbolTable.getVariable(lexer.getStringValue()) == null ) 
                         error.signal("Variable " + lexer.getStringValue() + " hasn't been declared");
                 break;
                 case 1:
-                    if ( symbolTable.getInGlobal(lexer.getStringValue()) != null ) 
-                        error.signal("Variable " + lexer.getStringValue() + " has already been declared");
+                    Type temp = symbolTable.getInGlobal(lexer.getStringValue());
+                    if ( temp!=null && temp.isFunction() ) 
+                        error.signal("There is already a function with the name " + lexer.getStringValue());
+                    else if(temp != null)
+                        error.signal("There is already a variable with the name " + lexer.getStringValue());
                 break;
                 case 2:
                     if ( symbolTable.getInLocal(lexer.getStringValue()) != null ) 
@@ -701,7 +710,14 @@ public class Compiler {
         
         return true;
     }
+    /*
+        String -> String
+        nome -> tipo
     
+        String -> 
+        nome -> 
+    
+    */
         // call_stmt -> call_expr
     public CallStmt call_stmt() {
         

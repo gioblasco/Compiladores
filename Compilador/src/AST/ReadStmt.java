@@ -22,7 +22,7 @@ public class ReadStmt extends Stmt{
         
         ArrayList<Ident> id = this.il.getIdList();
         for(Ident d : id){
-            String result = symbolTable.get(d.getId());
+            String result = symbolTable.getVariable(d.getId());
             if (result == null)
                 error.signal("Trying to execute a read stmt with a undeclared variable!");
             else if(result.toUpperCase().equals("STRING"))

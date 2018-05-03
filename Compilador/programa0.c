@@ -1,18 +1,15 @@
-#include <stdio.h>
+#!/bin/sh
+#
+# An example hook script to check the commit log message taken by
+# applypatch from an e-mail message.
+#
+# The hook should exit with non-zero status after issuing an
+# appropriate message if it wants to stop the commit.  The hook is
+# allowed to edit the commit message file.
+#
+# To enable this hook, rename this file to "applypatch-msg".
 
-
-int main()
-{
-	int A;
-	int B;
-	A = 0;
-	B = 1;
-	//scanf("%t", A);
-	//printf("%t %t", A, B);
-	for(I = 0; I < 3; I = I + 1)
-		A = A + 1;
-	if(A > B)
-		A = B;
-	return 0;
-
-}
+. git-sh-setup
+commitmsg="$(git rev-parse --git-path hooks/commit-msg)"
+test -x "$commitmsg" && exec "$commitmsg" ${1+"$@"}
+:
