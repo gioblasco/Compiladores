@@ -424,8 +424,12 @@ public class Compiler {
                     error.signal("Main function cannot receive parameters");
                 }
                 pdl = param_decl_list();
-                
-                symbolTable.putInGlobal(id.getId(), new Type(type, true, pdl.getParamTypes()));
+                //salva parametros na hashtablea local
+                for(ParamDecl x : pdl.getParamList()){
+                    symbolTable.putInLocal(x.getId().getId(), x.getType());
+                }
+                //salva assinatura da função no escopo global
+                symbolTable.putInGlobal(id.getId(), new Type(type, true, pdl.getParamTypes()));                
             }
 
             if (lexer.token != Symbol.RPAR) {
@@ -440,7 +444,7 @@ public class Compiler {
 
             FuncBody fb = func_body();
             
-            // verifica aqui se tem return quando não é void, porém ainda não verifica o tipo da variável de retorno
+            // verifica aqui se tem return quando não é void, porém ainda não verifica o tipo da variável de retorno (precisamos saber o tipo de expr de ReturnStmt)
             if(type != "VOID"){
                 ArrayList<Stmt> stmts = fb.getStmtList().getArrayList();
                 boolean ret = false;
@@ -561,7 +565,18 @@ public class Compiler {
         if (lexer.token != Symbol.IDENT) {
             error.signal("Expecting identifier at assign_expr()");
         }
+        
+        String type = symbolTable.getVariable(lexer.getStringValue());
+        if(type == null){
+            error.signal("Tried to assign a value to a variable ("+lexer.getStringValue()+") that hasn't been declared.");
+        } else {
+            if(type == "STRING"){
+                error.signal("Tried to assign a value to a declared string variable ("+lexer.getStringValue()+")");
+            }
+        }
+        
         Ident id = new Ident(lexer.getStringValue());
+        
         lexer.nextToken();
         if (lexer.token != Symbol.ASSIGN) {
             error.signal("Expecting assign signal assign_expr()");

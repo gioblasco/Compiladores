@@ -31,5 +31,9 @@ public class ParamDeclList {
         return temp;
     }
     
+    public ArrayList<ParamDecl> getParamList(){
+        return alpd;
+    }
+    
 
 }
