@@ -105,7 +105,7 @@ public class Lexer {
 			if (float_number == false) {
 				//converte string para inteiro
 				intValue = Integer.parseInt(aux);
-                                stringValue = String.valueOf(intValue);
+                stringValue = String.valueOf(intValue);
 				if (intValue > MaxValueInteger) {
 					error.signal("Error: Not valid integer at line: " + lineNumber);
 				}
@@ -114,7 +114,7 @@ public class Lexer {
 			else {
 				// Converte String para ponto flutuante.
 				floatValue = Float.parseFloat(aux);
-                                stringValue = String.valueOf(floatValue);
+                stringValue = String.valueOf(floatValue);
 				token = Symbol.FLOATLITERAL;
 			}
 		} else {
@@ -125,7 +125,7 @@ public class Lexer {
 			if (aux.length() > 0) {
 				Symbol temp;
 				temp = keywordsTable.get(aux.toString());
-                                stringValue = aux.toString();
+                stringValue = aux.toString();
 				if (temp == null) {
 					if (aux.length() > 30) error.signal("Error, identifier size limit reached");
 					token = Symbol.IDENT;
@@ -135,7 +135,7 @@ public class Lexer {
 					token = temp;
 				}
 			} else {
-                                stringValue = String.valueOf(input[tokenPos]);
+                stringValue = String.valueOf(input[tokenPos]);
 				switch (input[tokenPos]) {
 				case '+':
 					token = Symbol.PLUS;
@@ -153,7 +153,7 @@ public class Lexer {
 					if (input[tokenPos + 1] == '=') {
 						tokenPos++;
 						token = Symbol.ASSIGN;
-					} else error.signal("Not expect : ");
+					} else error.signal("Not expected : ");
 					break;
 				case '=':
 					token = Symbol.EQUAL;
@@ -168,7 +168,6 @@ public class Lexer {
 					token = Symbol.COMMA;
 					break;
 				case ';':
-					
 					token = Symbol.SEMICOLON;
 					break;
 				case '(':
