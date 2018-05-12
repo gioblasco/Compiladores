@@ -6,7 +6,7 @@ import AST.*;
 import Semantic.*;
 
 import java.util.*;
-import java.io.*;
+
 
 public class Compiler {
 

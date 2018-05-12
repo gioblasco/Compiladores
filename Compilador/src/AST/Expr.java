@@ -29,9 +29,6 @@ public class Expr {
         return et;
     }
     
-    
-    
-
     public void genC() {
         this.factor.genC();
         if(this.et != null)
@@ -41,7 +38,9 @@ public class Expr {
     public String getType(SymbolTable s) {
         String typeoffactor, typeoftail = null;
         typeoffactor = this.factor.getType(s);
-        if(typeoftail != null && this.et.getType(s).toLowerCase().equals("float") || typeoffactor.toLowerCase().equals("float"))
+        if(this.et != null)
+            typeoftail = this.et.getType(s);
+        if(typeoftail != null && typeoftail.toLowerCase().equals("float") || typeoffactor.toLowerCase().equals("float"))
             return "FLOAT";
         return "INT";
     }

@@ -14,15 +14,16 @@ public class ExprTail extends Expr{
         pw.rawPrint(" "+this.addop.toString()+" ");
         this.factor.genC();
         if(this.exprtail!=null)
-            this.exprtail.genC();
-            
-        
+            this.exprtail.genC();   
     }
 
+    @Override
     public String getType(SymbolTable s){
         String typeoffactor, typeoftail = null;
         typeoffactor = this.factor.getType(s);
-        if(typeoftail != null && this.exprtail.getType(s).toLowerCase().equals("float") || typeoffactor.toLowerCase().equals("float"))
+        if(this.exprtail != null && this.exprtail.getAddop() != null)
+            typeoftail = this.exprtail.getType(s);
+        if(typeoftail != null && typeoftail.toLowerCase().equals("float") || typeoffactor.toLowerCase().equals("float"))
             return "FLOAT";
         return "INT";        
     }

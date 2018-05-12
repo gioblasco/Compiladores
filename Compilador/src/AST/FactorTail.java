@@ -41,8 +41,10 @@ public class FactorTail extends Factor {
     
     public String getType(SymbolTable s){
         String typeofpe, typeoftail=null;
-        typeofpe = this.p.getType(s);    
-        if( (typeoftail != null && this.f.getType(s).toLowerCase().equals("float") ) || typeofpe.toLowerCase().equals("float") )
+        typeofpe = this.p.getType(s);
+        if(this.f != null && this.f.getPostfixExpr() != null)
+            typeoftail = this.f.getType(s);
+        if( (typeoftail != null && typeoftail.toLowerCase().equals("float") ) || typeofpe.toLowerCase().equals("float") )
             return "FLOAT";
         return "INT";
         
