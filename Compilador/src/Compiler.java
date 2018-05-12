@@ -84,25 +84,24 @@ public class Compiler {
     // decl -> string_decl_list {decl} | var_decl_list {decl} | empty
     //lg means local or global -> if 1 ? global : local
     public Declaration decl(Declaration d, Integer lg) {
-        if (d == null) {
-            d = new Declaration();
-        }
-
         if (lexer.token == Symbol.STRING) {
+            if (d == null) {
+                d = new Declaration();
+            }
             // devemos concatenar as strings
             StringDeclList sd = string_decl_list(d.getSd(), lg);
             d.setStringDeclList(sd);
 
             decl(d, lg);
         } else if (lexer.token == Symbol.FLOAT || lexer.token == Symbol.INT) {
+            if (d == null) {
+                d = new Declaration();
+            }
             // devemos concatenar as variáveis
             VarDeclList vd = var_decl_list(d.getVd(), lg);
             d.setVarDeclList(vd);
             
             decl(d, lg);
-        }
-        else{
-            error.signal("Wrong variable declaration type. Must be STRING, INT or FLOAT");
         }
         return d;
     }

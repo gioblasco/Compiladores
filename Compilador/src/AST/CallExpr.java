@@ -1,5 +1,7 @@
 package AST;
 
+import Semantic.SymbolTable;
+
 public class CallExpr extends Expr{
     private Ident id;
     private ExprList el;
@@ -16,6 +18,11 @@ public class CallExpr extends Expr{
     public void setEl(ExprList el) {
         this.el = el;
     }
+    
+    public String getCallExprType(SymbolTable s){
+        return s.getFunction(this.id.getId());
+    }
+    
     
     public void genC(){
        PW pw = PW.getPW();

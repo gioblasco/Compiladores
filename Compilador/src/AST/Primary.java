@@ -1,5 +1,7 @@
 package AST;
 
+import Semantic.SymbolTable;
+
 
 public class Primary {
     private Expr e;
@@ -18,6 +20,13 @@ public class Primary {
         this.literal = literal;
     }
    
+    public String getType(SymbolTable s){
+    
+        if(this.literal != null)
+            return s.getVariable(this.literal);
+        return null;
+        debug here
+    }
     
     public void genC() {
         PW pw = PW.getPW();

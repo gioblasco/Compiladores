@@ -1,5 +1,7 @@
 package AST;
 
+import Semantic.SymbolTable;
+
 
 public class PostfixExpr {
     private Primary p;
@@ -24,7 +26,12 @@ public class PostfixExpr {
         this.c = c;
     }
     
-    
+    public String getType(SymbolTable s){
+        if(c != null)
+            return c.getCallExprType(s);
+        else
+            return this.p.getType(e);
+    }
     
     
     public void genC() {
