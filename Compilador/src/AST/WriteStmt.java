@@ -30,7 +30,7 @@ public class WriteStmt extends Stmt{
         
         ArrayList<Ident> id = this.il.getIdList();
         for(Ident d : id){
-            String result = symbolTable.getVariable(d.getId());
+            String result = symbolTable.getVariable(d.getName());
             if (result == null)
                 error.signal("Trying to execute a write stmt with a undeclared variable!");
             this.al.add(result);

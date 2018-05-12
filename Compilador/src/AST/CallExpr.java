@@ -20,13 +20,13 @@ public class CallExpr extends Expr{
     }
     
     public String getCallExprType(SymbolTable s){
-        return s.getFunction(this.id.getId());
+        return s.getFunction(this.id.getName());
     }
     
     
     public void genC(){
        PW pw = PW.getPW();
-       pw.rawPrint(this.id.getId());
+       pw.rawPrint(this.id.getName());
        pw.rawPrint("(");
        if(this.el != null)
         this.el.genC();

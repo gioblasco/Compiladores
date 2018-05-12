@@ -16,6 +16,14 @@ public class Cond {
     public void setOp(Character op) {
         this.op = op;
     }
+    
+    public Expr getExpr1() {
+        return this.exp1;
+    }
+
+    public Expr getExpr2() {
+        return this.exp2;
+    }
   
     public void genC(){
         PW pw = PW.getPW();

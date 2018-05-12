@@ -24,7 +24,7 @@ public class Primary {
    
     public String getType(SymbolTable s){
         if(this.i != null)
-            return s.getVariable(this.i.getId());
+            return s.getVariable(this.i.getName());
         else if(this.e != null){
             return this.e.getType(s);
         }
@@ -47,7 +47,7 @@ public class Primary {
             pw.rawPrint(")");
         
         } else if(i!=null){
-            pw.rawPrint(this.i.getId());
+            pw.rawPrint(this.i.getName());
         } else{
             pw.rawPrint(this.literal);
         }

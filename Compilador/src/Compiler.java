@@ -216,10 +216,10 @@ public class Compiler {
             for(Ident x: iter){
                 switch(lg) {
                     case 1:
-                        symbolTable.putInGlobal(x.getId(), new Type(temp, false));
+                        symbolTable.putInGlobal(x.getName(), new Type(temp, false));
                     break;
                     case 2:
-                        symbolTable.putInLocal(x.getId(), temp);
+                        symbolTable.putInLocal(x.getName(), temp);
                     break;
                 }
             }
@@ -408,7 +408,7 @@ public class Compiler {
 
             Ident id = new Ident(lexer.getStringValue());
             
-            if ( symbolTable.getInGlobal(id.getId()) != null ) 
+            if ( symbolTable.getInGlobal(id.getName()) != null ) 
                 error.signal("Function " + lexer.getStringValue() + " has already been declared");
             
             lexer.nextToken();
@@ -419,16 +419,16 @@ public class Compiler {
             lexer.nextToken();
 
             if (lexer.token == Symbol.FLOAT || lexer.token == Symbol.INT) {
-                if(id.getId().toLowerCase() == "main"){
+                if(id.getName().toLowerCase() == "main"){
                     error.signal("Main function cannot receive parameters");
                 }
                 pdl = param_decl_list();
                 //salva parametros na hashtablea local
                 for(ParamDecl x : pdl.getParamList()){
-                    symbolTable.putInLocal(x.getId().getId(), x.getType());
+                    symbolTable.putInLocal(x.getId().getName(), x.getType());
                 }
                 //salva assinatura da função no escopo global
-                symbolTable.putInGlobal(id.getId(), new Type(type, true, pdl.getParamTypes()));                
+                symbolTable.putInGlobal(id.getName(), new Type(type, true, pdl.getParamTypes()));                
             }
 
             if (lexer.token != Symbol.RPAR) {
@@ -443,19 +443,28 @@ public class Compiler {
 
             FuncBody fb = func_body();
             
-            // verifica aqui se tem return quando não é void
             ArrayList<Stmt> stmts = fb.getStmtList().getArrayList();
             boolean ret = false;
             for(Stmt x: stmts){
                 if(x instanceof ReturnStmt){
-                    if(type == "VOID")
+                    // verifica aqui se tem return quando é void
+                    if(type.equals("VOID"))
                         error.signal("Void function with return statement");
-                    else if(type != ((ReturnStmt) x).getExpr().getType(symbolTable))
-                        error.signal("");
+                    // verifica aqui se o tipo do expr do return é igual ao tipo da função
+                    else if(!type.equals(((ReturnStmt) x).getExpr().getType(symbolTable))){
+                        error.signal("Function has a return with a different type");
+                    }
                     ret = true;
                 }
+                else if(x instanceof AssignStmt){
+                    String var = ((AssignStmt) x).getAssignExpr().getIdent().getName();
+                    // checa uso de variaveis não usadas
+                    if(symbolTable.getVariable(var) == null)
+                        error.signal("Trying to use variable "+var+" that hasn't been declared");
+                }
             }
-            if(type != "VOID" && ret == false){
+            // verifica aqui se tem return quando não é void
+            if(!type.equals("VOID") && ret == false){
                 error.signal("Non void function without return statement");
             }
 
@@ -740,7 +749,7 @@ public class Compiler {
         }
         Ident id = new Ident(lexer.getStringValue());
         
-        if(symbolTable.getFunction(id.getId()) == null){
+        if(symbolTable.getFunction(id.getName()) == null){
             error.signal("Function hasn't been declared.");
         }
          
@@ -771,7 +780,7 @@ public class Compiler {
         }
         Ident id = new Ident(lexer.getStringValue());
         
-        if(symbolTable.getFunction(id.getId()) == null){
+        if(symbolTable.getFunction(id.getName()) == null){
             error.signal("Function hasn't been declared.");
         }
         
@@ -913,10 +922,9 @@ public class Compiler {
     public Cond cond() {
         Cond c = new Cond();
         c.setExpr1(expr());
-
         c.setOp(compop());
-
         c.setExpr2(expr());
+       
         return c;
     }
 

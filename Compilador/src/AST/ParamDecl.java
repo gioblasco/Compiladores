@@ -10,7 +10,7 @@ public class ParamDecl{
   }
   public void genC(){
     PW pw = PW.getPW();
-    pw.print(this.type.toLowerCase()+" "+this.id.getId());
+    pw.print(this.type.toLowerCase()+" "+this.id.getName());
   }
 
   

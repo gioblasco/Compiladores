@@ -15,7 +15,8 @@ public class FuncBody{
 
   public void genC(){
     PW pw = PW.getPW();
-    this.decl.genC();
+    if(this.decl != null)
+        this.decl.genC();
     this.sl.genC();
   }
 }

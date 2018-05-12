@@ -8,10 +8,14 @@ public class AssignExpr extends Expr{
     this.id = i;
     this.expr = e;
   }
+  
+  public Ident getIdent(){
+      return this.id;
+  }
 
   public void genC(){
     PW pw = PW.getPW();
-    pw.print(this.id.getId()+" = ");
+    pw.print(this.id.getName()+" = ");
     this.expr.genC();
   }
 }

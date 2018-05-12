@@ -11,8 +11,8 @@ public class FuncDecl{
   public FuncDecl(String t, Ident i, ParamDeclList p, FuncBody f){
     this.type = t;
     this.id = i;
-    if(this.id.getId().toLowerCase().equals("main"))
-        this.id = new Ident(this.id.getId().toLowerCase());
+    if(this.id.getName().toLowerCase().equals("main"))
+        this.id = new Ident(this.id.getName().toLowerCase());
     
     this.pdl = p;
     this.fd = f;
@@ -20,7 +20,7 @@ public class FuncDecl{
 
   public void genC(){
     PW pw = PW.getPW();
-    pw.print(this.type.toLowerCase()+" "+this.id.getId()+"(");
+    pw.print(this.type.toLowerCase()+" "+this.id.getName()+"(");
     if(this.pdl != null)
         this.pdl.genC();
     pw.rawPrint(")\n");

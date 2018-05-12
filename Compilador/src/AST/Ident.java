@@ -7,7 +7,7 @@ public class Ident{
 		this.id = id;
 	}
 
-	public String getId(){
+	public String getName(){
 		return this.id;
 	}
 	

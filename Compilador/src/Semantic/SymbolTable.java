@@ -33,7 +33,7 @@ public class SymbolTable {
 
     public String getFunction(String key) {
         Type temp = globalTable.get(key);
-        if (temp.isFunction()) {
+        if (temp != null && temp.isFunction()) {
             return temp.getType();
         }
         return null;

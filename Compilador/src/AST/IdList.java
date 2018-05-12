@@ -14,7 +14,7 @@ public class IdList{
     PW pw = PW.getPW();
     if(this.ali.size()>0){
       for(i = 0; i < this.ali.size(); i++){
-        pw.rawPrint(this.ali.get(i).getId());
+        pw.rawPrint(this.ali.get(i).getName());
         if(i != (this.ali.size()-1))
             pw.rawPrint(", ");
       }
