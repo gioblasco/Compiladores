@@ -1,5 +1,7 @@
 package AST;
 
+import Semantic.SymbolTable;
+
 public class Factor {
 
     private PostfixExpr p;
@@ -29,6 +31,15 @@ public class Factor {
         this.ft = ft;
     }
     
+    public String getType(SymbolTable s) {
+        String typeofpe, typeoftail = null;
+        typeofpe = this.p.getType(s);
+        if(this.ft != null)
+            typeoftail = this.ft.getType(s);
+        if(typeofpe.toLowerCase().equals("float") || (typeoftail != null && typeoftail.toLowerCase().equals("float")))
+            return "FLOAT";
+        return "INT";
+    }
     public void genC(){
         p.genC();
         if(ft != null)

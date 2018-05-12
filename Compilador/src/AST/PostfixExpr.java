@@ -30,7 +30,7 @@ public class PostfixExpr {
         if(c != null)
             return c.getCallExprType(s);
         else
-            return this.p.getType(e);
+            return this.p.getType(s);
     }
     
     

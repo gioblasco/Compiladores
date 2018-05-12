@@ -1,5 +1,7 @@
 package AST;
 
+import Semantic.SymbolTable;
+
 public class Expr {
     private Factor factor;
     private ExprTail et;
@@ -34,6 +36,14 @@ public class Expr {
         this.factor.genC();
         if(this.et != null)
             this.et.genC();
+    }
+
+    public String getType(SymbolTable s) {
+        String typeoffactor, typeoftail = null;
+        typeoffactor = this.factor.getType(s);
+        if(typeoftail != null && this.et.getType(s).toLowerCase().equals("float") || typeoffactor.toLowerCase().equals("float"))
+            return "FLOAT";
+        return "INT";
     }
 
   

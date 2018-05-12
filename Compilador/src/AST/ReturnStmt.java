@@ -6,6 +6,10 @@ public class ReturnStmt extends Stmt{
      this.ex = e;   
     }
     
+    public Expr getExpr(){
+        return this.ex;
+    }
+    
     public void genC(){
         PW pw = PW.getPW();
         pw.print("return ");

@@ -160,7 +160,7 @@ public class Compiler {
             lexer.nextToken();
 
             if (lexer.token != Symbol.STRINGLITERAL) {
-                error.signal("Missing STRINGLITERAL type");
+                error.signal("Not a STRINGLITERAL");
             }
 
             String str = lexer.getStringValue();
@@ -170,7 +170,7 @@ public class Compiler {
             lexer.nextToken();
 
             if (lexer.token != Symbol.SEMICOLON) {
-                error.signal("Error: Missing end of declaration");
+                error.signal("Missing end of declaration");
             }
 
             lexer.nextToken();
@@ -443,18 +443,20 @@ public class Compiler {
 
             FuncBody fb = func_body();
             
-            // verifica aqui se tem return quando não é void, porém ainda não verifica o tipo da variável de retorno (precisamos saber o tipo de expr de ReturnStmt)
-            if(type != "VOID"){
-                ArrayList<Stmt> stmts = fb.getStmtList().getArrayList();
-                boolean ret = false;
-                for(Stmt x: stmts){
-                    if(x instanceof ReturnStmt){
-                        ret = true;
-                    }
+            // verifica aqui se tem return quando não é void
+            ArrayList<Stmt> stmts = fb.getStmtList().getArrayList();
+            boolean ret = false;
+            for(Stmt x: stmts){
+                if(x instanceof ReturnStmt){
+                    if(type == "VOID")
+                        error.signal("Void function with return statement");
+                    else if(type != ((ReturnStmt) x).getExpr().getType(symbolTable))
+                        error.signal("");
+                    ret = true;
                 }
-                if(!ret){
-                    error.signal("Not void function without return statement.");
-                }
+            }
+            if(type != "VOID" && ret == false){
+                error.signal("Non void function without return statement");
             }
 
             if (lexer.token != Symbol.END) {
@@ -582,6 +584,10 @@ public class Compiler {
         }
         lexer.nextToken();
         Expr e = expr();
+
+        if(type.equals("INT") && e.getType(symbolTable).equals("FLOAT")){
+            error.signal("Trying to assign a float value to int variable");
+        }
         return new AssignExpr(id, e);
     }
 
@@ -817,10 +823,14 @@ public class Compiler {
         } else if(lexer.token == Symbol.IDENT){
             id = new Ident(lexer.getStringValue());
             p = new Primary(id);
-        } else if(lexer.token == Symbol.INTLITERAL || lexer.token == Symbol.FLOATLITERAL){
+        } else if(lexer.token == Symbol.INTLITERAL){
             literal = lexer.getStringValue();
-            p = new Primary(literal);
-        } else {
+            p = new Primary(literal, "INT");
+        } else if(lexer.token == Symbol.FLOATLITERAL){
+             literal = lexer.getStringValue();
+             p = new Primary(literal, "FLOAT");
+        }
+        else {
             error.signal("Not a primary element at primary()");
         }
         pe.setPrimary(p);

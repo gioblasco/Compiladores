@@ -1,5 +1,7 @@
 package AST;
 
+import Semantic.SymbolTable;
+
 public class ExprTail extends Expr{
     private Character addop;
     private Factor factor;
@@ -17,6 +19,13 @@ public class ExprTail extends Expr{
         
     }
 
+    public String getType(SymbolTable s){
+        String typeoffactor, typeoftail = null;
+        typeoffactor = this.factor.getType(s);
+        if(typeoftail != null && this.exprtail.getType(s).toLowerCase().equals("float") || typeoffactor.toLowerCase().equals("float"))
+            return "FLOAT";
+        return "INT";        
+    }
     public void setAddop(Character addop) {
         this.addop = addop;
     }

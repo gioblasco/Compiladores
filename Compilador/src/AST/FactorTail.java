@@ -1,5 +1,6 @@
 package AST;
     // factor_tail -> mulop postfix_expr factor_tail | empty
+import Semantic.SymbolTable;
 public class FactorTail extends Factor {
     
     private Character mulop;
@@ -38,7 +39,14 @@ public class FactorTail extends Factor {
         return f;
     }
     
-    
+    public String getType(SymbolTable s){
+        String typeofpe, typeoftail=null;
+        typeofpe = this.p.getType(s);    
+        if( (typeoftail != null && this.f.getType(s).toLowerCase().equals("float") ) || typeofpe.toLowerCase().equals("float") )
+            return "FLOAT";
+        return "INT";
+        
+    }    
  
     public void genC(){
         PW pw = PW.getPW();
