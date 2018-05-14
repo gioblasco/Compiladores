@@ -24,9 +24,7 @@ public class Type {
     public Type(String type, boolean isFunction, ArrayList<String> Signature) {
         this(type,isFunction);
         this.signature = Signature;
-    }
-    
-    
+    } 
 
     public String getType() {
         return type;
@@ -34,6 +32,10 @@ public class Type {
 
     public boolean isFunction() {
         return function;
+    }
+    
+    public ArrayList<String> getSignature(){
+        return this.signature;
     }
     
     

@@ -36,7 +36,7 @@ BEGIN
   BEGIN
     READ(x);
     READ(y);
-    retorno := AbsSub(x,y);
+    retorno := AbsSub(x, y);
     WRITE(retorno);
     retorno := Factorial (retorno);
     WRITE(retorno);

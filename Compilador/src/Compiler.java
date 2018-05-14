@@ -750,7 +750,7 @@ public class Compiler {
         Ident id = new Ident(lexer.getStringValue());
         
         if(symbolTable.getFunction(id.getName()) == null){
-            error.signal("Function hasn't been declared.");
+            error.signal("Function "+id.getName()+" hasn't been declared.");
         }
          
         if (lexer.nextToken() != Symbol.LPAR) {
@@ -760,6 +760,20 @@ public class Compiler {
         if (lexer.token != Symbol.RPAR) {
             el = expr_list(el);
         }
+        ArrayList<String> signature = symbolTable.getInGlobal(id.getName()).getSignature();
+        if(el != null){
+            ArrayList<Expr> parameters = el.getExprList();
+            if(parameters.size() == signature.size()){
+                for (int i = 0; i < parameters.size(); i++) {
+                    if(!parameters.get(i).getType(symbolTable).toLowerCase().equals(signature.get(i).toLowerCase())){
+                        error.signal("Calling expression with wrong type of parameters");
+                    }
+                }
+            } else
+                error.signal("Calling expression with wrong number of parameters");
+        } else if(signature.size() > 0)
+                error.signal("Calling expression with wrong number of parameters");
+            
         if (lexer.token != Symbol.RPAR) {
             error.signal("Expecting close parentheses at call_expr()");
         }
@@ -781,7 +795,7 @@ public class Compiler {
         Ident id = new Ident(lexer.getStringValue());
         
         if(symbolTable.getFunction(id.getName()) == null){
-            error.signal("Function hasn't been declared.");
+            error.signal("Function "+id.getName()+" hasn't been declared.");
         }
         
         if (lexer.nextToken() != Symbol.LPAR) {
@@ -791,6 +805,19 @@ public class Compiler {
         if (lexer.token != Symbol.RPAR) {
             el = expr_list(el);
         }
+        ArrayList<String> signature = symbolTable.getInGlobal(id.getName()).getSignature();
+        if(el != null){
+            ArrayList<Expr> parameters = el.getExprList();
+            if(parameters.size() == signature.size()){
+                for (int i = 0; i < parameters.size(); i++) {
+                    if(!parameters.get(i).getType(symbolTable).toLowerCase().equals(signature.get(i).toLowerCase())){
+                        error.signal("Calling expression with wrong type of parameters");
+                    }
+                }
+            } else
+                error.signal("Calling expression with wrong number of parameters");
+        } else if(signature.size() > 0)
+                error.signal("Calling expression with wrong number of parameters");
         if (lexer.token != Symbol.RPAR) {
             error.signal("Expecting close parentheses at call statement");
         }

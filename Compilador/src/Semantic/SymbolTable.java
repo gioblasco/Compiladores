@@ -38,7 +38,7 @@ public class SymbolTable {
         }
         return null;
     }
-    
+  
     public Type getInGlobal(String key){
         return globalTable.get(key);
     }

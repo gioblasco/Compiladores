@@ -11,6 +11,11 @@ public class ExprList {
     public ExprList(){
         this.ale = new ArrayList<Expr>();
     }
+    
+    public ArrayList<Expr> getExprList(){
+        return this.ale;
+    }
+    
     public void genC(){
         PW pw = PW.getPW();
         for(int i = 0; i < this.ale.size(); i++){
