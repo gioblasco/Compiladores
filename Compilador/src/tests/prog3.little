@@ -30,15 +30,15 @@ BEGIN
     RETURN n * (Factorial(n-1));
   END
 
-
   -- Rotina Principal
   FUNCTION VOID MAIN()
   BEGIN
+
     READ(x);
     READ(y);
     retorno := AbsSub(x, y);
     WRITE(retorno);
-    retorno := Factorial (retorno);
+    retorno := Factorial (10);
     WRITE(retorno);
   END
 

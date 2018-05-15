@@ -427,10 +427,12 @@ public class Compiler {
                 for(ParamDecl x : pdl.getParamList()){
                     symbolTable.putInLocal(x.getId().getName(), x.getType());
                 }
+                
                 //salva assinatura da função no escopo global
-                symbolTable.putInGlobal(id.getName(), new Type(type, true, pdl.getParamTypes()));                
-            }
-
+                symbolTable.putInGlobal(id.getName(), new Type(type, true, pdl.getParamTypes()));
+            } else
+                symbolTable.putInGlobal(id.getName(), new Type(type, true, null));
+          
             if (lexer.token != Symbol.RPAR) {
                 error.signal("Missing parantheses for parameters at func_decl()");
             }
@@ -761,7 +763,7 @@ public class Compiler {
             el = expr_list(el);
         }
         ArrayList<String> signature = symbolTable.getInGlobal(id.getName()).getSignature();
-        if(el != null){
+        if(el != null && signature != null){
             ArrayList<Expr> parameters = el.getExprList();
             if(parameters.size() == signature.size()){
                 for (int i = 0; i < parameters.size(); i++) {
@@ -771,8 +773,11 @@ public class Compiler {
                 }
             } else
                 error.signal("Calling expression with wrong number of parameters");
-        } else if(signature.size() > 0)
+        } else if(el == null && signature != null)
                 error.signal("Calling expression with wrong number of parameters");
+        else if(el != null && signature == null)
+            error.signal("Calling expression with wrong number of parameters");
+            
             
         if (lexer.token != Symbol.RPAR) {
             error.signal("Expecting close parentheses at call_expr()");
@@ -806,7 +811,7 @@ public class Compiler {
             el = expr_list(el);
         }
         ArrayList<String> signature = symbolTable.getInGlobal(id.getName()).getSignature();
-        if(el != null){
+        if(el != null && signature != null){
             ArrayList<Expr> parameters = el.getExprList();
             if(parameters.size() == signature.size()){
                 for (int i = 0; i < parameters.size(); i++) {
@@ -816,8 +821,11 @@ public class Compiler {
                 }
             } else
                 error.signal("Calling expression with wrong number of parameters");
-        } else if(signature.size() > 0)
+        } else if(el == null && signature != null)
                 error.signal("Calling expression with wrong number of parameters");
+        else if(el != null && signature == null)
+            error.signal("Calling expression with wrong number of parameters");
+        
         if (lexer.token != Symbol.RPAR) {
             error.signal("Expecting close parentheses at call statement");
         }
