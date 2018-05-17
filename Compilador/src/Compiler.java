@@ -669,6 +669,12 @@ public class Compiler {
         Expr e = new Expr();
         if (factor(e)) {
             e.setExprTail(expr_tail());
+            if(e.getExprTail() != null){
+                String typeofft = e.getFactor().getType(symbolTable);
+                String typeofet = e.getExprTail().getType(symbolTable);
+                if(!typeofft.equals(typeofet))
+                    error.signal("Trying to make an operation between a "+typeofft.toLowerCase()+" and a "+typeofet.toLowerCase());
+            }
         } else {
             error.signal("Factor expected at expr()");
         }
@@ -699,7 +705,14 @@ public class Compiler {
         PostfixExpr pe = new PostfixExpr();
         if (postfix_expr(pe)) {
             e.getFactor().setPostfixExpr(pe);
-            return factor_tail(e.getFactor());
+            boolean fct = factor_tail(e.getFactor());
+            if(fct && e.getFactor().getFactorTail() != null){
+                String typeofpf = e.getFactor().getPostfixExpr().getType(symbolTable);
+                String typeofft = e.getFactor().getFactorTail().getType(symbolTable);
+                if(!typeofpf.equals(typeofft))
+                    error.signal("Trying to make an operation between a "+typeofpf.toLowerCase()+" and a "+typeofft.toLowerCase());
+            }
+            return fct;      
         }
         
         return false;
@@ -768,15 +781,15 @@ public class Compiler {
             if(parameters.size() == signature.size()){
                 for (int i = 0; i < parameters.size(); i++) {
                     if(!parameters.get(i).getType(symbolTable).toLowerCase().equals(signature.get(i).toLowerCase())){
-                        error.signal("Calling expression with wrong type of parameters");
+                        error.signal("Calling expression "+id.getName()+" with wrong type of parameters");
                     }
                 }
             } else
-                error.signal("Calling expression with wrong number of parameters");
+                error.signal("Calling expression "+id.getName()+" with wrong number of parameters");
         } else if(el == null && signature != null)
-                error.signal("Calling expression with wrong number of parameters");
+                error.signal("Calling expression "+id.getName()+" with wrong number of parameters");
         else if(el != null && signature == null)
-            error.signal("Calling expression with wrong number of parameters");
+            error.signal("Calling expression "+id.getName()+" with wrong number of parameters");
             
             
         if (lexer.token != Symbol.RPAR) {
@@ -816,15 +829,15 @@ public class Compiler {
             if(parameters.size() == signature.size()){
                 for (int i = 0; i < parameters.size(); i++) {
                     if(!parameters.get(i).getType(symbolTable).toLowerCase().equals(signature.get(i).toLowerCase())){
-                        error.signal("Calling expression with wrong type of parameters");
+                        error.signal("Calling expression "+id.getName()+" with wrong type of parameters");
                     }
                 }
             } else
-                error.signal("Calling expression with wrong number of parameters");
+                error.signal("Calling expression "+id.getName()+" with wrong number of parameters");
         } else if(el == null && signature != null)
-                error.signal("Calling expression with wrong number of parameters");
+                error.signal("Calling expression "+id.getName()+" with wrong number of parameters");
         else if(el != null && signature == null)
-            error.signal("Calling expression with wrong number of parameters");
+            error.signal("Calling expression with "+id.getName()+" wrong number of parameters");
         
         if (lexer.token != Symbol.RPAR) {
             error.signal("Expecting close parentheses at call statement");

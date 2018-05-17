@@ -12,13 +12,13 @@ BEGIN
 
     A := 0;
     
-    B := 1/0;
+    B := 1 * 5;
   
     READ(A);
     WRITE(A, B);
   
     FOR (I := 0; I < 3; I := I + 1)
-	A := A + 1;
+	A := A + 1.0;
     ENDFOR
   
     IF (A > B) THEN
