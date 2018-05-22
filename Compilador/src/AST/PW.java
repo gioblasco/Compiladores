@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.lang.String;
 import java.util.Arrays;
 import java.util.logging.Level;
@@ -69,10 +70,11 @@ public class PW {
         out.close();
     }
 
-    public void setFileName(String id) {
+    public void setFileName(String id) throws FileNotFoundException, UnsupportedEncodingException {
         this.fileName = id;
-
-        PW.out = new PrintWriter( System.out);
+        
+        //PW.out = new PrintWriter( System.out);
+        PW.out = new PrintWriter(this.fileName.concat(".c"), "UTF-8");
     }
 
     static int currentIndent = 0;
