@@ -11,8 +11,8 @@ BEGIN
 
     num3 := num1 - num2;
 
-    IF (num3 < 0) THEN
-      num3 := num3 * (0 - 1);
+    IF (num3 < 0.0) THEN
+      num3 := num3 * (0.0 - 1.0);
     ENDIF
 
     RETURN num3;
@@ -31,15 +31,19 @@ BEGIN
   END
 
   -- Rotina Principal
-  FUNCTION VOID MAIN()
+  FUNCTION INT MAIN()
   BEGIN
+
+    INT aux;
 
     READ(x);
     READ(y);
     retorno := AbsSub(x, y);
     WRITE(retorno);
-    retorno := Factorial (10);
-    WRITE(retorno);
+    aux := Factorial(10);
+    WRITE(aux);
+    
+    RETURN 0;
   END
 
 END

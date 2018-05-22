@@ -1,8 +1,8 @@
-PROGRAM programa1
+PROGRAM errosem5
 
 BEGIN
 
-    FLOAT num1, num2, num3;
+    FLOAT num1, num2;
 
 -- Escreve a soma entre dois números
   FUNCTION INT MAIN()

@@ -1,0 +1,15 @@
+PROGRAM errosem02
+BEGIN
+
+  FUNCTION INT MAIN()
+  BEGIN
+  
+    STRING hello := "oi";
+
+    READ(hello);
+  
+    RETURN 0;
+
+  END
+
+END

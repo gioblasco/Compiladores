@@ -1,0 +1,15 @@
+PROGRAM errosem03
+BEGIN
+
+  FUNCTION INT MAIN()
+  BEGIN
+  
+    INT A;
+    
+    READ(A);
+    WRITE(A);
+  
+
+  END
+
+END

@@ -454,7 +454,7 @@ public class Compiler {
                         error.signal("Void function with return statement");
                     // verifica aqui se o tipo do expr do return é igual ao tipo da função
                     else if(!type.equals(((ReturnStmt) x).getExpr().getType(symbolTable))){
-                        error.signal("Function has a return with a different type");
+                        error.signal("Function "+id.getName()+" has a return with a different type");
                     }
                     ret = true;
                 }
@@ -467,7 +467,7 @@ public class Compiler {
             }
             // verifica aqui se tem return quando não é void
             if(!type.equals("VOID") && ret == false){
-                error.signal("Non void function without return statement");
+                error.signal("Non void function "+id.getName()+" without return statement");
             }
 
             if (lexer.token != Symbol.END) {
@@ -596,8 +596,8 @@ public class Compiler {
         lexer.nextToken();
         Expr e = expr();
 
-        if(type.equals("INT") && e.getType(symbolTable).equals("FLOAT")){
-            error.signal("Trying to assign a float value to int variable");
+        if(!type.equals(e.getType(symbolTable))){
+            error.signal("Trying to assign a "+e.getType(symbolTable)+" to a "+type);
         }
         return new AssignExpr(id, e);
     }
@@ -972,6 +972,13 @@ public class Compiler {
         c.setExpr1(expr());
         c.setOp(compop());
         c.setExpr2(expr());
+        
+        String type1 = c.getExpr1().getType(symbolTable);
+        String type2 = c.getExpr2().getType(symbolTable);
+        
+        if(!type1.equals(type2)){
+            error.signal("Trying to compare a "+type1+" with a "+type2);
+        }
        
         return c;
     }

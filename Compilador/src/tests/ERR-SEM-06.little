@@ -1,0 +1,22 @@
+PROGRAM errosem06
+
+BEGIN
+	-- Calcula X mod Y
+	FUNCTION INT Mod(INT x, INT y)
+	BEGIN
+
+	  INT resto;
+	  resto :=  x - (y * (x/y));
+
+	  RETURN resto;
+
+	END
+
+	FUNCTION INT MAIN()
+	BEGIN
+	  
+          Mod(10, 2, 0);
+
+          RETURN 0;
+	END
+END

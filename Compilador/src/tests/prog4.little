@@ -1,15 +1,21 @@
 PROGRAM programa4
 
 BEGIN
+        FLOAT retorno;
 
-	FLOAT retorno;
-
-	FUNCTION VOID MAIN()
+        
+	-- Calcula X mod Y
+	FUNCTION INT Mod(INT x, INT y)
 	BEGIN
-	  PrimeNumbers();
+
+	  INT resto;
+	  resto :=  x - (y * (x/y));
+
+	  RETURN resto;
+
 	END
 
-	-- Imprime números primos de 1 a 100
+        -- Imprime números primos de 1 a 100
 	FUNCTION VOID PrimeNumbers()
 	BEGIN
 
@@ -37,14 +43,10 @@ BEGIN
 
 	END
 
-	-- Calcula X mod Y
-	FUNCTION INT Mod(INT x, INT y)
+	FUNCTION INT MAIN()
 	BEGIN
+	  PrimeNumbers();
 
-	  INT resto;
-	  resto :=  x - (y * (x/y));
-
-	  RETURN resto;
-
+          RETURN 0;
 	END
 END

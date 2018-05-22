@@ -1,4 +1,4 @@
-PROGRAM programa2
+PROGRAM errosem08
 
 BEGIN
 
@@ -11,6 +11,8 @@ BEGIN
     READ(y);
 
     z := x - y;
+
+    printf(x, y);
 
     IF (z < 0) THEN
       z := z * (0 - 1);

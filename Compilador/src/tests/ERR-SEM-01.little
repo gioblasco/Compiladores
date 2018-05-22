@@ -1,18 +1,14 @@
-PROGRAM programa0
-
+PROGRAM errosem01
 BEGIN
 
--- Escreve a soma entre dois números
   FUNCTION INT MAIN()
   BEGIN
   
     INT A;
     INT B;
     INT I;
-
-    A := 0;
     
-    B := 1 * 5;
+    B := 1.5;
   
     READ(A);
     WRITE(A, B);

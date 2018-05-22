@@ -1,0 +1,21 @@
+PROGRAM errosem04
+
+BEGIN
+
+  FUNCTION INT GetFloat(INT n)
+  BEGIN
+
+    RETURN 2.5;
+  END
+
+  -- Rotina Principal
+  FUNCTION INT MAIN()
+  BEGIN
+    INT x, y;
+    READ(x);
+    Y := GetFloat(x);
+    WRITE(y);   
+    RETURN 0;
+  END
+
+END
