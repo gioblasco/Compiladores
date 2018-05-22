@@ -31,7 +31,7 @@ BEGIN
   END
 
   -- Rotina Principal
-  FUNCTION INT MAIN()
+  FUNCTION INT main()
   BEGIN
 
     INT aux;

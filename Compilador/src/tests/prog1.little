@@ -5,7 +5,7 @@ BEGIN
     FLOAT num1, num2, num3;
 
 -- Escreve a soma entre dois números
-  FUNCTION INT MAIN()
+  FUNCTION INT main()
   BEGIN
 
     READ(num1);

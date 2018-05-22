@@ -68,7 +68,7 @@ public class Compiler {
         }
 
         if(symbolTable.getFunction("main") == null)
-            error.show("The program must have a MAIN function!");
+            error.show("The program must have a main function!");
             
         lexer.nextToken();
 
@@ -411,8 +411,8 @@ public class Compiler {
 
             Ident id = new Ident(lexer.getStringValue());
             
-            if(id.getName().toLowerCase().equals("main") && !type.equals("INT")){
-                    error.show("The MAIN function must be INT");
+            if(id.getName().equals("main") && !type.equals("INT")){
+                    error.show("The main function must be INT");
             }
             
             if ( symbolTable.getInGlobal(id.getName()) != null ) 
@@ -426,8 +426,8 @@ public class Compiler {
             lexer.nextToken();
 
             if (lexer.token == Symbol.FLOAT || lexer.token == Symbol.INT) {
-                if(id.getName().toLowerCase().equals("main")){
-                    error.show("The MAIN function cannot receive parameters");
+                if(id.getName().equals("main")){
+                    error.show("The main function cannot receive parameters");
                 } 
                 pdl = param_decl_list();
                 
@@ -437,15 +437,9 @@ public class Compiler {
                 }
                 
                 //salva assinatura da função no escopo global
-                if(id.getName().toLowerCase().equals("main"))
-                    symbolTable.putInGlobal("main", new Type(type, true, pdl.getParamTypes()));
-                else
-                    symbolTable.putInGlobal(id.getName(), new Type(type, true, pdl.getParamTypes()));
+                symbolTable.putInGlobal(id.getName(), new Type(type, true, pdl.getParamTypes()));
             } else {
-                 if(id.getName().toLowerCase().equals("main"))
-                    symbolTable.putInGlobal("main", new Type(type, true, null));
-                else
-                    symbolTable.putInGlobal(id.getName(), new Type(type, true, null));              
+                symbolTable.putInGlobal(id.getName(), new Type(type, true, null));              
             }
           
             if (lexer.token != Symbol.RPAR) {

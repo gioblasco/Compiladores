@@ -1,7 +1,7 @@
 PROGRAM errosem02
 BEGIN
 
-  FUNCTION INT MAIN()
+  FUNCTION INT main()
   BEGIN
   
     STRING hello := "oi";

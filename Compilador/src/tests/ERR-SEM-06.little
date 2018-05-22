@@ -12,7 +12,7 @@ BEGIN
 
 	END
 
-	FUNCTION INT MAIN()
+	FUNCTION INT main()
 	BEGIN
 	  
           Mod(10, 2, 0);

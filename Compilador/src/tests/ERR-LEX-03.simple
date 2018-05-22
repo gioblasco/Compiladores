@@ -5,7 +5,7 @@ BEGIN
   FLOAT x, y, z:
 
   -- Imprime o módulo da subtração entre dois números. ( | A - B | )
-  FUNCTION VOID MAIN()
+  FUNCTION VOID main()
   BEGIN
     READ(x);
     READ(y);
