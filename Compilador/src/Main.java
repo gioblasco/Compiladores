@@ -1,15 +1,18 @@
 
+import AST.PW;
 import AST.Program;
+import Error.CompilerError;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Scanner;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
 
         File file = null;
         FileReader stream;
@@ -77,6 +80,12 @@ public class Main {
 
         Compiler compiler = new Compiler();
         Program p = compiler.compile(input);
+        if(p == null){
+            throw new RuntimeException("The program presented compilation error(s)");
+        }
+        String[] name = file.getName().split("\\.");
+        PW pw = PW.getPW();
+        pw.setFileName(name[0]);
         p.genC();
 
     }

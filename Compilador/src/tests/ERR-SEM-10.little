@@ -3,7 +3,7 @@ BEGIN
 
   INT A;
 
-  FUNCTION INT MAIN()
+  FUNCTION VOID MAIN()
   BEGIN
   
     INT A;

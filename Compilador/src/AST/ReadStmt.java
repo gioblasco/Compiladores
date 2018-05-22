@@ -26,7 +26,7 @@ public class ReadStmt extends Stmt{
             if (result == null)
                 error.signal("Trying to execute a read stmt with a undeclared variable!");
             else if(result.toUpperCase().equals("STRING"))
-                error.signal("Trying to read a String, String are imutable objects!");
+                error.signal("Trying to read a STRING, but strings are imutable objects!");
             this.al.add(result);
         }
     }

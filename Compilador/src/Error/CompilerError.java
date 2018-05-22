@@ -26,16 +26,26 @@ public class CompilerError {
         // is goPreviousToken is true, the error is signalled at the line of the
         // previous token, not the last one.
         if ( goPreviousToken ) {
-          System.out.println("Error! at line " + lexer.getCurrentLine() + ": ");
+          System.out.println(ANSI_RED + "Error! at line " + lexer.getCurrentLine() + ": "+ ANSI_RESET);
         }
         else {
-          System.out.println("Error! at line " + lexer.getLineNumber() +": ");
-          System.out.println(lexer.getCurrentLine());
+          System.out.println(ANSI_RED + "Error! at line " + lexer.getLineNumber() +": " + ANSI_RESET);
+          System.out.println(ANSI_RED + lexer.getCurrentLine() + ANSI_RESET);
         }
 
-        System.out.println( strMessage );
+        System.out.println(ANSI_RED + strMessage + "\n" +ANSI_RESET);
 
         thereWasAnError = true;
+    }
+    
+    public void warning(String strMessage){
+        
+        //the program doesn't end, only shows warning
+        
+        System.out.println(ANSI_YELLOW + "Warning! at line " + lexer.getLineNumber() +": " + ANSI_RESET);
+        System.out.println(ANSI_YELLOW + lexer.getCurrentLine() + ANSI_RESET);
+          
+        System.out.println(ANSI_YELLOW + strMessage + "\n" + ANSI_RESET);          
     }
 
     public void signal( String strMessage ) {
@@ -46,4 +56,7 @@ public class CompilerError {
 
     private Lexer lexer;
     private boolean thereWasAnError;
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
 }

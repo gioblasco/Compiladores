@@ -21,7 +21,7 @@ public class Compiler {
         lexer.nextToken();
         Program p = program();
         if (lexer.token != Symbol.EOF) {
-            error.signal("Not expected ''" + lexer.token + "' after END keyword (end of file).'");
+            error.show("Not expected ''" + lexer.token + "' after END keyword (end of file).'");
         }
         if (error.wasAnErrorSignalled()) {
             return null;
@@ -42,13 +42,13 @@ public class Compiler {
     public Program program() {
 
         if (lexer.token != Symbol.PROGRAM) {
-            error.signal("Missing PROGRAM keyword at program()");
+            error.show("Missing PROGRAM keyword at program()");
         }
 
         lexer.nextToken();
 
         if (lexer.token != Symbol.IDENT) {
-            error.signal("Missing PROGRAM Identifier at program()");
+            error.show("Missing PROGRAM Identifier at program()");
         }
 
         Ident id = new Ident(lexer.getStringValue());
@@ -56,17 +56,26 @@ public class Compiler {
         lexer.nextToken();
 
         if (lexer.token != Symbol.BEGIN) {
-            error.signal("Missing BEGIN keyword at program()");
+            error.show("Missing BEGIN keyword at program()");
         }
 
         lexer.nextToken();
 
-        ProgramBody pgm = pgm_body();
-
+        ProgramBody pgm = pgm_body();     
+            
         if (lexer.token != Symbol.END) {
-            error.signal("Missing END keyword at program()");
+            error.show("Missing END keyword at program()");
         }
 
+        String maiusculo = symbolTable.getFunction("MAIN");
+        String minusculo = symbolTable.getFunction("main");
+        if(maiusculo == null && maiusculo == null){
+            error.show("The program must have a MAIN function!");
+        } else if (maiusculo != null && !maiusculo.toLowerCase().equals("int"))
+            error.show("The program must have a INT MAIN function!");
+        else if (minusculo != null && !minusculo.toLowerCase().equals("int"))
+            error.show("The program must have a INT MAIN function!");
+        
         lexer.nextToken();
 
         return new Program(id, pgm);
@@ -132,21 +141,21 @@ public class Compiler {
             String type = lexer.getStringValue();
 
             if (lexer.nextToken() != Symbol.IDENT) {
-                error.signal("Missing identifier in string declaration");
+                error.show("Missing identifier in string declaration");
             }
             
             switch(lg) {
                 case 1: // contexto global
                     Type temp = symbolTable.getInGlobal(lexer.getStringValue());
                     if ( temp!=null && temp.isFunction() ) 
-                        error.signal("There is already a function with the name " + lexer.getStringValue());
+                        error.show("There is already a function with the name " + lexer.getStringValue());
                     else if(temp != null)
-                        error.signal("There is already a variable with the name " + lexer.getStringValue());
+                        error.show("There is already a variable with the name " + lexer.getStringValue());
                     symbolTable.putInGlobal(lexer.getStringValue(), new Type(type, false));
                 break;
                 case 2: // contexto local
                     if ( symbolTable.getInLocal(lexer.getStringValue()) != null ) 
-                        error.signal("Variable " + lexer.getStringValue() + " has already been declared");
+                        error.show("Variable " + lexer.getStringValue() + " has already been declared");
                     symbolTable.putInLocal(lexer.getStringValue(), type);
                 break;
             }
@@ -154,13 +163,13 @@ public class Compiler {
             Ident id = new Ident(lexer.getStringValue());
 
             if (lexer.nextToken() != Symbol.ASSIGN) {
-                error.signal("Missing assignment symbol");
+                error.show("Missing assignment symbol");
             }
 
             lexer.nextToken();
 
             if (lexer.token != Symbol.STRINGLITERAL) {
-                error.signal("Not a STRINGLITERAL");
+                error.show("Not a STRINGLITERAL");
             }
 
             String str = lexer.getStringValue();
@@ -170,7 +179,7 @@ public class Compiler {
             lexer.nextToken();
 
             if (lexer.token != Symbol.SEMICOLON) {
-                error.signal("Missing end of declaration");
+                error.show("Missing end of declaration");
             }
 
             lexer.nextToken();
@@ -225,7 +234,7 @@ public class Compiler {
             }
             vd.addDecl(new VarDecl(temp, list));
             if (lexer.token != Symbol.SEMICOLON) {
-                error.signal("Missing end of declaration at var_decl()");
+                error.show("Missing end of declaration at var_decl()");
             }
             lexer.nextToken();
         }
@@ -246,7 +255,7 @@ public class Compiler {
             return;
         }
         if (lexer.token != Symbol.VOID) {
-            error.signal("Wrong type");
+            error.show("Wrong type");
         }
         lexer.nextToken();
     }
@@ -259,25 +268,25 @@ public class Compiler {
             switch(lg) {
                 case 0:
                     if ( symbolTable.getVariable(lexer.getStringValue()) == null ) 
-                        error.signal("Variable " + lexer.getStringValue() + " hasn't been declared");
+                        error.show("Variable " + lexer.getStringValue() + " hasn't been declared");
                 break;
                 case 1:
                     Type temp = symbolTable.getInGlobal(lexer.getStringValue());
                     if ( temp!=null && temp.isFunction() ) 
-                        error.signal("There is already a function with the name " + lexer.getStringValue());
+                        error.show("There is already a function with the name " + lexer.getStringValue());
                     else if(temp != null)
-                        error.signal("There is already a variable with the name " + lexer.getStringValue());
+                        error.show("There is already a variable with the name " + lexer.getStringValue());
                 break;
                 case 2:
                     if ( symbolTable.getInLocal(lexer.getStringValue()) != null ) 
-                        error.signal("Variable " + lexer.getStringValue() + " has already been declared");
+                        error.show("Variable " + lexer.getStringValue() + " has already been declared");
                 break;
             }
             al.add(new Ident(lexer.getStringValue()));
             lexer.nextToken();
             id_tail(al, lg);
         } else {
-            error.signal("Wrong id_list declaration");
+            error.show("Wrong id_list declaration");
         }
         return new IdList(al);
     }
@@ -288,23 +297,23 @@ public class Compiler {
             lexer.nextToken();
 
             if (lexer.token != Symbol.IDENT) {
-                error.signal("Missing identifier at id_tail()");
+                error.show("Missing identifier at id_tail()");
             }
             switch(lg) {
                 case 0:
                     if ( symbolTable.getVariable(lexer.getStringValue()) == null ) 
-                        error.signal("Variable " + lexer.getStringValue() + " hasn't been declared");
+                        error.show("Variable " + lexer.getStringValue() + " hasn't been declared");
                 break;
                 case 1:
                     Type temp = symbolTable.getInGlobal(lexer.getStringValue());
                     if ( temp!=null && temp.isFunction() ) 
-                        error.signal("There is already a function with the name " + lexer.getStringValue());
+                        error.show("There is already a function with the name " + lexer.getStringValue());
                     else if(temp != null)
-                        error.signal("There is already a variable with the name " + lexer.getStringValue());
+                        error.show("There is already a variable with the name " + lexer.getStringValue());
                 break;
                 case 2:
                     if ( symbolTable.getInLocal(lexer.getStringValue()) != null ) 
-                        error.signal("Variable " + lexer.getStringValue() + " has already been declared");
+                        error.show("Variable " + lexer.getStringValue() + " has already been declared");
                 break;
             }
             al.add(new Ident(lexer.getStringValue()));
@@ -343,7 +352,7 @@ public class Compiler {
     // param_decl -> var_type id
     public void param_decl(ArrayList<ParamDecl> pd) {
         if (lexer.token != Symbol.FLOAT && lexer.token != Symbol.INT) {
-            error.signal("Missing correct variable type at param_decl()");
+            error.show("Missing correct variable type at param_decl()");
         }
 
         String type = lexer.getStringValue();
@@ -351,7 +360,7 @@ public class Compiler {
         lexer.nextToken();
 
         if (lexer.token != Symbol.IDENT) {
-            error.signal("Missing identifier at param_decl()");
+            error.show("Missing identifier at param_decl()");
         }
 
         Ident id = new Ident(lexer.getStringValue());
@@ -396,31 +405,31 @@ public class Compiler {
             lexer.nextToken();
 
             if (lexer.token != Symbol.FLOAT && lexer.token != Symbol.INT && lexer.token != Symbol.VOID) {
-                error.signal("Missing function type");
+                error.show("Missing function type");
             }
            
             String type = lexer.getStringValue();
             lexer.nextToken();
 
             if (lexer.token != Symbol.IDENT) {
-                error.signal("Missing identifier at func_decl()");
+                error.show("Missing identifier at func_decl()");
             }
 
             Ident id = new Ident(lexer.getStringValue());
             
             if ( symbolTable.getInGlobal(id.getName()) != null ) 
-                error.signal("Function " + lexer.getStringValue() + " has already been declared");
+                error.show("Function " + lexer.getStringValue() + " has already been declared");
             
             lexer.nextToken();
 
             if (lexer.token != Symbol.LPAR) {
-                error.signal("Missing parantheses for parameters at func_decl()");
+                error.show("Missing parantheses for parameters at func_decl()");
             }
             lexer.nextToken();
 
             if (lexer.token == Symbol.FLOAT || lexer.token == Symbol.INT) {
                 if(id.getName().toLowerCase() == "main"){
-                    error.signal("Main function cannot receive parameters");
+                    error.show("Main function cannot receive parameters");
                 }
                 pdl = param_decl_list();
                 //salva parametros na hashtablea local
@@ -434,12 +443,12 @@ public class Compiler {
                 symbolTable.putInGlobal(id.getName(), new Type(type, true, null));
           
             if (lexer.token != Symbol.RPAR) {
-                error.signal("Missing parantheses for parameters at func_decl()");
+                error.show("Missing parantheses for parameters at func_decl()");
             }
             lexer.nextToken();
 
             if (lexer.token != Symbol.BEGIN) {
-                error.signal("Missing BEGIN keyword at func_decl()");
+                error.show("Missing BEGIN keyword at func_decl()");
             }
             lexer.nextToken();
 
@@ -451,10 +460,10 @@ public class Compiler {
                 if(x instanceof ReturnStmt){
                     // verifica aqui se tem return quando é void
                     if(type.equals("VOID"))
-                        error.signal("Void function with return statement");
+                        error.show("Void function with return statement");
                     // verifica aqui se o tipo do expr do return é igual ao tipo da função
                     else if(!type.equals(((ReturnStmt) x).getExpr().getType(symbolTable))){
-                        error.signal("Function "+id.getName()+" has a return with a different type");
+                        error.show("Function "+id.getName()+" has a return with a different type");
                     }
                     ret = true;
                 }
@@ -462,16 +471,16 @@ public class Compiler {
                     String var = ((AssignStmt) x).getAssignExpr().getIdent().getName();
                     // checa uso de variaveis não usadas
                     if(symbolTable.getVariable(var) == null)
-                        error.signal("Trying to use variable "+var+" that hasn't been declared");
+                        error.show("Trying to use variable "+var+" that hasn't been declared");
                 }
             }
             // verifica aqui se tem return quando não é void
             if(!type.equals("VOID") && ret == false){
-                error.signal("Non void function "+id.getName()+" without return statement");
+                error.show("Non void function "+id.getName()+" without return statement");
             }
 
             if (lexer.token != Symbol.END) {
-                error.signal("Missing END keyword at func_decl()");
+                error.show("Missing END keyword at func_decl()");
             }
             lexer.nextToken();
             
@@ -543,14 +552,14 @@ public class Compiler {
             } else if (temp == Symbol.LPAR) {
                 alstmt.add(call_stmt());
                 if (lexer.token != Symbol.SEMICOLON) {
-                    error.signal("Missing semicolon after call_expr() at stmt()");
+                    error.show("Missing semicolon after call_expr() at stmt()");
                 }
                 lexer.nextToken();
             } else {
-                error.signal("Wrong use of element after identifier at stmt()");
+                error.show("Wrong use of element after identifier at stmt()");
             }
         } else {
-            error.signal("Wrong statement declaration at stmt()");
+            error.show("Wrong statement declaration at stmt()");
         }
     }
 
@@ -565,7 +574,7 @@ public class Compiler {
     public AssignStmt assign_stmt() {
         AssignExpr ae = assign_expr();
         if (lexer.token != Symbol.SEMICOLON) {
-            error.signal("Semicolon expected at assign_stmt()" + lexer.getStringValue());
+            error.show("Semicolon expected at assign_stmt()" + lexer.getStringValue());
         }
         lexer.nextToken();
 
@@ -575,15 +584,15 @@ public class Compiler {
     // assign_expr -> id := expr
     public AssignExpr assign_expr() {
         if (lexer.token != Symbol.IDENT) {
-            error.signal("Expecting identifier at assign_expr()");
+            error.show("Expecting identifier at assign_expr()");
         }
         
         String type = symbolTable.getVariable(lexer.getStringValue());
         if(type == null){
-            error.signal("Tried to assign a value to a variable ("+lexer.getStringValue()+") that hasn't been declared.");
+            error.show("Tried to assign a value to a variable ("+lexer.getStringValue()+") that hasn't been declared.");
         } else {
             if(type == "STRING"){
-                error.signal("Tried to assign a value to a declared string variable ("+lexer.getStringValue()+")");
+                error.show("Tried to assign a value to a declared string variable ("+lexer.getStringValue()+")");
             }
         }
         
@@ -591,32 +600,34 @@ public class Compiler {
         
         lexer.nextToken();
         if (lexer.token != Symbol.ASSIGN) {
-            error.signal("Expecting assign signal assign_expr()");
+            error.show("Expecting assign show assign_expr()");
         }
         lexer.nextToken();
         Expr e = expr();
 
-        if(!type.equals(e.getType(symbolTable))){
-            error.signal("Trying to assign a "+e.getType(symbolTable)+" to a "+type);
-        }
+        if(type.toLowerCase().equals("int") && e.getType(symbolTable).toLowerCase().equals("float")){
+            error.show("Trying to assign a "+e.getType(symbolTable)+" to a "+type);
+        } else if (!type.equals(e.getType(symbolTable)))
+            error.warning("Trying to assign a "+e.getType(symbolTable)+" to a "+type);
+        
         return new AssignExpr(id, e);
     }
 
     // read_stmt -> READ ( id_list );
     public ReadStmt read_stmt() {
         if (lexer.token != Symbol.READ) {
-            error.signal("Missing READ keyword at read_stmt()");
+            error.show("Missing READ keyword at read_stmt()");
         }
         if (lexer.nextToken() != Symbol.LPAR) {
-            error.signal("Missing open parentheses at read_stmt()");
+            error.show("Missing open parentheses at read_stmt()");
         }
         lexer.nextToken();
         IdList il = id_list(0);
         if (lexer.token != Symbol.RPAR) {
-            error.signal("Missing close parentheses at read_stmt()");
+            error.show("Missing close parentheses at read_stmt()");
         }
         if (lexer.nextToken() != Symbol.SEMICOLON) {
-            error.signal("Semicolon expected at read_stmt()");
+            error.show("Semicolon expected at read_stmt()");
         }
         lexer.nextToken();
         return new ReadStmt(il, symbolTable, this.error );
@@ -625,18 +636,18 @@ public class Compiler {
     // write_stmt -> WRITE ( id_list );
     public WriteStmt write_stmt() {
         if (lexer.token != Symbol.WRITE) {
-            error.signal("Missing READ keyword at write_stmt()");
+            error.show("Missing READ keyword at write_stmt()");
         }
         if (lexer.nextToken() != Symbol.LPAR) {
-            error.signal("Missing open parentheses at write_stmt()");
+            error.show("Missing open parentheses at write_stmt()");
         }
         lexer.nextToken();
         IdList il = id_list(0);
         if (lexer.token != Symbol.RPAR) {
-            error.signal("Missing close parentheses write_stmt()");
+            error.show("Missing close parentheses write_stmt()");
         }
         if (lexer.nextToken() != Symbol.SEMICOLON) {
-            error.signal("Semicolon expected at write_stmt()");
+            error.show("Semicolon expected at write_stmt()");
         }
         lexer.nextToken();
         return new WriteStmt(il, this.symbolTable, this.error);
@@ -645,12 +656,12 @@ public class Compiler {
     // return_stmt -> RETURN expr ;
     public ReturnStmt return_stmt() {
         if (lexer.token != Symbol.RETURN) {
-            error.signal("Missing RETURN keyword at return_stmt()");
+            error.show("Missing RETURN keyword at return_stmt()");
         }
         lexer.nextToken();
         Expr e = expr();
         if (lexer.token != Symbol.SEMICOLON) {
-            error.signal("Semicolon expected at return_stmt()");
+            error.show("Semicolon expected at return_stmt()");
         }
         lexer.nextToken();
         return new ReturnStmt(e);
@@ -673,10 +684,10 @@ public class Compiler {
                 String typeofft = e.getFactor().getType(symbolTable);
                 String typeofet = e.getExprTail().getType(symbolTable);
                 if(!typeofft.equals(typeofet))
-                    error.signal("Trying to make an operation between a "+typeofft.toLowerCase()+" and a "+typeofet.toLowerCase());
+                    error.warning("Trying to make an operation between a "+typeofft+" and a "+typeofet);
             }
         } else {
-            error.signal("Factor expected at expr()");
+            error.show("Factor expected at expr()");
         }
         return e;
     }
@@ -691,7 +702,7 @@ public class Compiler {
             if (factor(et)) {
                 et.setExprTail(expr_tail());
             } else {
-                error.signal("Wrong ExprTail");
+                error.show("Wrong ExprTail");
             }
         }
         return et;
@@ -710,7 +721,7 @@ public class Compiler {
                 String typeofpf = e.getFactor().getPostfixExpr().getType(symbolTable);
                 String typeofft = e.getFactor().getFactorTail().getType(symbolTable);
                 if(!typeofpf.equals(typeofft))
-                    error.signal("Trying to make an operation between a "+typeofpf.toLowerCase()+" and a "+typeofft.toLowerCase());
+                    error.warning("Trying to make an operation between a "+typeofpf+" and a "+typeofft);
             }
             return fct;      
         }
@@ -760,16 +771,16 @@ public class Compiler {
     public boolean call_expr(PostfixExpr pe) {
         ExprList el = null;
         if (lexer.token != Symbol.IDENT) {
-            error.signal("Missing identifier at call_expr()");
+            error.show("Missing identifier at call_expr()");
         }
         Ident id = new Ident(lexer.getStringValue());
         
         if(symbolTable.getFunction(id.getName()) == null){
-            error.signal("Function "+id.getName()+" hasn't been declared.");
+            error.show("Function "+id.getName()+" hasn't been declared.");
         }
          
         if (lexer.nextToken() != Symbol.LPAR) {
-            error.signal("Expecting begin parentheses at call_expr()");
+            error.show("Expecting begin parentheses at call_expr()");
         }
         lexer.nextToken();
         if (lexer.token != Symbol.RPAR) {
@@ -781,19 +792,19 @@ public class Compiler {
             if(parameters.size() == signature.size()){
                 for (int i = 0; i < parameters.size(); i++) {
                     if(!parameters.get(i).getType(symbolTable).toLowerCase().equals(signature.get(i).toLowerCase())){
-                        error.signal("Calling expression "+id.getName()+" with wrong type of parameters");
+                        error.show("Calling expression "+id.getName()+" with wrong type of parameters");
                     }
                 }
             } else
-                error.signal("Calling expression "+id.getName()+" with wrong number of parameters");
+                error.show("Calling expression "+id.getName()+" with wrong number of parameters");
         } else if(el == null && signature != null)
-                error.signal("Calling expression "+id.getName()+" with wrong number of parameters");
+                error.show("Calling expression "+id.getName()+" with wrong number of parameters");
         else if(el != null && signature == null)
-            error.signal("Calling expression "+id.getName()+" with wrong number of parameters");
+            error.show("Calling expression "+id.getName()+" with wrong number of parameters");
             
             
         if (lexer.token != Symbol.RPAR) {
-            error.signal("Expecting close parentheses at call_expr()");
+            error.show("Expecting close parentheses at call_expr()");
         }
         lexer.nextToken();
         
@@ -808,16 +819,16 @@ public class Compiler {
         
         ExprList el = null;
         if (lexer.token != Symbol.IDENT) {
-            error.signal("Missing identifier at call statement");
+            error.show("Missing identifier at call statement");
         }
         Ident id = new Ident(lexer.getStringValue());
         
         if(symbolTable.getFunction(id.getName()) == null){
-            error.signal("Function "+id.getName()+" hasn't been declared.");
+            error.show("Function "+id.getName()+" hasn't been declared.");
         }
         
         if (lexer.nextToken() != Symbol.LPAR) {
-            error.signal("Expecting begin parentheses at call statement");
+            error.show("Expecting begin parentheses at call statement");
         }
         lexer.nextToken();
         if (lexer.token != Symbol.RPAR) {
@@ -829,18 +840,18 @@ public class Compiler {
             if(parameters.size() == signature.size()){
                 for (int i = 0; i < parameters.size(); i++) {
                     if(!parameters.get(i).getType(symbolTable).toLowerCase().equals(signature.get(i).toLowerCase())){
-                        error.signal("Calling expression "+id.getName()+" with wrong type of parameters");
+                        error.show("Calling expression "+id.getName()+" with wrong type of parameters");
                     }
                 }
             } else
-                error.signal("Calling expression "+id.getName()+" with wrong number of parameters");
+                error.show("Calling expression "+id.getName()+" with wrong number of parameters");
         } else if(el == null && signature != null)
-                error.signal("Calling expression "+id.getName()+" with wrong number of parameters");
+                error.show("Calling expression "+id.getName()+" with wrong number of parameters");
         else if(el != null && signature == null)
-            error.signal("Calling expression with "+id.getName()+" wrong number of parameters");
+            error.show("Calling expression with "+id.getName()+" wrong number of parameters");
         
         if (lexer.token != Symbol.RPAR) {
-            error.signal("Expecting close parentheses at call statement");
+            error.show("Expecting close parentheses at call statement");
         }
         lexer.nextToken();
        
@@ -875,7 +886,7 @@ public class Compiler {
             lexer.nextToken();
             p = new Primary(expr());
             if (lexer.token != Symbol.RPAR) {
-                error.signal("Missing close parentheses at primary()");
+                error.show("Missing close parentheses at primary()");
             }
         } else if(lexer.token == Symbol.IDENT){
             id = new Ident(lexer.getStringValue());
@@ -888,7 +899,7 @@ public class Compiler {
              p = new Primary(literal, "FLOAT");
         }
         else {
-            error.signal("Not a primary element at primary()");
+            error.show("Not a primary element at primary()");
         }
         pe.setPrimary(p);
         lexer.nextToken();
@@ -898,7 +909,7 @@ public class Compiler {
     // addop -> + | -
     public void addop() {
         if (lexer.token != Symbol.PLUS && lexer.token != Symbol.MINUS) {
-            error.signal("Wrong operator at addop()");
+            error.show("Wrong operator at addop()");
         }
         lexer.nextToken();
     }
@@ -906,7 +917,7 @@ public class Compiler {
     // mulop -> * | /
     public void mulop() {
         if (lexer.token != Symbol.MULT && lexer.token != Symbol.DIV) {
-            error.signal("Wrong operator at mulop()");
+            error.show("Wrong operator at mulop()");
         }
         lexer.nextToken();
     }
@@ -926,18 +937,18 @@ public class Compiler {
         if (lexer.token == Symbol.IF) {
 
             if (lexer.nextToken() != Symbol.LPAR) {
-                error.signal("Missing parantheses at if_stmt()");
+                error.show("Missing parantheses at if_stmt()");
             }
             lexer.nextToken();
 
             c = cond();
 
             if (lexer.token != Symbol.RPAR) {
-                error.signal("Missing parantheses at if_stmt()");
+                error.show("Missing parantheses at if_stmt()");
             }
 
             if (lexer.nextToken() != Symbol.THEN) {
-                error.signal("Missing THEN keyword at if_stmt()");
+                error.show("Missing THEN keyword at if_stmt()");
             }
 
             lexer.nextToken();
@@ -947,12 +958,12 @@ public class Compiler {
             elsepart = else_part(elsepart);
 
             if (lexer.token != Symbol.ENDIF) {
-                error.signal("Missing ENDIF keyword at if_stmt()");
+                error.show("Missing ENDIF keyword at if_stmt()");
             }
 
             lexer.nextToken();
         } else {
-            error.signal("Missing IF keyword at if_stmt()");
+            error.show("Missing IF keyword at if_stmt()");
         }
         return new IfStmt(c, (ifpart != null) ? new StmtList(ifpart) : null, (elsepart != null) ? new StmtList(elsepart) : null);
     }
@@ -977,7 +988,7 @@ public class Compiler {
         String type2 = c.getExpr2().getType(symbolTable);
         
         if(!type1.equals(type2)){
-            error.signal("Trying to compare a "+type1+" with a "+type2);
+            error.warning("Trying to compare a "+type1+" with a "+type2);
         }
        
         return c;
@@ -986,7 +997,7 @@ public class Compiler {
     // compop -> < | > | =
     public Character compop() {
         if (lexer.token != Symbol.LT && lexer.token != Symbol.GT && lexer.token != Symbol.EQUAL) {
-            error.signal("Missing comparison operator at compop()");
+            error.show("Missing comparison operator at compop()");
         }
         Character c = lexer.getStringValue().toCharArray()[0];
         lexer.nextToken();
@@ -1000,7 +1011,7 @@ public class Compiler {
         if (lexer.token == Symbol.FOR) {
 
             if (lexer.nextToken() != Symbol.LPAR) {
-                error.signal("Missing parantheses at for_stmt()");
+                error.show("Missing parantheses at for_stmt()");
             }
 
             lexer.nextToken();
@@ -1010,7 +1021,7 @@ public class Compiler {
             }
 
             if (lexer.token != Symbol.SEMICOLON) {
-                error.signal("Missing end of declaration at for_stmtf()");
+                error.show("Missing end of declaration at for_stmtf()");
             }
 
             if (lexer.nextToken() != Symbol.SEMICOLON) {
@@ -1018,7 +1029,7 @@ public class Compiler {
             }
 
             if (lexer.token != Symbol.SEMICOLON) {
-                error.signal("Missing end of declaration at for_stmt()");
+                error.show("Missing end of declaration at for_stmt()");
             }
 
             if (lexer.nextToken() != Symbol.RPAR) {
@@ -1026,7 +1037,7 @@ public class Compiler {
             }
 
             if (lexer.token != Symbol.RPAR) {
-                error.signal("Missing parantheses at for_stmt()");
+                error.show("Missing parantheses at for_stmt()");
             }
             lexer.nextToken();
 
@@ -1034,12 +1045,12 @@ public class Compiler {
             forstmt.setSl(new StmtList(array));
 
             if (lexer.token != Symbol.ENDFOR) {
-                error.signal("Missing ENDFOR keyword at for_stmt()");
+                error.show("Missing ENDFOR keyword at for_stmt()");
             }
             lexer.nextToken();
 
         } else {
-            error.signal("Missing FOR keyword at for_stmt()");
+            error.show("Missing FOR keyword at for_stmt()");
         }
         return forstmt;
     }
