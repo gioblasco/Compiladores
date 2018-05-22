@@ -67,15 +67,9 @@ public class Compiler {
             error.show("Missing END keyword at program()");
         }
 
-        String maiusculo = symbolTable.getFunction("MAIN");
-        String minusculo = symbolTable.getFunction("main");
-        if(maiusculo == null && maiusculo == null){
+        if(symbolTable.getFunction("main") == null)
             error.show("The program must have a MAIN function!");
-        } else if (maiusculo != null && !maiusculo.toLowerCase().equals("int"))
-            error.show("The program must have a INT MAIN function!");
-        else if (minusculo != null && !minusculo.toLowerCase().equals("int"))
-            error.show("The program must have a INT MAIN function!");
-        
+            
         lexer.nextToken();
 
         return new Program(id, pgm);
@@ -417,6 +411,10 @@ public class Compiler {
 
             Ident id = new Ident(lexer.getStringValue());
             
+            if(id.getName().toLowerCase().equals("main") && !type.equals("INT")){
+                    error.show("The MAIN function must be INT");
+            }
+            
             if ( symbolTable.getInGlobal(id.getName()) != null ) 
                 error.show("Function " + lexer.getStringValue() + " has already been declared");
             
@@ -428,19 +426,27 @@ public class Compiler {
             lexer.nextToken();
 
             if (lexer.token == Symbol.FLOAT || lexer.token == Symbol.INT) {
-                if(id.getName().toLowerCase() == "main"){
-                    error.show("Main function cannot receive parameters");
-                }
+                if(id.getName().toLowerCase().equals("main")){
+                    error.show("The MAIN function cannot receive parameters");
+                } 
                 pdl = param_decl_list();
+                
                 //salva parametros na hashtablea local
                 for(ParamDecl x : pdl.getParamList()){
                     symbolTable.putInLocal(x.getId().getName(), x.getType());
                 }
                 
                 //salva assinatura da função no escopo global
-                symbolTable.putInGlobal(id.getName(), new Type(type, true, pdl.getParamTypes()));
-            } else
-                symbolTable.putInGlobal(id.getName(), new Type(type, true, null));
+                if(id.getName().toLowerCase().equals("main"))
+                    symbolTable.putInGlobal("main", new Type(type, true, pdl.getParamTypes()));
+                else
+                    symbolTable.putInGlobal(id.getName(), new Type(type, true, pdl.getParamTypes()));
+            } else {
+                 if(id.getName().toLowerCase().equals("main"))
+                    symbolTable.putInGlobal("main", new Type(type, true, null));
+                else
+                    symbolTable.putInGlobal(id.getName(), new Type(type, true, null));              
+            }
           
             if (lexer.token != Symbol.RPAR) {
                 error.show("Missing parantheses for parameters at func_decl()");
@@ -786,8 +792,8 @@ public class Compiler {
         if (lexer.token != Symbol.RPAR) {
             el = expr_list(el);
         }
-        ArrayList<String> signature = symbolTable.getInGlobal(id.getName()).getSignature();
-        if(el != null && signature != null){
+        if(el != null && symbolTable.getInGlobal(id.getName()) != null && symbolTable.getInGlobal(id.getName()).getSignature() != null){
+            ArrayList<String> signature = symbolTable.getInGlobal(id.getName()).getSignature();
             ArrayList<Expr> parameters = el.getExprList();
             if(parameters.size() == signature.size()){
                 for (int i = 0; i < parameters.size(); i++) {
@@ -797,9 +803,9 @@ public class Compiler {
                 }
             } else
                 error.show("Calling expression "+id.getName()+" with wrong number of parameters");
-        } else if(el == null && signature != null)
+        } else if(el == null && symbolTable.getInGlobal(id.getName()) != null && symbolTable.getInGlobal(id.getName()).getSignature() != null)
                 error.show("Calling expression "+id.getName()+" with wrong number of parameters");
-        else if(el != null && signature == null)
+        else if(el != null  && symbolTable.getInGlobal(id.getName()) != null && symbolTable.getInGlobal(id.getName()).getSignature() == null)
             error.show("Calling expression "+id.getName()+" with wrong number of parameters");
             
             
@@ -834,8 +840,8 @@ public class Compiler {
         if (lexer.token != Symbol.RPAR) {
             el = expr_list(el);
         }
-        ArrayList<String> signature = symbolTable.getInGlobal(id.getName()).getSignature();
-        if(el != null && signature != null){
+        if(el != null && symbolTable.getInGlobal(id.getName()) != null && symbolTable.getInGlobal(id.getName()).getSignature() != null){
+            ArrayList<String> signature = symbolTable.getInGlobal(id.getName()).getSignature();
             ArrayList<Expr> parameters = el.getExprList();
             if(parameters.size() == signature.size()){
                 for (int i = 0; i < parameters.size(); i++) {
@@ -845,9 +851,9 @@ public class Compiler {
                 }
             } else
                 error.show("Calling expression "+id.getName()+" with wrong number of parameters");
-        } else if(el == null && signature != null)
+        } else if(el == null && symbolTable.getInGlobal(id.getName()) != null && symbolTable.getInGlobal(id.getName()).getSignature() != null)
                 error.show("Calling expression "+id.getName()+" with wrong number of parameters");
-        else if(el != null && signature == null)
+        else if(el != null && symbolTable.getInGlobal(id.getName()) != null && symbolTable.getInGlobal(id.getName()).getSignature() == null)
             error.show("Calling expression with "+id.getName()+" wrong number of parameters");
         
         if (lexer.token != Symbol.RPAR) {

@@ -12,11 +12,11 @@ public class SymbolTable {
     }
 
     public void putInGlobal(String key, Type value) {
-        globalTable.put(key, value);
+            globalTable.put(key, value);
     }
 
-    public String putInLocal(String key, String value) {
-        return localTable.put(key, value);
+    public void putInLocal(String key, String value) {
+        localTable.put(key, value);
     }
 
     public String getInLocal(String key) {
