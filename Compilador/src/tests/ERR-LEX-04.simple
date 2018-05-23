@@ -5,7 +5,7 @@ BEGIN
   FLOAT x, y, retorno;
 
   -- Rotina Principal
-  FUNCTION VOID MAIN()
+  FUNCTION VOID main()
   BEGIN
     READ(x);
     READ(y);

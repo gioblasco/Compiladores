@@ -1,7 +1,7 @@
 PROGRAM errosem09
 BEGIN
 
-  FUNCTION INT MAIN()
+  FUNCTION INT main(INT x, INT y)
   BEGIN
   
     INT A;

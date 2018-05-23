@@ -3,7 +3,7 @@ PROGRAM programa0
 BEGIN
 
 // Escreve a soma entre dois números
-  FUNCTION VOID MAIN()
+  FUNCTION VOID main()
   BEGIN
 
   END

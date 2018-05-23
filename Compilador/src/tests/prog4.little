@@ -43,7 +43,7 @@ BEGIN
 
 	END
 
-	FUNCTION INT MAIN()
+	FUNCTION INT main()
 	BEGIN
 	  PrimeNumbers();
 
