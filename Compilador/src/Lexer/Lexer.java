@@ -182,7 +182,6 @@ public class Lexer {
 					int i;
 					for (i = 0; input[tokenPos] != '\0' && input[tokenPos] != '"' && i < 80; i++ ) {
 						stringValue = stringValue.concat(Character.toString(input[tokenPos]));
-						System.out.println(input[tokenPos]);
 						tokenPos++;
 					}
 					
@@ -226,7 +225,7 @@ public class Lexer {
 		StringBuffer line = new StringBuffer();
 		// go to the beginning of the line
 		while (i >= 1 && input[i] != '\n')
-		i--;
+                    i--;
 		if (input[i] == '\n') i++;
 		// go to the end of the line putting it in variable line
 		while (input[i] != '\0' && input[i] != '\n' && input[i] != '\r') {

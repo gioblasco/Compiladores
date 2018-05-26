@@ -24,9 +24,9 @@ public class ReadStmt extends Stmt{
         for(Ident d : id){
             String result = symbolTable.getVariable(d.getName());
             if (result == null)
-                error.signal("Trying to execute a read stmt with a undeclared variable!");
+                error.show("Trying to execute a read stmt with a undeclared variable!");
             else if(result.toUpperCase().equals("STRING"))
-                error.signal("Trying to read a STRING, but strings are imutable objects!");
+                error.show("Trying to alter a STRING with read stmt, but strings are imutable objects!");
             this.al.add(result);
         }
     }

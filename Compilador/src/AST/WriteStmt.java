@@ -10,10 +10,6 @@ import Semantic.SymbolTable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-/**
- *
- * @author giova
- */
 public class WriteStmt extends Stmt{
     private IdList il;
     private ArrayList<String> al;
@@ -32,7 +28,7 @@ public class WriteStmt extends Stmt{
         for(Ident d : id){
             String result = symbolTable.getVariable(d.getName());
             if (result == null)
-                error.signal("Trying to execute a write stmt with a undeclared variable!");
+                error.show("Trying to execute a write stmt with a undeclared variable!");
             this.al.add(result);
         }
     }
