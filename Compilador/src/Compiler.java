@@ -458,11 +458,12 @@ public class Compiler {
             boolean ret = false;
             for(Stmt x: stmts){
                 if(x instanceof ReturnStmt){
+                    String typeofreturn = ((ReturnStmt) x).getExpr().getType(symbolTable);
                     // verifica aqui se tem return quando é void
                     if(type.equals("VOID"))
                         error.show("Void function with return statement");
                     // verifica aqui se o tipo do expr do return é igual ao tipo da função
-                    else if(!type.equals(((ReturnStmt) x).getExpr().getType(symbolTable))){
+                    else if(typeofreturn != null && !type.equals(typeofreturn)){
                         error.show("Function "+id.getName()+" has a return with a different type");
                     }
                     ret = true;
@@ -585,7 +586,7 @@ public class Compiler {
         if(type == null){
             error.show("Tried to assign a value to a variable ("+lexer.getStringValue()+") that hasn't been declared.");
         } else {
-            if(type == "STRING"){
+            if(type.equals("STRING")){
                 error.show("Tried to assign a value to a declared string variable ("+lexer.getStringValue()+")");
             }
         }
@@ -599,12 +600,10 @@ public class Compiler {
         lexer.nextToken();
         Expr e = expr();
 
-        if(type != null && e != null){
-            if(type.toLowerCase().equals("int") && e.getType(symbolTable).toLowerCase().equals("float")){
-                error.show("Trying to assign a "+e.getType(symbolTable)+" to a "+type);
-            } else if (!type.equals(e.getType(symbolTable)))
-                error.warning("Trying to assign a "+e.getType(symbolTable)+" to a "+type);
-        }
+        if(type != null && type.toLowerCase().equals("int") && e.getType(symbolTable) != null && e.getType(symbolTable).toLowerCase().equals("float"))
+            error.show("Trying to assign a "+e.getType(symbolTable)+" to a "+type);
+        else if (type != null && e.getType(symbolTable) != null && !type.equals(e.getType(symbolTable)))
+            error.warning("Trying to assign a "+e.getType(symbolTable)+" to a "+type);
         
         return new AssignExpr(id, e);
     }
@@ -679,7 +678,7 @@ public class Compiler {
             if(e.getExprTail() != null){
                 String typeofft = e.getFactor().getType(symbolTable);
                 String typeofet = e.getExprTail().getType(symbolTable);
-                if(!typeofft.equals(typeofet))
+                if(typeofft != null && typeofet != null && !typeofft.equals(typeofet))
                     error.warning("Trying to make an operation between a "+typeofft+" and a "+typeofet);
             }
         } else {
@@ -716,7 +715,7 @@ public class Compiler {
             if(fct && e.getFactor().getFactorTail() != null){
                 String typeofpf = e.getFactor().getPostfixExpr().getType(symbolTable);
                 String typeofft = e.getFactor().getFactorTail().getType(symbolTable);
-                if(!typeofpf.equals(typeofft))
+                if(typeofpf != null && typeofft != null && !typeofpf.equals(typeofft))
                     error.warning("Trying to make an operation between a "+typeofpf+" and a "+typeofft);
             }
             return fct;      
@@ -787,7 +786,7 @@ public class Compiler {
             ArrayList<Expr> parameters = el.getExprList();
             if(parameters.size() == signature.size()){
                 for (int i = 0; i < parameters.size(); i++) {
-                    if(!parameters.get(i).getType(symbolTable).toLowerCase().equals(signature.get(i).toLowerCase())){
+                    if(parameters.get(i).getType(symbolTable) != null && !parameters.get(i).getType(symbolTable).toLowerCase().equals(signature.get(i).toLowerCase())){
                         error.show("Calling expression "+id.getName()+" with wrong type of parameters");
                     }
                 }
@@ -835,7 +834,7 @@ public class Compiler {
             ArrayList<Expr> parameters = el.getExprList();
             if(parameters.size() == signature.size()){
                 for (int i = 0; i < parameters.size(); i++) {
-                    if(!parameters.get(i).getType(symbolTable).toLowerCase().equals(signature.get(i).toLowerCase())){
+                    if(parameters.get(i).getType(symbolTable) != null && !parameters.get(i).getType(symbolTable).toLowerCase().equals(signature.get(i).toLowerCase())){
                         error.show("Calling expression "+id.getName()+" with wrong type of parameters");
                     }
                 }
@@ -983,9 +982,12 @@ public class Compiler {
         String type1 = c.getExpr1().getType(symbolTable);
         String type2 = c.getExpr2().getType(symbolTable);
         
-        if(!type1.equals(type2)){
-            error.warning("Trying to compare a "+type1+" with a "+type2);
-        }
+        if(type1 != null && type2 != null){
+            if(!type1.equals(type2)){
+                error.warning("Trying to compare a "+type1+" with a "+type2);
+            }
+        } else
+            error.show("Trying to make comparison with a variable(s) that hasn't been declared");
        
         return c;
     }

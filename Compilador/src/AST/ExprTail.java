@@ -23,9 +23,17 @@ public class ExprTail extends Expr{
         typeoffactor = this.factor.getType(s);
         if(this.exprtail != null && this.exprtail.getAddop() != null)
             typeoftail = this.exprtail.getType(s);
-        if(typeoftail != null && typeoftail.toLowerCase().equals("float") || typeoffactor.toLowerCase().equals("float"))
-            return "FLOAT";
-        return "INT";        
+        if(typeoffactor != null && typeoftail != null){
+            if(typeoffactor.toLowerCase().equals("float") || (typeoftail.toLowerCase().equals("float")))
+                return "FLOAT";
+            else
+                return "INT";
+        } else if(typeoffactor != null)
+            return typeoffactor.toUpperCase();
+        else if(typeoftail != null)
+            return typeoftail.toUpperCase();
+        else
+            return null;        
     }
     public void setAddop(Character addop) {
         this.addop = addop;

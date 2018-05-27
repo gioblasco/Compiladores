@@ -36,10 +36,19 @@ public class Factor {
         typeofpe = this.p.getType(s);
         if(this.ft != null)
             typeoftail = this.ft.getType(s);
-        if(typeofpe.toLowerCase().equals("float") || (typeoftail != null && typeoftail.toLowerCase().equals("float")))
-            return "FLOAT";
-        return "INT";
+        if(typeofpe != null && typeoftail != null){
+            if(typeofpe.toLowerCase().equals("float") || (typeoftail.toLowerCase().equals("float")))
+                return "FLOAT";
+            else
+                return "INT";
+        } else if(typeofpe != null)
+            return typeofpe.toUpperCase();
+        else if(typeoftail != null)
+            return typeoftail.toUpperCase();
+        else
+            return null;
     }
+
     public void genC(){
         p.genC();
         if(ft != null)

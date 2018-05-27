@@ -44,9 +44,17 @@ public class FactorTail extends Factor {
         typeofpe = this.p.getType(s);
         if(this.f != null && this.f.getPostfixExpr() != null)
             typeoftail = this.f.getType(s);
-        if( (typeoftail != null && typeoftail.toLowerCase().equals("float") ) || typeofpe.toLowerCase().equals("float") )
-            return "FLOAT";
-        return "INT";
+        if(typeofpe != null && typeoftail != null){
+            if(typeofpe.toLowerCase().equals("float") || (typeoftail.toLowerCase().equals("float")))
+                return "FLOAT";
+            else
+                return "INT";
+        } else if(typeofpe != null)
+            return typeofpe.toUpperCase();
+        else if(typeoftail != null)
+            return typeoftail.toUpperCase();
+        else
+            return null;
         
     }    
  

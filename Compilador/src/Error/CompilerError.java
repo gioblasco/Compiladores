@@ -51,7 +51,7 @@ public class CompilerError {
     public void signal( String strMessage ) {
         show( strMessage );
         thereWasAnError = true;
-        throw new RuntimeException(strMessage);
+        throw new RuntimeException("The program presented compilation error(s)");
     }
 
     private Lexer lexer;
